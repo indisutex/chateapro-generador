@@ -1,0 +1,2650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- ══ META PIXEL ══ -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '855518717538226');
+fbq('init', '2345441845920493');
+fbq('track', 'PageView');
+</script>
+<noscript>
+  <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=855518717538226&ev=PageView&noscript=1"/>
+  <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2345441845920493&ev=PageView&noscript=1"/>
+</noscript>
+<!-- ══ GOOGLE ANALYTICS 4 ══ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1F5GNYHMML"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1F5GNYHMML');
+</script>
+<!-- ══ MICROSOFT CLARITY ══ -->
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "vy1xy51y3o");
+</script>
+<!-- ══ GATE CHECK — redirect if no access ══ -->
+<script>
+(function(){
+  var granted = localStorage.getItem('indisutex_access_granted');
+  var email   = localStorage.getItem('indisutex_user_email');
+  if (!granted || !email) {
+    window.location.replace('index.html');
+  }
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Generador de Prompts · Indisutex</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#e8587a;--rl:#fce8ee;--rd:#c03a5c;--cream:#fdf8f5;--ink:#1a1118;
+  --mu:#7a6872;--bdr:#e8dde2;--ok:#2d9e6b;--card:#fff;
+  --sh:0 2px 18px rgba(200,80,120,.07);--blue:#1d4ed8;--amber:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+header{background:linear-gradient(135deg,#e8587a,#a02060);padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(160,40,100,.3)}
+.hinner{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.logo{font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1rem;flex-shrink:0;letter-spacing:-.01em}
+.logo small{display:block;font-family:'Inter',sans-serif;font-size:.58rem;opacity:.65;letter-spacing:.5px;text-transform:uppercase;font-weight:400}
+.hlinks{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.hl{color:rgba(255,255,255,.85);font-size:.63rem;text-decoration:none;padding:3px 9px;border:1px solid rgba(255,255,255,.25);border-radius:6px;transition:all .2s;white-space:nowrap}
+.hl:hover{background:rgba(255,255,255,.18);color:#fff}
+.hl.hl-attn{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4)}
+.hcnt{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 11px;color:#fff;font-size:.7rem;font-weight:700;white-space:nowrap;flex-shrink:0}
+.hcnt.warn{background:rgba(255,200,0,.3)}.hcnt.over{background:rgba(255,60,60,.45)}
+.tab-nav{max-width:1100px;margin:0 auto;padding:10px 16px 0;display:flex;gap:3px;overflow-x:auto}
+.tnav{padding:8px 14px;border-radius:10px 10px 0 0;font-size:.72rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bdr);border-bottom:none;background:rgba(255,255,255,.6);color:var(--mu);transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tnav.on{background:#fff;color:var(--rd);border-color:var(--rose)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 90px;border-top:2px solid var(--rose)}
+.sec{display:none}.sec.on{display:block}.pad{padding-top:14px}
+.card{background:var(--card);border-radius:14px;padding:18px;margin-bottom:10px;border:1px solid var(--bdr);box-shadow:var(--sh)}
+.ct{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:var(--rd);margin-bottom:2px}
+.cd{font-size:.71rem;color:var(--mu);margin-bottom:10px;line-height:1.5}
+label{font-size:.66rem;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:3px}
+.req{color:var(--rose)}
+input,select,textarea{font-family:'Inter',sans-serif;font-size:.84rem;padding:7px 10px;border:1.5px solid var(--bdr);border-radius:9px;background:var(--cream);color:var(--ink);width:100%;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,88,122,.1);background:#fff}
+.fg{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.full{grid-column:1/-1}
+.hint{font-size:.62rem;color:var(--mu);margin-top:2px;font-style:italic;line-height:1.4}
+.hint.ok{color:var(--ok);font-style:normal;font-weight:600}
+.div{height:1px;background:var(--bdr);margin:12px 0}
+.cbar-wrap{background:#f4eff2;border-radius:10px;padding:9px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.cbar-bg{flex:1;height:7px;background:var(--bdr);border-radius:4px;overflow:hidden}
+.cbar-fg{height:100%;background:var(--ok);border-radius:4px;transition:width .3s,background .3s}
+.cbar-fg.warn{background:#f59e0b}.cbar-fg.over{background:var(--rose)}
+.cbar-lbl{font-size:.69rem;font-weight:700;color:var(--mu);white-space:nowrap}
+.brand-pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.bpill{padding:5px 14px;border-radius:20px;border:2px solid var(--bdr);background:#fff;font-size:.74rem;font-weight:600;color:var(--mu);cursor:pointer;transition:all .2s}
+.bpill:hover{border-color:var(--rose);color:var(--rd)}
+.bpill.sel{border-color:var(--rose);background:var(--rose);color:#fff}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:10px}
+.pcard{border:2px solid var(--bdr);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;background:#fff;position:relative;user-select:none}
+.pcard:hover{border-color:var(--rose);transform:translateY(-1px);box-shadow:0 4px 14px rgba(232,88,122,.12)}
+.pcard.sel{border-color:var(--rose);background:var(--rl)}
+.pcard.fav{border-color:#f5c842!important;box-shadow:0 0 0 3px #f5c842 inset,0 4px 18px rgba(245,200,66,.25)!important}
+.pcard.fav .pc-img-wrap::before{content:'⭐ FAVORITO';position:absolute;top:0;left:0;right:0;background:linear-gradient(135deg,#f5c842,#e6b800);color:#7c5800;font-size:.55rem;font-weight:800;text-align:center;padding:3px 0;letter-spacing:.8px;z-index:3;text-transform:uppercase}
+.pc-img-wrap{width:100%;height:150px;overflow:hidden;background:#f5eef2;position:relative}
+.pc-img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.pcard:hover .pc-img{transform:scale(1.05)}
+.pc-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#ddd}
+.pc-body{padding:10px 12px 12px}
+.pc-check{position:absolute;top:9px;right:9px;width:24px;height:24px;border-radius:50%;background:var(--rose);color:#fff;display:none;align-items:center;justify-content:center;font-size:.76rem;font-weight:700;z-index:2;box-shadow:0 2px 8px rgba(232,88,122,.4)}
+.pcard.sel .pc-check{display:flex}
+.pc-fav{position:absolute;top:9px;left:9px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.9);color:#f5c842;display:flex;align-items:center;justify-content:center;font-size:.8rem;z-index:2;cursor:pointer;border:1px solid #f5c842;transition:all .2s}
+.pc-fav:hover{background:#f5c842;color:#fff}
+.pc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;margin-bottom:2px;line-height:1.3}
+.pc-tela{font-size:.64rem;color:var(--mu);margin-bottom:3px}
+.pc-disenos{font-size:.63rem;color:var(--rd);margin-bottom:4px;font-style:italic}
+.pc-badges{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px}
+.pc-badge{display:inline-flex;align-items:center;gap:2px;background:#f3f4f6;color:#555;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:5px;font-family:monospace}
+.pc-badge.dropi{background:#eff6ff;color:var(--blue)}
+.dropi-cta{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:10px;padding:12px 14px;margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dropi-cta-icon{font-size:1.5rem;flex-shrink:0}
+.dropi-cta-body{flex:1}
+.dropi-cta-title{font-weight:700;font-size:.8rem;color:#1d4ed8;margin-bottom:2px}
+.dropi-cta-desc{font-size:.66rem;color:#2563eb;line-height:1.4}
+.dropi-cta-btn{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:.74rem;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-block;transition:all .2s}
+.dropi-cta-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.cfg-panel{border:2px solid var(--bdr);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.cfg-panel.active{border-color:var(--rose)}
+.cfg-head{padding:11px 15px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;transition:background .2s}
+.cfg-head:hover{background:var(--rl)}
+.cfg-num{width:22px;height:22px;border-radius:50%;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.cfg-title{font-weight:700;font-size:.82rem;flex:1}
+.cfg-tog{font-size:.8rem;color:var(--mu);transition:transform .2s}
+.cfg-body{display:none;padding:15px;border-top:1px solid var(--bdr);background:var(--cream)}
+.cfg-body.open{display:block}
+.tier-grid-hd{display:grid;grid-template-columns:100px 1fr 1fr 28px;gap:5px;margin-bottom:3px}
+.tier-row-wrap{display:grid;grid-template-columns:100px 1fr 1fr 28px;gap:5px;margin-bottom:5px;align-items:center}
+.tier-head{font-size:.61rem;font-weight:700;color:var(--mu);text-transform:uppercase;padding:3px 5px;text-align:center}
+.tier-head:first-child{text-align:left}
+.tier-input{padding:5px 7px;font-size:.78rem;text-align:right;border:1.5px solid var(--bdr);border-radius:7px;background:#fff;width:100%}
+.tier-input:focus{border-color:var(--rose);outline:none}
+.tier-del{background:none;border:none;cursor:pointer;color:var(--rd);font-size:.9rem;opacity:.4;display:flex;align-items:center;justify-content:center;width:26px;padding:0}
+.tier-del:hover{opacity:1}
+.tier-del:disabled{opacity:.15;cursor:not-allowed}
+.gal-list{display:flex;flex-direction:column;gap:5px;margin-bottom:5px}
+.gal-row{display:grid;grid-template-columns:65px 1fr 34px 26px;gap:4px;align-items:center}
+.gal-thumb{width:60px;height:42px;border-radius:5px;object-fit:cover;border:1.5px solid var(--bdr);background:#f5eef2;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.gal-thumb img{width:100%;height:100%;object-fit:cover}
+.gal-thumb:hover{border-color:var(--rose)}
+.gal-del{background:none;border:none;cursor:pointer;color:var(--rd);font-size:.95rem;opacity:.5;padding:0;display:flex;align-items:center;justify-content:center;height:100%}
+.gal-del:hover{opacity:1}
+.gal-add{background:transparent;border:1.5px dashed var(--bdr);color:var(--mu);padding:5px 11px;border-radius:8px;font-size:.7rem;font-weight:600;cursor:pointer;width:100%;transition:all .2s}
+.gal-add:hover{border-color:var(--rose);color:var(--rd);background:var(--rl)}
+.plan-prev{background:#fff;border:1.5px solid var(--bdr);border-radius:9px;padding:10px;font-size:.71rem;line-height:1.85;white-space:pre-wrap;font-family:monospace;color:#333;margin-top:7px}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;margin-bottom:6px}
+.tag{display:inline-flex;align-items:center;gap:2px;background:var(--rl);border:1px solid #f0b8c8;color:var(--rd);padding:3px 8px;border-radius:7px;font-size:.68rem;font-weight:600}
+.tag button{background:none;border:none;cursor:pointer;color:var(--rd);font-size:.78rem;line-height:1;padding:0 0 0 2px}
+.tag-add{display:flex;gap:5px;margin-top:4px}
+.tag-add input{flex:1;padding:5px 9px;font-size:.75rem}
+.tag-add button{padding:5px 11px;background:var(--rose);color:#fff;border:none;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.flete-row-wrap{display:grid;grid-template-columns:130px 1fr 28px;gap:5px;align-items:end;margin-bottom:6px}
+.rules-list{display:flex;flex-direction:column;gap:4px}
+.rule-row{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:8px;background:#fff;border:1.5px solid var(--bdr);transition:all .2s}
+.rule-row.off{background:#fff7ed;border-color:#fbbf24}
+.rule-row input[type=checkbox]{margin-top:3px;accent-color:var(--rose);width:15px;height:15px;flex-shrink:0;cursor:pointer}
+.rule-label{font-size:.73rem;font-weight:700;color:var(--ink);line-height:1.3}
+.rule-desc{font-size:.63rem;color:var(--mu);margin-top:1px}
+.rule-warn{font-size:.62rem;color:#b45309;font-weight:700;margin-top:3px}
+.al{border-radius:9px;padding:9px 12px;font-size:.72rem;line-height:1.5;margin-bottom:9px}
+.ainfo{background:#eef4ff;border:1px solid #b8d0f8;color:#2a4f99}
+.awarn{background:#fff7e6;border:1px solid #f5d88a;color:#7a4d00}
+.adanger{background:#fff0f2;border:1px solid #ffbcc8;color:#8b1c30}
+.agreen{background:#f0fdf4;border:1px solid #86efac;color:#166534}
+.apurple{background:#fdf4ff;border:1px solid #d8b4fe;color:#6b21a8}
+.aorange{background:#fff7ed;border:1px solid #fed7aa;color:#c2410c}
+.btn{padding:9px 20px;border-radius:10px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.bp{background:var(--rose);color:#fff}.bp:hover{background:var(--rd);transform:translateY(-1px)}
+.bg{background:transparent;color:var(--mu);border:1.5px solid var(--bdr)}.bg:hover{background:#f7f0f3}
+.bgreen{background:var(--ok);color:#fff;border:none;padding:7px 13px;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer}
+.bgreen:hover{filter:brightness(1.07)}
+.bblue{background:var(--blue);color:#fff;border:none;padding:7px 13px;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer}
+.bblue:hover{filter:brightness(1.07)}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bdr);padding:9px 16px;display:flex;gap:7px;justify-content:flex-end;z-index:50;box-shadow:0 -2px 12px rgba(0,0,0,.07)}
+.out-wrap{background:#1a1118;border-radius:16px;padding:16px;margin-bottom:10px}
+.out-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:7px}
+.out-title{font-family:'Syne',sans-serif;color:#e8a0b8;font-size:.95rem;font-weight:700}
+.cpill{font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:10px;background:rgba(255,255,255,.1);color:#ccc}
+.cpill.ok{color:#5dde9a;background:rgba(45,200,120,.15)}
+.cpill.warn{color:#f5c842;background:rgba(245,200,60,.15)}
+.cpill.over{color:#ff6070;background:rgba(255,80,100,.2)}
+#pout{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:12px;color:#d4bfc8;font-size:.7rem;line-height:1.8;white-space:pre-wrap;word-break:break-word;max-height:500px;overflow-y:auto;font-family:monospace;user-select:all}
+.out-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.bcp{background:var(--rose);border:none;color:#fff;padding:9px 18px;border-radius:9px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
+.bcp:hover{background:var(--rd)}.bcp.ok{background:var(--ok)}
+.bsec{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:9px 16px;border-radius:9px;font-size:.78rem;font-weight:600;cursor:pointer}
+.bsec:hover{background:rgba(255,255,255,.07)}
+.checklist{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:11px;margin-top:9px}
+.cl-title{font-size:.66rem;font-weight:700;color:#e8a0b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.cl-item{display:flex;align-items:center;gap:6px;font-size:.71rem;color:rgba(255,255,255,.6);margin-bottom:4px}
+.cl-item.pass{color:#5dde9a}.cl-item.fail{color:#ff8090}
+.modal-bg{position:fixed;inset:0;background:rgba(26,17,24,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;padding:20px;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--rd);margin-bottom:14px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a1118;color:#fff;padding:9px 20px;border-radius:20px;font-size:.78rem;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:360px;text-align:center}
+.margen-box{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:.72rem;line-height:1.7;color:#14532d}
+.social-row{display:grid;grid-template-columns:110px 1fr 26px;gap:5px;align-items:center;margin-bottom:5px}
+.wa-group-row{display:grid;grid-template-columns:140px 1fr 28px;gap:5px;align-items:center;margin-bottom:6px}
+.brand-config-card{border:2px solid var(--bdr);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.brand-config-head{padding:11px 15px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;transition:background .2s}
+.brand-config-head:hover{background:var(--rl)}
+.brand-config-body{display:none;padding:15px;border-top:1px solid var(--bdr);background:var(--cream)}
+.brand-config-body.open{display:block}
+.lightbox-bg{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+.lightbox-bg.on{display:flex}
+.lightbox-img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.tip-box{background:linear-gradient(135deg,#fff7f0,#fef3e2);border:2px solid #fed7aa;border-radius:12px;padding:14px;margin-bottom:10px}
+.tip-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:#c2410c;margin-bottom:8px}
+.tip-step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+.tip-num{width:22px;height:22px;border-radius:50%;background:#c2410c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.tip-text{font-size:.72rem;color:#7c2d12;line-height:1.5}
+.tutorial-box{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #7dd3fc;border-radius:12px;padding:14px;margin-bottom:10px}
+.tutorial-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:#0369a1;margin-bottom:8px}
+.tutorial-step{display:flex;gap:8px;margin-bottom:5px;align-items:flex-start}
+.tutorial-num{width:20px;height:20px;border-radius:50%;background:#0369a1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.64rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.tutorial-text{font-size:.71rem;color:#0c4a6e;line-height:1.5}
+.fav-star{color:#f5c842;font-size:.9rem}
+@media(max-width:640px){
+  .g2,.g3{grid-template-columns:1fr}
+  .cat-grid{grid-template-columns:1fr 1fr}
+  .gal-row{grid-template-columns:54px 1fr 28px 22px}
+  input,select,textarea{font-size:16px!important}
+  .btn,.bcp,.bsec,.bgreen{min-height:42px}
+  .hlinks{display:none}
+  .hinner{flex-wrap:wrap;gap:5px}
+  .tier-grid-hd,.tier-row-wrap{grid-template-columns:90px 1fr 1fr 26px}
+  .flete-row-wrap{grid-template-columns:1fr 1fr 28px}
+  .g3{grid-template-columns:1fr}
+  .wrap{padding:0 10px 90px}
+  .cfg-body,.brand-config-body{padding:10px}
+  .out-top{flex-direction:column;align-items:flex-start}
+  .out-actions{flex-direction:column}
+  .bcp,.bsec{width:100%;text-align:center}
+  .modal{padding:14px;margin:0}
+  .modal-bg{padding:8px;align-items:flex-end}
+  .modal{border-radius:16px 16px 0 0;max-height:95vh}
+  #pout{font-size:.62rem;line-height:1.7}
+  .checklist{padding:8px}
+  .dropi-cta{flex-direction:column}
+  .nav-bar{flex-wrap:wrap;gap:5px}
+  .nav-bar .btn{flex:1;justify-content:center;font-size:.75rem;padding:10px 12px}
+  .cbar-wrap{flex-direction:column;align-items:flex-start;gap:5px}
+  .cbar-lbl{font-size:.64rem}
+  .brand-pills{gap:4px}
+  .bpill{font-size:.66rem;padding:4px 10px}
+  .tnav{font-size:.66rem;padding:6px 10px}
+  .tab-nav{gap:2px;padding:8px 10px 0}
+  .tip-box,.tutorial-box{padding:10px}
+  .margen-box{padding:8px 10px;font-size:.68rem}
+  .wa-group-row{grid-template-columns:1fr 28px}
+  .plan-prev{font-size:.65rem}
+  .pc-img-wrap{height:130px}
+  .pc-body{padding:8px 10px 10px}
+  .hcnt{font-size:.65rem;padding:2px 8px}
+}
+@media(max-width:400px){
+  .cat-grid{grid-template-columns:1fr}
+  h1,h2{font-size:1rem}
+  .logo{font-size:.85rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hinner">
+    <div class="logo">Indisutex <span style="opacity:.5">·</span> Generador
+      <small id="h-user-email">Prompts para ChateaPro</small>
+    </div>
+    <div class="hlinks" id="h-links-dynamic">
+      <a href="onboarding.html" class="hl hl-attn" target="_blank" title="Guía paso a paso para vender catálogo Dropi">📖 Guía de inicio</a>
+    </div>
+    <div class="hcnt" id="hcnt">0 / 11.000</div>
+  </div>
+</header>
+
+<div class="tab-nav" id="tab-nav">
+  <button class="tnav on" onclick="showTab('tab-config')" id="tn-config">⚙️ Mi Tienda</button>
+  <button class="tnav" onclick="showTab('tab-catalog')" id="tn-catalog">📦 Catálogo</button>
+  <button class="tnav" onclick="showTab('tab-select')" id="tn-select">✅ Selección</button>
+  <button class="tnav" onclick="showTab('tab-prompt')" id="tn-prompt">🎯 Prompt</button>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════════ TAB 1: MI TIENDA ══════════════ -->
+<div class="sec pad on" id="tab-config">
+
+  <!-- IMPORTAR / EXPORTAR — acceso rápido al inicio del formulario -->
+  <div class="card" style="border:1.5px solid #7dd3fc;background:linear-gradient(135deg,#f0f9ff,#e8f4fd)">
+    <div class="ct" style="color:#0369a1">💾 Guardar y restaurar tu configuración</div>
+    <div class="cd" style="color:#0c4a6e">
+      Exporta toda tu configuración como archivo <code>.json</code> para respaldarte o reutilizarla en otro catálogo (otra marca, otra vendedora). Importa un archivo previamente guardado para cargar todos tus datos de una vez: tienda, pagos, fletes, redes sociales, marcas y productos favoritos.
+    </div>
+    <div class="al ainfo" style="font-size:.68rem;margin-bottom:10px">
+      💡 <strong>¿Para qué sirve?</strong> Si trabajas con varias marcas (Saramantha, Lovely, Sublimados Majestic…), puedes tener un <code>.json</code> por marca. Exportas desde una, importas en la otra y solo ajustas lo que cambia — sin volver a llenar todo desde cero.
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn bp" onclick="exportConfig()" style="font-size:.76rem;padding:8px 16px">📤 Exportar configuración</button>
+      <label class="btn bg" style="font-size:.76rem;padding:8px 16px;cursor:pointer">
+        📥 Importar configuración
+        <input type="file" accept=".json" onchange="importConfig(this)" style="display:none">
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">👤 Identidad Global del Asistente IA</div>
+    <div class="cd">Valores globales de respaldo. <strong>Cada marca puede tener su propia IA</strong> — configúrala en la sección "Marcas" más abajo. Si la marca del producto tiene IA configurada, esa tiene prioridad.</div>
+    <div class="g3">
+      <div class="fg"><label>Nombre IA <span class="req">*</span></label>
+        <input id="s-nombre" placeholder="Laura" oninput="autoSave()">
+        <div class="hint">Ej: Laura, Valentina, Sara</div>
+      </div>
+      <div class="fg"><label>Empresa <span class="req">*</span></label>
+        <input id="s-empresa" placeholder="Indisutex SAS" oninput="autoSave()">
+      </div>
+      <div class="fg"><label>Años de experiencia</label>
+        <input id="s-anos" placeholder="8" oninput="autoSave()">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>Tiendas activas / mes</label>
+        <input id="s-tiendas" placeholder="+5 tiendas" oninput="autoSave()">
+      </div>
+      <div class="fg"><label>Dirección local</label>
+        <input id="s-dir" placeholder="Cl.14 #7-95 Centro Cali..." oninput="autoSave()">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>Link Google Maps</label>
+        <input id="s-maps" placeholder="https://maps.app.goo.gl/..." oninput="autoSave()">
+      </div>
+      <div class="fg"><label>Link Catálogo WhatsApp</label>
+        <input id="s-catalogo" placeholder="https://wa.me/c/..." oninput="autoSave()">
+      </div>
+      <div class="fg"><label>Link Tienda / E-commerce</label>
+        <input id="s-ecomm" placeholder="https://www.saramanthapijamas.com/" oninput="autoSave()">
+        <div class="hint">Opcional. Si no tienes, el bot usará el catálogo WA como referencia.</div>
+      </div>
+    </div>
+    <div class="fg"><label>Link Atención / soporte</label>
+      <input id="s-atencion" placeholder="https://wa.me/57300..." oninput="autoSave()">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">💳 Métodos de Pago</div>
+    <div class="cd">Bancolombia, Nequi, etc. El cliente siempre paga <strong>al recibir (contra entrega)</strong>.</div>
+    <div id="pay-list"></div>
+    <button class="bgreen" onclick="addPayRow()">+ Agregar método</button>
+  </div>
+
+  <div class="card">
+    <div class="ct">🚚 Tabla de Fletes IRP</div>
+    <div class="cd">Fletes según cantidad de prendas. Ej: 1u=$22.000</div>
+    <div id="flete-rows"></div>
+    <div class="g2" style="margin-top:4px">
+      <div class="fg"><label>Tiempo entrega ciudades ppales</label>
+        <input id="s-tppal" placeholder="1-4 dias habiles" oninput="autoSave()">
+      </div>
+      <div class="fg"><label>Tiempo entrega municipios</label>
+        <input id="s-tmuni" placeholder="5-8 dias habiles" oninput="autoSave()">
+      </div>
+    </div>
+    <button class="bgreen" onclick="addFleteRow()" style="margin-top:4px">+ Agregar tramo</button>
+  </div>
+
+  <div class="card">
+    <div class="ct">📱 Redes Sociales</div>
+    <div class="cd">Se muestran en el header. Opcional.</div>
+    <div id="social-list"></div>
+    <button class="bgreen" onclick="addSocialRow()">+ Red social</button>
+  </div>
+
+  <!-- MARCAS Y GRUPOS WA -->
+  <div class="card" style="border:1.5px solid #6ee7b7">
+    <div class="ct" style="color:#065f46">🏷️ Marcas &amp; Datos Completos por Marca</div>
+    <div class="cd" style="color:#047857">Cada marca tiene su propia IA: nombre del bot, empresa, grupo WhatsApp mayoristas, dirección y redes sociales. El bot usa la identidad de la marca del producto seleccionado al generar el prompt. La identidad global (arriba) es solo respaldo.</div>
+    <div class="al agreen" style="margin-bottom:10px">
+      💡 <strong>Marcas disponibles:</strong> Saramantha, Sublimados Majestic, Lovely, Sueño de Reina. Puedes agregar más.
+    </div>
+    <div id="brands-config-list"></div>
+    <button class="bgreen" onclick="addBrandGroup()">+ Agregar marca</button>
+  </div>
+
+  <div class="card" style="border:1.5px solid #fbbf24">
+    <div class="ct" style="color:#92400e">⚖️ Reglas Absolutas del Comportamiento</div>
+    <div class="cd" style="color:#78350f">Estas reglas controlan cómo se comporta el bot. Desactivar una puede afectar significativamente la IA.</div>
+    <div class="g2" style="margin-bottom:10px;gap:6px">
+      <button class="btn bg" style="font-size:.68rem;padding:6px 12px" onclick="addCustomRule('N')">+ NUNCA personalizado</button>
+      <button class="btn bg" style="font-size:.68rem;padding:6px 12px" onclick="addCustomRule('S')">+ SIEMPRE personalizado</button>
+    </div>
+    <div id="abs-rules-list" class="rules-list"></div>
+    <div style="margin-top:10px">
+      <button class="btn bg" style="font-size:.68rem;padding:6px 12px" onclick="resetRules()">↺ Restaurar reglas por defecto</button>
+    </div>
+  </div>
+
+  <!-- TIPS CHATEAPRO -->
+  <div class="tip-box">
+    <div class="tip-title">💬 Cómo configurar correctamente en ChateaPro</div>
+    <div class="tip-step"><div class="tip-num">1</div><div class="tip-text"><strong>Mensaje de bienvenida:</strong> Ej — "¡Hola! Soy Laura 🌸 Veo que te llamó la atención nuestra [PRODUCTO] en [TELA] 😊". Máx. 1000 chars. Sin precio aún.</div></div>
+    <div class="tip-step"><div class="tip-num">2</div>
+      <div class="tip-text">
+        <strong>Multimedia inicial:</strong> Sube entre 4 y 8 imágenes del producto en ChateaPro (fotos reales, planas y combinadas). Las URLs quedan en <code>media.chateapro.app/temp/...</code> — cópialas aquí en el catálogo.
+        <div class="al aorange" style="margin-top:7px;font-size:.69rem">
+          ⚠️ <strong>MUY IMPORTANTE — Imágenes de bienvenida vs galería de producto:</strong><br>
+          Las imágenes que subas aquí para la <strong>bienvenida multimedia</strong> deben ser <strong>diferentes a las que configuras en la galería de cada producto</strong> en el catálogo. Se recomienda que sean de <strong>diferentes colores y estilos</strong> para maximizar el impacto visual desde el primer mensaje.<br><br>
+          💡 <strong>¿Por qué esto importa tanto para el mayorista?</strong><br>
+          Cuando un mayorista aterriza en la conversación, lo que más le interesa es saber cuánto se puede ganar. Pero hay un comportamiento de compra clave: <em>el mayorista no quiere arriesgar su capital en un solo producto</em>. Al ver diferentes referencias (Batola, Short, Pantalón), siente que puede diversificar y reduce su percepción de riesgo de quedarse "stoqueado" en un solo diseño.<br><br>
+          Por eso este prompt es tan poderoso: está diseñado exactamente para ese comportamiento de compra. Permite que el bot muestre múltiples referencias con sus márgenes, y el mayorista siente que puede construir un portafolio en lugar de apostar todo a una sola prenda. Más variedad visible = más confianza = más conversión.
+        </div>
+      </div>
+    </div>
+    <div class="tip-step"><div class="tip-num">3</div><div class="tip-text"><strong>Pregunta de entrada:</strong> "¿La buscas para surtir tu tienda, para ti o como regalo? 😊" — Esta pregunta perfila al cliente antes de que el bot responda con precio.</div></div>
+    <div class="tip-step"><div class="tip-num">4</div><div class="tip-text"><strong>Prompt del producto:</strong> Ve a tu asistente → "Prompt del producto" → pega el texto generado aquí → Guardar asistente.</div></div>
+  </div>
+
+  <!-- IMPORTAR / EXPORTAR CONFIGURACIÓN — Tutorial detallado -->
+  <div class="tutorial-box">
+    <div class="tutorial-title">📖 Tutorial: Cómo usar Exportar e Importar JSON</div>
+    <div class="al ainfo" style="font-size:.69rem;margin-bottom:10px">
+      El archivo <code>.json</code> guarda <strong>todo</strong> tu perfil: identidad del asistente, métodos de pago, tabla de fletes, redes sociales, configuración de marcas, reglas absolutas y productos favoritos. Es tu respaldo completo y tu forma de reutilizar la configuración en cualquier catálogo.
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:.72rem;font-weight:700;color:#0369a1;margin-bottom:5px">📤 Cómo exportar (guardar respaldo en tu PC):</div>
+      <div class="tutorial-step"><div class="tutorial-num">1</div><div class="tutorial-text">Llena el formulario con todos tus datos y haz clic en <strong>"Exportar configuración"</strong> (arriba o abajo en esta pestaña).</div></div>
+      <div class="tutorial-step"><div class="tutorial-num">2</div><div class="tutorial-text">Se descarga un archivo <code>.json</code> con nombre automático, ej: <code>config_indisutex_2026-04-15.json</code>. Renómbralo si trabajas con varias marcas: <code>config_saramantha_laura.json</code>.</div></div>
+      <div class="tutorial-step"><div class="tutorial-num">3</div><div class="tutorial-text">Guárdalo en una carpeta de tu PC. Puedes tener un archivo por marca o por vendedora — no se sobreescriben entre sí.</div></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:.72rem;font-weight:700;color:#0369a1;margin-bottom:5px">📥 Cómo importar (cargar configuración guardada):</div>
+      <div class="tutorial-step"><div class="tutorial-num">1</div><div class="tutorial-text">Abre el generador del catálogo donde quieres cargar la configuración (ej: Lovely, Sublimados Majestic).</div></div>
+      <div class="tutorial-step"><div class="tutorial-num">2</div><div class="tutorial-text">Haz clic en <strong>"Importar configuración"</strong> y selecciona el archivo <code>.json</code> guardado. La herramienta pedirá confirmación antes de reemplazar.</div></div>
+      <div class="tutorial-step"><div class="tutorial-num">3</div><div class="tutorial-text">Se cargarán automáticamente todos tus datos: tienda, pagos, fletes, redes, marcas, reglas y productos favoritos.</div></div>
+      <div class="tutorial-step"><div class="tutorial-num">4</div><div class="tutorial-text">Ajusta solo lo que sea diferente para esa marca (ej: grupo WhatsApp mayoristas, dirección, IA de marca) y genera tu nuevo prompt.</div></div>
+    </div>
+    <div class="al" style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:8px 10px;font-size:.68rem;color:#713f12;margin-bottom:10px">
+      ⚠️ <strong>Importante:</strong> Importar reemplaza toda la configuración actual. Si tienes cambios sin guardar, expórtalos primero como respaldo antes de importar un archivo nuevo.
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn bp" onclick="exportConfig()" style="font-size:.76rem;padding:8px 16px">📤 Exportar configuración</button>
+      <label class="btn bg" style="font-size:.76rem;padding:8px 16px;cursor:pointer">
+        📥 Importar configuración
+        <input type="file" accept=".json" onchange="importConfig(this)" style="display:none">
+      </label>
+    </div>
+  </div>
+
+  <!-- DROPI QUICK ACCESS PANEL -->
+  <div class="card" style="border:1.5px solid #93c5fd;background:linear-gradient(135deg,#eff6ff,#f0f9ff)">
+    <div class="ct" style="color:#1d4ed8">🛍 Acceso rápido — Dropi &amp; Registro</div>
+    <div class="cd" style="color:#2563eb">Accede al catálogo de Indisutex en Dropi o invita a nuevos dropshippers con tu enlace de afiliado.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+      <a href="https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true" target="_blank" class="bblue" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px">🛍 Ver catálogo Indisutex en Dropi →</a>
+      <a href="https://app.dropi.co/auth/register?afl=807272" target="_blank" class="bgreen" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px">✅ Registrar nuevo dropshipper →</a>
+    </div>
+    <div class="al ainfo" style="margin-top:10px;font-size:.68rem">
+      💡 <strong>Tip:</strong> Comparte el enlace de registro con tus clientes mayoristas para que se registren directamente en Dropi como dropshippers de Indisutex.
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:4px">
+    <button class="btn bp" onclick="saveAll()">💾 Guardar configuración</button>
+    <button class="btn bg" onclick="showTab('tab-catalog')">Ir al Catálogo →</button>
+  </div>
+
+  <div class="nav-bar">
+    <button class="btn bg" onclick="logoutUser()">← Salir</button>
+    <button class="btn bp" onclick="showTab('tab-catalog')">Catálogo →</button>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 2: CATÁLOGO ══════════════ -->
+<div class="sec pad" id="tab-catalog">
+  <div class="card">
+    <div class="ct">📦 Catálogo de Productos</div>
+    <div class="cd">Productos disponibles para incluir en tus prompts. Haz clic en ✏️ para editar. Haz clic en la imagen para verla a tamaño completo. Marca con ⭐ como favorito para acceso rápido.</div>
+
+    <!-- DROPI CTA -->
+    <div class="dropi-cta">
+      <div class="dropi-cta-icon">🛍️</div>
+      <div class="dropi-cta-body">
+        <div class="dropi-cta-title">¡Vende en Dropi — el marketplace #1 para dropshippers!</div>
+        <div class="dropi-cta-desc">Accede al catálogo completo de Indisutex con precios de fábrica, envíos gestionados y seguimiento en tiempo real. <strong>⚠️ Importante: antes de abrir el catálogo Dropi, asegúrate de estar logueado en tu cuenta Dropi en otra pestaña</strong> — así podrás acceder directo a nuestros productos sin redirigirte al login.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <a href="https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true" target="_blank" class="dropi-cta-btn">🛍 Ver en Dropi →</a>
+        <a href="https://app.dropi.co/auth/register?afl=807272" target="_blank" class="dropi-cta-btn" style="background:#16a34a;font-size:.68rem;padding:6px 14px;text-align:center;text-decoration:none;display:block;border-radius:8px;color:#fff;font-weight:700">✅ Registrarse gratis →</a>
+      </div>
+    </div>
+
+    <!-- PRECIOS CATÁLOGO DROPI INFO -->
+    <div class="al ainfo" style="margin-top:10px;font-size:.69rem">
+      💰 <strong>¿Cuánto puedes ganar?</strong> Los precios que ves en cada producto son los precios de fábrica Indisutex configurados en el prompt. El margen que ves es lo que te queda al vender al precio de referencia del mercado. Estos datos aparecerán en el prompt generado para que tu bot lo comunique a cada cliente mayorista de forma automática.
+    </div>
+
+    <!-- BRAND SOCIAL LINKS PANEL -->
+    <div id="brand-social-panel" style="margin-top:10px"></div>
+
+    <div class="brand-pills" id="cat-brand-pills" style="margin-top:12px"></div>
+
+    <!-- FAVORITOS -->
+    <div id="fav-section" style="display:none;margin-bottom:12px">
+      <div style="font-size:.72rem;font-weight:700;color:#b45309;margin-bottom:7px">⭐ Mis favoritos</div>
+      <div class="cat-grid" id="fav-grid"></div>
+    </div>
+
+    <div class="cat-grid" id="cat-grid"></div>
+    <button class="bgreen" onclick="openNewProductModal()">+ Nuevo producto personalizado</button>
+  </div>
+  <div class="nav-bar">
+    <button class="btn bg" onclick="showTab('tab-config')">← Mi Tienda</button>
+    <button class="btn bp" onclick="showTab('tab-select')">Selección →</button>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 3: SELECCIÓN ══════════════ -->
+<div class="sec pad" id="tab-select">
+  <div class="cbar-wrap">
+    <div class="cbar-bg"><div class="cbar-fg" id="bar-sel" style="width:0%"></div></div>
+    <div class="cbar-lbl" id="bar-sel-lbl">Estimado: 0 / 11.000 chars</div>
+  </div>
+  <div class="al ainfo" style="margin-bottom:10px">
+    <strong>📌 Selecciona hasta 3 productos.</strong> El prompt los manejará todos, identificando qué busca cada cliente. Haz clic en una tarjeta para marcarla ✓.
+  </div>
+  <div class="al awarn" style="margin-bottom:10px;font-size:.71rem">
+    📏 <strong>Límite ChateaPro — 12.000 chars máximo.</strong> El generador produce hasta <strong>11.000 chars</strong>, dejando 1.000 de margen para que puedas agregar comportamiento extra, más fotos u otras instrucciones directamente en ChateaPro antes de guardar. Si el checklist muestra ✅ "Bajo 11.000 chars" → <strong>puedes pegarlo sin problemas</strong>.
+  </div>
+  <div class="al apurple" style="margin-bottom:10px">
+    💡 <strong>Tip pro — Comportamiento de compra del mayorista:</strong> Elige referencias <em>diferentes</em> — Batola, Pantalón Tiras y Short. El mayorista no quiere arriesgar su capital en un solo diseño y busca variedad para no quedarse stoqueado. Al ver varias referencias con sus márgenes, siente que puede construir un portafolio y disminuye su percepción de riesgo. El bot está configurado para mostrarle el margen de ganancia de cada producto a cada perfil de cliente, potenciando exactamente ese comportamiento de compra.
+  </div>
+  <div class="card" style="border:2px solid var(--rose)">
+    <div class="ct" style="font-size:1rem">✅ Elige los productos del flujo</div>
+
+    <!-- ══ AVISO ORDEN DE SELECCIÓN ══ -->
+    <div style="background:linear-gradient(135deg,#fff7ed,#fef3c7);border:2.5px solid #f59e0b;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:7px">
+        ⚠️ EL ORDEN EN QUE SELECCIONAS IMPORTA — LEE ANTES DE ELEGIR
+      </div>
+      <div style="display:grid;grid-template-columns:28px 1fr;gap:6px 10px;font-size:.73rem;line-height:1.55;color:#78350f">
+        <div style="background:#f59e0b;color:#fff;font-weight:800;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+        <div><strong>PRODUCTO PRINCIPAL — el que configuras en ChateaPro.</strong> Es el producto que la IA presenta de entrada a todo cliente que llega. Debe coincidir exactamente con la referencia que tienes activa en tu asistente de ChateaPro. <em>Elige primero el que más vendes o el que está configurado en tu flujo activo.</em></div>
+        <div style="background:#e8587a;color:#fff;font-weight:800;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+        <div><strong>SEGUNDA OPCIÓN — la que la IA muestra cuando el cliente pide más diseños.</strong> Cuando el interesado dice "¿tienes más?", "muéstrame otros" o pide variedad, la IA despliega automáticamente esta galería. <em>Elige el producto complementario más preguntado por tus clientes.</em></div>
+        <div style="background:#a02060;color:#fff;font-weight:800;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+        <div><strong>TERCERA OPCIÓN — la última referencia que la IA siempre reserva al final.</strong> Es el cierre del portafolio: si el cliente sigue explorando después de ver la segunda galería, la IA presenta esta referencia como opción final antes de redirigir al catálogo completo. <em>Elige el producto de mayor margen o el que mejor complementa el portafolio.</em></div>
+      </div>
+      <div style="margin-top:10px;padding:8px 10px;background:rgba(245,158,11,.15);border-radius:8px;font-size:.69rem;color:#92400e;font-weight:600">
+        💡 Ejemplo correcto: si tu asistente de ChateaPro está configurado para PANTALON TIRAS → selecciona primero PANTALON, luego BATOLA (la más pedida como segunda), y por último SHORT (cierre del portafolio). Si inviertes el orden, la IA presentará el producto equivocado de entrada y el flujo no coincidirá con tu configuración de ChateaPro.
+      </div>
+    </div>
+    <!-- ══ FIN AVISO ══ -->
+
+    <div class="brand-pills" id="sel-brand-pills"></div>
+    <div class="cat-grid" id="sel-grid"></div>
+  </div>
+  <div id="sel-configs"></div>
+  <div class="nav-bar">
+    <button class="btn bg" onclick="showTab('tab-catalog')">← Catálogo</button>
+    <button class="btn bp" onclick="goGenerate()">Generar Prompt →</button>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 4: PROMPT ══════════════ -->
+<div class="sec pad" id="tab-prompt">
+  <div class="out-wrap">
+    <div class="out-top">
+      <div class="out-title">🎯 Prompt generado</div>
+      <div class="cpill ok" id="cpill">0 chars</div>
+    </div>
+    <pre id="pout">Configura tu tienda y selecciona productos para generar el prompt.</pre>
+    <div class="out-actions">
+      <button class="bcp" id="btn-copy" onclick="copyPrompt()">📋 Copiar prompt</button>
+      <button class="bsec" onclick="downloadPrompt()" style="background:#fff;border:1.5px solid var(--rose);color:var(--rd);font-weight:700">⬇️ Descargar .txt</button>
+      <button class="bsec" onclick="showTab('tab-select')">← Editar selección</button>
+    </div>
+    <div class="checklist" id="checklist">
+      <div class="cl-title">Validación antes de activar en ChateaPro</div>
+      <div id="cl-items"></div>
+    </div>
+  </div>
+  <div class="al ainfo" style="margin-top:10px">
+    <strong>📋 Cómo pegarlo en ChateaPro:</strong> Ve a tu asistente → "Prompt del producto" → pega el texto completo → Guardar asistente.
+  </div>
+  <div class="al awarn" style="margin-top:8px;font-size:.71rem">
+    📏 <strong>Nota sobre el límite de 12.000 chars de ChateaPro:</strong> El generador tiene un tope de <strong>11.000 chars</strong>. Si el checklist de abajo muestra ✅ en "Bajo 11.000 caracteres" significa que el prompt <strong>sí puede copiarse y pegarse</strong> en ChateaPro. Los 1.000 chars restantes (hasta 12.000) quedan libres para que añadas instrucciones extra, más fotos o afines el comportamiento de la IA directamente en ChateaPro. Los ❌ en el checklist <strong>no bloquean el prompt</strong> — solo señalan campos opcionales que podrías completar para mejorar resultados.
+  </div>
+  <!-- DROPI AFFILIATE CALLOUT IN PROMPT TAB -->
+  <div class="al ainfo" style="margin-top:10px;border:1.5px solid #93c5fd;background:linear-gradient(135deg,#eff6ff,#f0f9ff)">
+    <div style="font-size:.75rem;font-weight:700;color:#1d4ed8;margin-bottom:5px">🛍 Siguiente paso — Configura Dropi</div>
+    <div style="font-size:.69rem;color:#2563eb;line-height:1.6;margin-bottom:8px">Con tu prompt listo, el siguiente paso es vincular tu asistente con el catálogo de Indisutex en Dropi para gestionar pedidos y despachos automáticamente.</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <a href="https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true" target="_blank" class="bblue" style="text-decoration:none;font-size:.7rem">🛍 Ver catálogo Indisutex →</a>
+      <a href="https://app.dropi.co/auth/register?afl=807272" target="_blank" class="bgreen" style="text-decoration:none;font-size:.7rem">✅ Registrarse en Dropi gratis →</a>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <button class="btn bg" onclick="showTab('tab-select')">← Editar</button>
+    <button class="btn" onclick="downloadPrompt()" style="background:#fff;border:2px solid var(--rose);color:var(--rd);font-weight:700">⬇️ .txt</button>
+    <button class="btn bp" id="btn-copy-nav" onclick="copyPrompt()">📋 Copiar y pegar en ChateaPro</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ══════ MODAL: PRODUCTO ══════ -->
+<div class="modal-bg" id="prod-modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Nuevo producto</div>
+    <div class="g2">
+      <div class="fg full"><label>Nombre del producto <span class="req">*</span></label>
+        <input id="m-name" placeholder="PIJAMA BATOLA TALLA UNICA">
+      </div>
+      <div class="fg"><label>Marca / línea</label>
+        <select id="m-brand"></select>
+      </div>
+      <div class="fg"><label>Tela / Material</label>
+        <input id="m-tela" placeholder="Suave sublimada">
+      </div>
+      <div class="fg"><label>Ref. mercado / precio ancla <span class="req">*</span></label>
+        <input type="number" id="m-refmcdo" placeholder="39000" oninput="onRefChange()">
+        <div class="hint">Precio al que tu cliente vende. Ej: 39000</div>
+      </div>
+      <div class="fg"><label>Precio 1 unidad (detal)</label>
+        <input id="m-p1" placeholder="$26.500" oninput="onP1Change(this.value)">
+        <div class="hint">Se autocompleta al poner ref. mercado</div>
+      </div>
+      <div class="fg"><label>Alt. cierre MAYOR/EMP</label>
+        <input id="m-altmayor" placeholder="¿Arrancamos con 12 o prefieres 6?">
+      </div>
+      <div class="fg"><label>Alt. cierre DETAL/REGALO</label>
+        <input id="m-altdetal" placeholder="¿Stitch morada o Aguacate negra?">
+      </div>
+      <div class="fg"><label>Top diseño (el más pedido)</label>
+        <input id="m-top" placeholder="Stitch morada">
+      </div>
+      <div class="fg"><label>Argumento de venta</label>
+        <input id="m-argumento" placeholder="Alta rotacion | Talla unica=0 stock varado">
+      </div>
+      <div class="fg"><label>ID Dropi (opcional)</label>
+        <input id="m-dropi-id" placeholder="12345">
+      </div>
+      <div class="fg"><label>URL Producto Dropi (opcional)</label>
+        <input id="m-dropi-url" placeholder="https://app.dropi.co/products/...">
+      </div>
+      <div class="fg"><label>URL Catálogo WA (opcional)</label>
+        <input id="m-catwa" placeholder="https://wa.me/c/...">
+      </div>
+      <div class="fg"><label>URL Imagen CDN Dropi (opcional)</label>
+        <input id="m-dropi-img" placeholder="https://cdn.dropi.co/..." oninput="previewDropiImg(this.value)">
+        <div id="m-dropi-img-preview" style="margin-top:6px;display:none">
+          <img id="m-dropi-img-thumb" src="" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--bdr);cursor:zoom-in" onclick="openLightbox(this.src)">
+        </div>
+      </div>
+      <div class="fg"><label>URL Recursos / Creativos para pauta (opcional)</label>
+        <input id="m-recursos-url" placeholder="https://drive.google.com/...">
+      </div>
+    </div>
+    <div class="div"></div>
+    <label>Tramos de precio (min. 3)</label>
+    <div class="margen-box" style="font-size:.68rem;padding:8px 12px;margin-bottom:8px">
+      ⚡ <strong>Cálculo automático:</strong> Ingresa la <strong>cantidad</strong> (ej: 12) y el <strong>precio/u de fábrica</strong> (ej: 16500) — el sistema calcula solo: Pagas total, Vendes total y Te sobran. Solo necesitas la Ref. mercado arriba. Todo lo demás es automático.
+    </div>
+    <div id="m-tiers"></div>
+    <div id="m-margen-summary" style="display:none;margin-top:4px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:9px;padding:8px 12px;font-size:.69rem;color:#14532d;line-height:1.8"></div>
+    <div class="div"></div>
+    <label>Diseños disponibles</label>
+    <div class="tag-wrap" id="m-tags"></div>
+    <div class="tag-add">
+      <input id="m-newtag" placeholder="Nuevo diseño..." onkeydown="if(event.key==='Enter')mAddTag()">
+      <button onclick="mAddTag()">+</button>
+    </div>
+    <div class="div"></div>
+    <label>Galería — mínimo 3 fotos de <strong>diferentes colores</strong> (en orden de envío)</label>
+    <div class="al aorange" style="font-size:.68rem;margin-bottom:8px">
+      ⚠️ <strong>Importante:</strong> Sube al menos 3 fotos de <strong>colores distintos</strong>. Sube la imagen en ChateaPro → copia el link <code>media.chateapro.app/temp/...</code> → pégalo aquí. Las imágenes de la galería del producto deben ser <strong>diferentes</strong> a las que configuras como multimedia inicial en ChateaPro.
+    </div>
+    <div class="gal-list" id="m-galeria"></div>
+    <button class="gal-add" onclick="mAddGal()">+ Foto</button>
+    <div class="modal-actions">
+      <button class="btn bg" onclick="closeModal()">Cancelar</button>
+      <button class="btn bp" onclick="saveProduct()">Guardar producto</button>
+    </div>
+    <input type="hidden" id="modal-edit-id">
+  </div>
+</div>
+
+<!-- ══════ MODAL: REGLA PERSONALIZADA ══════ -->
+<div class="modal-bg" id="rule-modal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-title" id="rule-modal-title">Agregar regla personalizada</div>
+    <div class="fg"><label>Tipo</label>
+      <select id="rm-tipo"><option value="N">NUNCA</option><option value="S">SIEMPRE</option></select>
+    </div>
+    <div class="fg"><label>Texto de la regla</label>
+      <input id="rm-label" placeholder="NUNCA ofrecer descuento sin consultarlo">
+      <div class="hint">Redáctala en imperativo. Máx. 80 chars.</div>
+    </div>
+    <div class="fg"><label>Descripción interna (por qué)</label>
+      <input id="rm-desc" placeholder="Protege el margen...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn bg" onclick="closeRuleModal()">Cancelar</button>
+      <button class="btn bp" onclick="saveCustomRule()">Guardar regla</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ LIGHTBOX ══════ -->
+<div class="lightbox-bg" id="lightbox" onclick="closeLightbox()">
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+const STORE_KEY = 'indisutex_gen_v7';
+
+const DEFAULT_BRANDS = [
+  {id:'saramantha', name:'Saramantha', nombreIA:'Laura', empresaIA:'Indisutex SAS',
+   waUrl:'https://chat.whatsapp.com/H2OCX4VYBJ93SRMcdN9qcQ?mode=gi_t',
+   catWa:'https://wa.me/c/573235753226',
+   maps:'https://maps.app.goo.gl/wsrgxhU6B7xYZ61M7',
+   dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true',
+   dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'Cl.14 #7-95 Centro Cali | CC Shangai LOC 125-126 | LUN-DOM 9am-6pm',
+   telefono:'', instagram:'https://www.instagram.com/saramanthaboutique/', facebook:'', tiktok:'https://www.tiktok.com/@saramantha63'},
+  {id:'majestic',   name:'Sublimados Majestic', nombreIA:'Valentina', empresaIA:'Indisutex SAS',
+   waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''},
+  {id:'lovely',     name:'Lovely',   nombreIA:'Sofia', empresaIA:'Indisutex SAS',
+   waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''},
+  {id:'sueno',      name:'Sueño de Reina', nombreIA:'Sara', empresaIA:'Indisutex SAS',
+   waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''},
+];
+
+const DEFAULT_STATE = {
+  store: {
+    nombre: 'Laura',
+    empresa: 'Indisutex SAS',
+    anos: '8',
+    tiendas: '+5 tiendas',
+    dir: 'Cl.14 #7-95 Centro Cali | CC Shangai LOC 125-126 | LUN-DOM 9am-6pm',
+    maps: 'https://maps.app.goo.gl/wsrgxhU6B7xYZ61M7',
+    catalogo: 'https://wa.me/c/573235753226',
+    ecomm: 'https://www.saramanthapijamas.com/',
+    atencion: 'https://wa.me/573222475957',
+    tppal: '1-4d',
+    tmuni: '5-8d',
+    pagos: [{tipo:'Bancolombia',detalle:'Ahorros | Cta: 80300004229 | Titular: Indisutex SAS'}],
+    fletes: [
+      {rango:'1u',valor:'$22.000'},
+      {rango:'2-3u',valor:'$22.000'},
+      {rango:'4-6u',valor:'$24.000'},
+      {rango:'7-11u',valor:'$27.000'},
+      {rango:'12+u',valor:'$27.000'}
+    ],
+    social: [{red:'Instagram',url:''}],
+    brands: JSON.parse(JSON.stringify(DEFAULT_BRANDS)),
+    favorites: []
+  },
+  selectedIds: []
+};
+
+// ════════════════════════════════════════
+// CATALOG DE PRODUCTOS INDISUTEX
+// ════════════════════════════════════════
+const DEFAULT_PRODUCTS = [
+  {
+    id: 'batola_tu',
+    brand: 'saramantha',
+    name: 'PIJAMA BATOLA TALLA UNICA',
+    tela: 'Suave sublimada',
+    disenos: ['Stitch (morada)','Aguacate (negra)','Pig (rosada)'],
+    argumento: 'Alta rotacion | Precio fabrica | Talla unica=0 stock varado | 8+ anos | +5 tiendas',
+    refMercado: 39000,
+    precio1: '$26.500',
+    tiers: [
+      {rango:'12u',precio:'$16.500/u',total:'$198mil',venta:'$468mil',margen:'$270mil'},
+      {rango:'6u',precio:'$18.500/u',total:'$111mil',venta:'$234mil',margen:'$123mil'},
+      {rango:'3u',precio:'$22.000/u',total:'$66mil',venta:'$117mil',margen:'$51mil'}
+    ],
+    tablaInterna: '1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500',
+    altMayor: '¿Arrancamos con 12 o prefieres 6?',
+    altDetal: '¿Aguacate negra o Stitch morada?',
+    topDiseno: 'Aguacate negra',
+    galeria: [
+      {label:'Foto 1',url:'https://media.chateapro.app/temp/202603/274227/1774125673whatsapp_image_2026-03-21_at_3.35.07_pm_3_396a6267-ecfe-424b-9246-4df0c5526271.jpeg'},
+      {label:'Foto 2',url:'https://media.chateapro.app/temp/202603/274227/1774125673whatsapp_image_2026-03-21_at_3.35.07_pm_1_42a042fb-5518-489c-963a-372ed3c13325.jpeg'},
+      {label:'Foto 3',url:'https://media.chateapro.app/temp/202603/274227/1774125673whatsapp_image_2026-03-21_at_3.35.07_pm_8cb255d0-5709-483b-8e94-5c7d185deb7f.jpeg'}
+    ],
+    dropiId: '', dropiUrl: '', dropiImg: '', catWa: '', recursosUrl: ''
+  },
+  {
+    id: 'pantalon_tiras',
+    brand: 'saramantha',
+    name: 'PIJAMA PANTALON TIRAS',
+    tela: 'Piel de durazno',
+    disenos: ['Stitch-Ohana','Mafalda','HelloKitty','SpongeBob','Labubu','Pig'],
+    argumento: 'Alta rotacion | Precio fabrica | Disenos trending que se venden solos | 8+ anos | +5 tiendas',
+    refMercado: 45000,
+    precio1: '$38.000',
+    tiers: [
+      {rango:'12u',precio:'$26.500/u',total:'$318mil',venta:'$540mil',margen:'$222mil'},
+      {rango:'6u',precio:'$29.500/u',total:'$177mil',venta:'$270mil',margen:'$93mil'},
+      {rango:'3u',precio:'$33.000/u',total:'$99mil',venta:'$135mil',margen:'$36mil'}
+    ],
+    tablaInterna: '1-2u=$38.000|3-5u=$33.000|6-11u=$29.500|12+u=$26.500',
+    altMayor: '¿Arrancamos con 12 o prefieres 6?',
+    altDetal: '¿Stitch-Ohana o HelloKitty?',
+    topDiseno: 'Stitch-Ohana',
+    galeria: [
+      {label:'Foto 1',url:'https://media.chateapro.app/temp/202603/274227/1774129249whatsapp_image_2026-03-21_at_4.32.53_pm_452823a6-6b58-47a5-874b-6960faf799e5.jpeg'},
+      {label:'Foto 2',url:'https://media.chateapro.app/temp/202603/274227/1774129249whatsapp_image_2026-03-21_at_4.32.52_pm_1_8e87c2b1-2188-4bcf-af30-995d1c893701.jpeg'},
+      {label:'Foto 3',url:'https://media.chateapro.app/temp/202603/274227/1774129249whatsapp_image_2026-03-21_at_4.32.51_pm_41058197-4032-42cc-9a56-819cc155b480.jpeg'}
+    ],
+    dropiId: '', dropiUrl: '', dropiImg: '', catWa: '', recursosUrl: ''
+  },
+  {
+    id: 'short_tira',
+    brand: 'saramantha',
+    name: 'SHORT TIRA TALLA UNICA',
+    tela: 'Suave sublimada',
+    disenos: ['Rosa','Multicolor','Azul'],
+    argumento: 'Alta rotacion | Precio fabrica | Talla unica=0 stock varado | 8+ anos | +5 tiendas',
+    refMercado: 39000,
+    precio1: '$26.500',
+    tiers: [
+      {rango:'12u',precio:'$16.500/u',total:'$198mil',venta:'$468mil',margen:'$270mil'},
+      {rango:'6u',precio:'$18.500/u',total:'$111mil',venta:'$234mil',margen:'$123mil'},
+      {rango:'3u',precio:'$22.000/u',total:'$66mil',venta:'$117mil',margen:'$51mil'}
+    ],
+    tablaInterna: '1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500',
+    altMayor: '¿Arrancamos con 12 o prefieres 6?',
+    altDetal: '¿Rosada o prefieres Azul?',
+    topDiseno: 'Rosa',
+    galeria: [
+      {label:'Foto 1',url:'https://media.chateapro.app/temp/202603/274227/1774112738st8807_bfe83f74-302b-4cdd-b133-ad7534a91f6d.jpg'},
+      {label:'Foto 2',url:'https://media.chateapro.app/temp/202603/274227/1774112738st8987_babb9c16-a406-4930-8aba-c58c41924594.jpg'},
+      {label:'Foto 3',url:'https://media.chateapro.app/temp/202603/274227/1774112738st8694_ba1562ea-04a5-4ec1-915a-b8ede00f0450.jpg'}
+    ],
+    dropiId: '', dropiUrl: '', dropiImg: '', catWa: '', recursosUrl: ''
+  }
+];
+
+// ════════════════════════════════════════
+// ABS RULES — default
+// ════════════════════════════════════════
+const ABS_RULES_DEFAULT = [
+  {id:'N01',tipo:'N',label:'NUNCA decir "descuento"',desc:'El bot nunca usa la palabra descuento para no devaluar.',active:true,custom:false},
+  {id:'N02',tipo:'N',label:'NUNCA dar precio antes de I2',desc:'El precio solo se muestra cuando el cliente ha expresado interés real.',active:true,custom:false},
+  {id:'N05',tipo:'N',label:'NUNCA enviar planilla incompleta',desc:'La planilla siempre se muestra completa con todos los tramos.',active:true,custom:false},
+  {id:'N06',tipo:'N',label:'NUNCA pedir datos uno a uno',desc:'El formulario siempre se solicita en un solo mensaje.',active:true,custom:false},
+  {id:'N07',tipo:'N',label:'NUNCA inventar precios/fletes no configurados',desc:'Solo usa precios de las tablas configuradas.',active:true,custom:false},
+  {id:'N08',tipo:'N',label:'NUNCA confirmar pedido sin los 10 campos',desc:'Los 10 campos del formulario son obligatorios antes de confirmar.',active:true,custom:false},
+  {id:'N09',tipo:'N',label:'NUNCA decir "Todo confirmado!" antes del si del cliente',desc:'La confirmación solo ocurre después del sí explícito.',active:true,custom:false},
+  {id:'N10',tipo:'N',label:'NUNCA hacer vacunacion a cliente que ya compro',desc:'Los clientes que ya compraron no necesitan el pitch de confianza.',active:true,custom:false},
+  {id:'N11',tipo:'N',label:'NUNCA procesar devoluciones — derivar a humano',desc:'Las devoluciones requieren atención humana.',active:true,custom:false},
+  {id:'N12',tipo:'N',label:'NUNCA revelar que es un bot (salvo queja reiterada)',desc:'Mantener la ilusión de asesora mejora la conversión.',active:true,custom:false},
+  {id:'N13',tipo:'N',label:'NUNCA crear urgencia falsa',desc:'La urgencia artificial daña la confianza.',active:true,custom:false},
+  {id:'N14',tipo:'N',label:'NUNCA enviar mas de 3 mensajes sin respuesta',desc:'Máximo 3 mensajes de seguimiento.',active:true,custom:false},
+  {id:'N16',tipo:'N',label:'NUNCA repetir el mismo argumento ante la misma objecion',desc:'Repetir el mismo argumento genera irritación.',active:true,custom:false},
+  {id:'N17',tipo:'N',label:'NUNCA usar frases: "con gusto","es un placer","quedo pendiente","no hay problema"',desc:'Frases que suenan robóticas y reducen autenticidad.',active:true,custom:false},
+  {id:'N18',tipo:'N',label:'NUNCA nombrar competidores',desc:'Mencionar competidores hace publicidad gratuita.',active:true,custom:false},
+  {id:'N19',tipo:'N',label:'NUNCA prometer fechas exactas sin confirmar despacho',desc:'Las fechas sin confirmar generan falsas expectativas.',active:true,custom:false},
+  {id:'N20',tipo:'N',label:'NUNCA pregunta abierta tras I2 — siempre 2 opciones concretas',desc:'Las preguntas binarias aumentan la tasa de respuesta.',active:true,custom:false},
+  {id:'N23',tipo:'N',label:'NUNCA decir "envio gratis" — flete segun tabla',desc:'El flete siempre se cobra según tabla IRP.',active:true,custom:false},
+  {id:'N24',tipo:'N',label:'NUNCA decir que no hay mas diseños — mostrar siguiente galeria',desc:'Siempre hay más opciones que mostrar.',active:true,custom:false},
+  {id:'N25',tipo:'N',label:'NUNCA mencionar precio unitario antes de Ref.mercado',desc:'El precio de mercado es el ancla psicológica; va siempre primero.',active:true,custom:false},
+  {id:'N26',tipo:'N',label:'NUNCA inventar precio/margen — usar solo tablas configuradas',desc:'Precios inventados generan inconsistencias.',active:true,custom:false},
+  {id:'N27',tipo:'N',label:'NUNCA mostrar precio a MAYOR/EMP sin mostrar el margen',desc:'El mayorista necesita ver la ganancia, no solo el costo.',active:true,custom:false},
+  {id:'N28',tipo:'N',label:'NUNCA mezclar precios de 2 referencias en un mismo mensaje',desc:'Una referencia por mensaje evita confusiones.',active:true,custom:false},
+  {id:'N29',tipo:'N',label:'NUNCA decir "todas tienen el mismo precio"',desc:'Cada referencia tiene su propia tabla de precios.',active:true,custom:false},
+  {id:'N30',tipo:'N',label:'NUNCA usar asteriscos, negritas ni markdown',desc:'El bot opera en WhatsApp donde el markdown puede verse mal.',active:true,custom:false},
+  {id:'N31',tipo:'N',label:'NUNCA usar Ref.mercado como precio de venta',desc:'Ref.mercado es ancla psicológica, no precio real de compra.',active:true,custom:false},
+  {id:'N32',tipo:'N',label:'NUNCA inventar cotizacion combo — seguir LOGICA COMBO',desc:'La lógica combo tiene pasos obligatorios.',active:true,custom:false},
+  {id:'N37',tipo:'N',label:'NUNCA pedir pago anticipado o comprobante — pago SIEMPRE al recibir',desc:'Todo es contra entrega, nunca pago previo.',active:true,custom:false},
+  {id:'N40',tipo:'N',label:'NUNCA confirmar pedido si score Dropi menor 70% — derivar a asesora',desc:'Protege contra fraudes y clientes de alto riesgo.',active:true,custom:false},
+  {id:'N41',tipo:'N',label:'NUNCA prometer acciones que la IA no puede ejecutar',desc:'No decir "dejo una nota" o "verifico el contenido".',active:true,custom:false},
+  {id:'N42',tipo:'N',label:'NUNCA dar consejos genericos ante perfil EMP — ir directo a Planilla y GALERIA',desc:'El emprendedor necesita datos concretos, no consejos.',active:true,custom:false},
+  {id:'N43',tipo:'N',label:'NUNCA pregunta abierta de producto — siempre 2 opciones concretas',desc:'Las opciones concretas aceleran la decisión.',active:true,custom:false},
+  {id:'N44',tipo:'N',label:'NUNCA dar precio por imagen enviada por el cliente',desc:'Sin confirmar ref por escrito, nunca cotizar.',active:true,custom:false},
+  {id:'N45',tipo:'N',label:'NUNCA decir "lamentablemente"',desc:'Reemplazar con redireccion positiva al catálogo.',active:true,custom:false},
+  {id:'N46',tipo:'N',label:'NUNCA aplicar tabla IRP Colombia a destino internacional',desc:'Fletes internacionales son distintos al IRP local.',active:true,custom:false},
+  {id:'N47',tipo:'N',label:'NUNCA dar precio de flete internacional sin confirmar ciudad+pais',desc:'Siempre pedir ciudad y país antes de cotizar flete intl.',active:true,custom:false},
+  {id:'S01',tipo:'S',label:'SIEMPRE evaluar perfil e historial antes de responder',desc:'Conocer el perfil permite adaptar el mensaje.',active:true,custom:false},
+  {id:'S02',tipo:'S',label:'SIEMPRE adaptar tono al perfil del cliente',desc:'MAYOR→margen | DETAL→diseno | EMP→independencia | REGALO→emocion.',active:true,custom:false},
+  {id:'S03',tipo:'S',label:'SIEMPRE cerrar cada mensaje con una accion concreta',desc:'Cada mensaje debe empujar hacia la siguiente etapa.',active:true,custom:false},
+  {id:'S04',tipo:'S',label:'SIEMPRE certeza total — sin titubeos ni condicionales',desc:'La certeza genera confianza. Nunca "quizás" o "creo que".',active:true,custom:false},
+  {id:'S05',tipo:'S',label:'SIEMPRE max 20 palabras por mensaje de texto (excepcion URLs)',desc:'Mensajes cortos aumentan la tasa de lectura en WhatsApp.',active:true,custom:false},
+  {id:'S06',tipo:'S',label:'SIEMPRE max 2 emojis por mensaje',desc:'Exceso de emojis da sensación de spam.',active:true,custom:false},
+  {id:'S09',tipo:'S',label:'SIEMPRE celebrar cada micro-acuerdo antes de avanzar',desc:'Celebrar refuerza la decisión del cliente.',active:true,custom:false},
+  {id:'S10',tipo:'S',label:'SIEMPRE senal de compra → ir directo al formulario I4',desc:'Aprovechar la señal de compra sin dilaciones.',active:true,custom:false},
+  {id:'S12',tipo:'S',label:'SIEMPRE activar prueba social cuando hay duda',desc:'El social proof reduce la fricción.',active:true,custom:false},
+  {id:'S16',tipo:'S',label:'SIEMPRE Ref.mercado primero como ancla — nunca como precio de compra',desc:'El ancla psicológica es la base de la estrategia.',active:true,custom:false},
+  {id:'S17',tipo:'S',label:'SIEMPRE cantidad especifica → consultar tabla interna precio exacto',desc:'Nunca inventar precios para cantidades específicas.',active:true,custom:false},
+  {id:'S18',tipo:'S',label:'SIEMPRE a MAYOR/EMP presentar precio como ganancia',desc:'El mayorista piensa en márgenes, no en costos.',active:true,custom:false},
+  {id:'S20',tipo:'S',label:'SIEMPRE texto plano — sin asteriscos, guiones ni markdown',desc:'Formato limpio para WhatsApp.',active:true,custom:false},
+];
+
+// ════════════════════════════════════════
+// INIT STATE
+// ════════════════════════════════════════
+let state = { store: {}, selectedIds: [] };
+let absRules = JSON.parse(JSON.stringify(ABS_RULES_DEFAULT));
+let products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+let catFilter = 'all';
+let selFilter = 'all';
+let autoSaveTimer = null;
+
+function nextRuleNum(tipo) {
+  const prefix = tipo === 'N' ? 'N' : 'S';
+  let max = tipo === 'N' ? 43 : 20;
+  absRules.forEach(r => {
+    if (r.tipo === tipo) {
+      const m = r.id.match(/^[NS](\d+)$/);
+      if (m) max = Math.max(max, parseInt(m[1]));
+    }
+  });
+  return prefix + (max + 1);
+}
+
+function init() {
+  const email = localStorage.getItem('indisutex_user_email') || '';
+  if (email) {
+    const emailEl = document.getElementById('h-user-email');
+    if (emailEl) emailEl.textContent = email;
+  }
+
+  const saved = localStorage.getItem(STORE_KEY);
+  if (saved) {
+    try {
+      const d = JSON.parse(saved);
+      state.store = { ...JSON.parse(JSON.stringify(DEFAULT_STATE.store)), ...d.store };
+      // Migrate brands to include new fields
+      if (state.store.brands) {
+        state.store.brands = state.store.brands.map(b => ({
+          dir: '', telefono: '', instagram: '', facebook: '', tiktok: '',
+          catWa: '', maps: '',
+          dropiUrl: 'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true',
+          dropiAfl: 'https://app.dropi.co/auth/register?afl=807272',
+          nombreIA: b.name === 'Saramantha' ? 'Laura' : 'Laura',
+          empresaIA: 'Indisutex SAS',
+          ...b
+        }));
+      }
+      if (!state.store.brands || state.store.brands.length === 0) {
+        state.store.brands = JSON.parse(JSON.stringify(DEFAULT_BRANDS));
+      }
+      if (!state.store.favorites) state.store.favorites = [];
+      state.selectedIds = d.selectedIds || [];
+      if (d.products && d.products.length) products = d.products;
+      if (d.absRules && d.absRules.length) absRules = d.absRules;
+    } catch(e) {
+      state.store = JSON.parse(JSON.stringify(DEFAULT_STATE.store));
+    }
+  } else {
+    state.store = JSON.parse(JSON.stringify(DEFAULT_STATE.store));
+  }
+
+  fillStoreFields();
+  renderPayList();
+  renderFleteRows();
+  renderSocialList();
+  renderBrandsConfig();
+  renderAbsRules();
+  renderCatalog();
+  renderSelGrid();
+  renderBrandPills();
+  renderSelBrandPills();
+  updateHeaderLinks();
+  updateCharBar();
+  populateBrandSelect();
+  // Show user email in header
+  const _uemail = localStorage.getItem('indisutex_user_email') || '';
+  const _uEl = document.getElementById('h-user-email');
+  if (_uEl && _uemail) _uEl.textContent = _uemail;
+}
+
+// ════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════
+function showTab(id) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.tnav').forEach(t => t.classList.remove('on'));
+  document.getElementById(id)?.classList.add('on');
+  const tnMap = {'tab-config':'tn-config','tab-catalog':'tn-catalog','tab-select':'tn-select','tab-prompt':'tn-prompt'};
+  document.getElementById(tnMap[id] || '')?.classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════════
+// STORE FIELDS
+// ════════════════════════════════════════
+function fillStoreFields() {
+  const s = state.store;
+  sv('s-nombre', s.nombre); sv('s-empresa', s.empresa); sv('s-anos', s.anos);
+  sv('s-tiendas', s.tiendas); sv('s-dir', s.dir); sv('s-maps', s.maps);
+  sv('s-catalogo', s.catalogo); sv('s-ecomm', s.ecomm||''); sv('s-atencion', s.atencion);
+  sv('s-tppal', s.tppal); sv('s-tmuni', s.tmuni);
+}
+
+function readStoreFields() {
+  state.store.nombre = gv('s-nombre');
+  state.store.empresa = gv('s-empresa');
+  state.store.anos = gv('s-anos');
+  state.store.tiendas = gv('s-tiendas');
+  state.store.dir = gv('s-dir');
+  state.store.maps = gv('s-maps');
+  state.store.catalogo = gv('s-catalogo');
+  state.store.ecomm = gv('s-ecomm');
+  state.store.atencion = gv('s-atencion');
+  state.store.tppal = gv('s-tppal');
+  state.store.tmuni = gv('s-tmuni');
+}
+
+function updateHeaderLinks() {
+  const brands = state.store.brands || [];
+  const linksEl = document.getElementById('h-links-dynamic');
+  if (!linksEl) return;
+  let html = `<a href="${esc(state.store.atencion||'https://wa.me/573222475957')}" target="_blank" class="hl">📞 Soporte</a>`;
+  // Show first brand's catWa/dropi as quick links
+  const firstWithLinks = brands.find(b => b.catWa || b.dropiUrl);
+  if (firstWithLinks) {
+    if (firstWithLinks.catWa) html += `<a href="${esc(firstWithLinks.catWa)}" target="_blank" class="hl">📋 Catálogo WA</a>`;
+    if (firstWithLinks.dropiUrl) html += `<a href="${esc(firstWithLinks.dropiUrl)}" target="_blank" class="hl">🛍 Dropi</a>`;
+  }
+  brands.forEach(b => {
+    if (b.waUrl) html += `<a href="${esc(b.waUrl)}" target="_blank" class="hl">💬 Grupo ${esc(b.name)}</a>`;
+    if (b.atencionUrl) html += `<a href="${esc(b.atencionUrl)}" target="_blank" class="hl hl-attn">🎧 Atención ${esc(b.name)}</a>`;
+  });
+  linksEl.innerHTML = html;
+}
+
+// ════════════════════════════════════════
+// PAY METHODS
+// ════════════════════════════════════════
+function renderPayList() {
+  const pagos = state.store.pagos || [];
+  document.getElementById('pay-list').innerHTML = pagos.map((p, i) => `
+    <div style="display:grid;grid-template-columns:130px 1fr 28px;gap:5px;align-items:center;background:#fff;border:1.5px solid var(--bdr);border-radius:9px;padding:7px 10px;margin-bottom:5px">
+      <input value="${esc(p.tipo)}" placeholder="Bancolombia..." oninput="state.store.pagos[${i}].tipo=this.value;autoSave()" style="font-size:.76rem;border:none;background:transparent;padding:0;font-weight:600;width:100%">
+      <input value="${esc(p.detalle)}" placeholder="Cta / número..." oninput="state.store.pagos[${i}].detalle=this.value;autoSave()" style="font-size:.74rem;border:none;background:transparent;padding:0;width:100%">
+      <button onclick="removePayRow(${i})" style="background:none;border:none;cursor:pointer;color:var(--rd);opacity:.5;font-size:.85rem;padding:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.5'">🗑</button>
+    </div>`).join('');
+}
+function addPayRow() { if(!state.store.pagos) state.store.pagos=[]; state.store.pagos.push({tipo:'',detalle:''}); renderPayList(); }
+function removePayRow(i) { state.store.pagos.splice(i,1); renderPayList(); autoSave(); }
+
+// ════════════════════════════════════════
+// FLETES
+// ════════════════════════════════════════
+function renderFleteRows() {
+  const fl = state.store.fletes || [];
+  document.getElementById('flete-rows').innerHTML = fl.map((f, i) => `
+    <div class="flete-row-wrap">
+      <div class="fg" style="margin-bottom:0"><label>Tramo</label>
+        <input value="${esc(f.rango)}" placeholder="1u, 2-3u..." oninput="state.store.fletes[${i}].rango=this.value;autoSave()">
+      </div>
+      <div class="fg" style="margin-bottom:0"><label>Valor</label>
+        <input value="${esc(f.valor)}" placeholder="$22.000" oninput="state.store.fletes[${i}].valor=this.value;autoSave()">
+      </div>
+      <button onclick="removeFleteRow(${i})" style="background:none;border:none;cursor:pointer;color:var(--rd);opacity:.5;margin-top:18px;font-size:.9rem" ${fl.length<=1?'disabled':''}>🗑</button>
+    </div>`).join('');
+}
+function addFleteRow() { if(!state.store.fletes) state.store.fletes=[]; state.store.fletes.push({rango:'',valor:'$0'}); renderFleteRows(); }
+function removeFleteRow(i) { if((state.store.fletes||[]).length<=1){toast('Debe haber al menos 1 tramo');return;} state.store.fletes.splice(i,1); renderFleteRows(); autoSave(); }
+
+// ════════════════════════════════════════
+// SOCIAL
+// ════════════════════════════════════════
+function renderSocialList() {
+  const soc = state.store.social || [];
+  document.getElementById('social-list').innerHTML = soc.map((s, i) => `
+    <div class="social-row">
+      <input value="${esc(s.red)}" placeholder="Instagram..." oninput="state.store.social[${i}].red=this.value;autoSave()" style="font-size:.76rem;font-weight:600">
+      <input value="${esc(s.url)}" placeholder="https://..." oninput="state.store.social[${i}].url=this.value;autoSave()">
+      <button onclick="removeSocialRow(${i})" style="background:none;border:none;cursor:pointer;color:var(--rd);opacity:.5;font-size:.9rem" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.5'">🗑</button>
+    </div>`).join('');
+}
+function addSocialRow() { if(!state.store.social) state.store.social=[]; state.store.social.push({red:'',url:''}); renderSocialList(); }
+function removeSocialRow(i) { state.store.social.splice(i,1); renderSocialList(); autoSave(); }
+
+// ════════════════════════════════════════
+// BRANDS CONFIG — extended with all store data
+// ════════════════════════════════════════
+function renderBrandsConfig() {
+  const brands = state.store.brands || [];
+  document.getElementById('brands-config-list').innerHTML = brands.map((b, i) => `
+    <div class="brand-config-card" id="bcard-${i}">
+      <div class="brand-config-head" onclick="toggleBrandCfg(${i})">
+        <div class="cfg-num">${i+1}</div>
+        <div class="cfg-title" style="font-size:.84rem">🏷️ ${esc(b.name) || 'Nueva marca'}</div>
+        ${b.waUrl ? '<span style="font-size:.62rem;background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-weight:700;margin-right:3px">Grupo WA ✓</span>' : ''}
+        ${b.catWa ? '<span style="font-size:.62rem;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-weight:700;margin-right:3px">Catálogo WA ✓</span>' : ''}
+        ${b.maps  ? '<span style="font-size:.62rem;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-weight:700">Maps ✓</span>' : ''}
+        <div class="cfg-tog" id="btog-${i}">▶</div>
+      </div>
+      <div class="brand-config-body" id="bbody-${i}">
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>🤖 Nombre de la IA (bot de esta marca)</label>
+            <input value="${esc(b.nombreIA||'Laura')}" placeholder="Laura, Valentina..." oninput="state.store.brands[${i}].nombreIA=this.value;autoSave()">
+            <div class="hint">Así se presentará la IA de esta marca en WhatsApp.</div>
+          </div>
+          <div class="fg"><label>🏢 Empresa IA (para esta marca)</label>
+            <input value="${esc(b.empresaIA||'Indisutex SAS')}" placeholder="Indisutex SAS" oninput="state.store.brands[${i}].empresaIA=this.value;autoSave()">
+            <div class="hint">Ej: Indisutex SAS o el nombre comercial de la línea.</div>
+          </div>
+        </div>
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>Nombre de la marca</label>
+            <input value="${esc(b.name)}" placeholder="Saramantha..." oninput="state.store.brands[${i}].name=this.value;renderBrandsConfig();updateHeaderLinks();renderBrandPills();renderSelBrandPills();populateBrandSelect();autoSave()">
+          </div>
+          <div class="fg"><label>Link Grupo WhatsApp Mayoristas</label>
+            <input value="${esc(b.waUrl||'')}" placeholder="https://chat.whatsapp.com/..." oninput="state.store.brands[${i}].waUrl=this.value;updateHeaderLinks();autoSave()">
+            <div class="hint">Ej: Invitación Grupo Mayoristas ${esc(b.name||'marca')} 👇 https://chat.whatsapp.com/...</div>
+          </div>
+        </div>
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>Link Atención Humana (opcional)</label>
+            <input value="${esc(b.atencionUrl||'')}" placeholder="https://wa.me/57..." oninput="state.store.brands[${i}].atencionUrl=this.value;updateHeaderLinks();autoSave()">
+            <div class="hint">Si se configura, aparece en el menú superior.</div>
+          </div>
+          <div class="fg"><label>Dirección física (de esta marca)</label>
+            <input value="${esc(b.dir||'')}" placeholder="Cl.14 #7-95 Centro Cali..." oninput="state.store.brands[${i}].dir=this.value;autoSave()">
+          </div>
+        </div>
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>Teléfono / WhatsApp directo</label>
+            <input value="${esc(b.telefono||'')}" placeholder="https://wa.me/573..." oninput="state.store.brands[${i}].telefono=this.value;autoSave()">
+          </div>
+          <div class="fg"><label>Instagram</label>
+            <input value="${esc(b.instagram||'')}" placeholder="https://instagram.com/..." oninput="state.store.brands[${i}].instagram=this.value;autoSave()">
+          </div>
+        </div>
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>Facebook</label>
+            <input value="${esc(b.facebook||'')}" placeholder="https://facebook.com/..." oninput="state.store.brands[${i}].facebook=this.value;autoSave()">
+          </div>
+          <div class="fg"><label>TikTok</label>
+            <input value="${esc(b.tiktok||'')}" placeholder="https://tiktok.com/@..." oninput="state.store.brands[${i}].tiktok=this.value;autoSave()">
+          </div>
+        </div>
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>📋 Catálogo WhatsApp (wa.me/c/...)</label>
+            <input value="${esc(b.catWa||'')}" placeholder="https://wa.me/c/573235753226" oninput="state.store.brands[${i}].catWa=this.value;autoSave()">
+            <div class="hint">Enlace al catálogo de WhatsApp Business de esta marca.</div>
+          </div>
+          <div class="fg"><label>📍 Google Maps</label>
+            <input value="${esc(b.maps||'')}" placeholder="https://maps.app.goo.gl/..." oninput="state.store.brands[${i}].maps=this.value;autoSave()">
+            <div class="hint">Enlace a la ubicación física en Google Maps.</div>
+          </div>
+        </div>
+        <div class="g2" style="margin-bottom:8px">
+          <div class="fg"><label>🛍 Catálogo Dropi (enlace directo)</label>
+            <input value="${esc(b.dropiUrl||'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true')}" placeholder="https://app.dropi.co/dashboard/provider/..." oninput="state.store.brands[${i}].dropiUrl=this.value;autoSave()">
+            <div class="hint">Link directo al catálogo de esta marca en Dropi.</div>
+          </div>
+          <div class="fg"><label>✅ Enlace de registro Dropi (afiliado)</label>
+            <input value="${esc(b.dropiAfl||'https://app.dropi.co/auth/register?afl=807272')}" placeholder="https://app.dropi.co/auth/register?afl=..." oninput="state.store.brands[${i}].dropiAfl=this.value;autoSave()">
+            <div class="hint">Link de afiliado para invitar a dropshippers a registrarse.</div>
+          </div>
+        </div>
+        <button onclick="removeBrand(${i})" style="background:none;border:none;cursor:pointer;color:var(--rd);font-size:.72rem;font-weight:700;opacity:.7">🗑 Eliminar marca</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleBrandCfg(i) {
+  const body = document.getElementById('bbody-'+i);
+  const tog = document.getElementById('btog-'+i);
+  if (!body) return;
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  if (tog) tog.textContent = open ? '▶' : '▼';
+}
+
+function addBrandGroup() {
+  if (!state.store.brands) state.store.brands = [];
+  state.store.brands.push({id:'brand_'+Date.now(), name:'', nombreIA:'', empresaIA:'Indisutex SAS', waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272', atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''});
+  renderBrandsConfig();
+  updateHeaderLinks();
+  populateBrandSelect();
+  const idx = state.store.brands.length - 1;
+  setTimeout(() => toggleBrandCfg(idx), 50);
+  autoSave();
+}
+
+function removeBrand(i) {
+  if (!confirm('¿Eliminar esta marca?')) return;
+  state.store.brands.splice(i, 1);
+  renderBrandsConfig();
+  updateHeaderLinks();
+  renderBrandPills();
+  renderSelBrandPills();
+  populateBrandSelect();
+  autoSave();
+}
+
+function populateBrandSelect() {
+  const sel = document.getElementById('m-brand');
+  if (!sel) return;
+  const brands = state.store.brands || [];
+  sel.innerHTML = brands.map(b => `<option value="${esc(b.id||b.name)}">${esc(b.name)}</option>`).join('') +
+    `<option value="custom">Personalizado</option>`;
+}
+
+function getBrandName(brandId) {
+  const brands = state.store.brands || [];
+  const b = brands.find(x => (x.id||x.name) === brandId);
+  return b ? b.name : brandId;
+}
+
+// ════════════════════════════════════════
+// ABSOLUTE RULES
+// ════════════════════════════════════════
+function renderAbsRules() {
+  const nunca = absRules.filter(r => r.tipo === 'N');
+  const siempre = absRules.filter(r => r.tipo === 'S');
+  const renderGroup = (rules) => rules.map(r => `
+    <div class="rule-row ${r.active?'':'off'}" id="rrow-${r.id}">
+      <input type="checkbox" id="rule-${r.id}" ${r.active?'checked':''} onchange="toggleRule('${r.id}',this.checked)">
+      <div style="flex:1">
+        <div class="rule-label">[${esc(r.id)}] ${esc(r.label)}</div>
+        <div class="rule-desc">${esc(r.desc)}</div>
+        ${!r.active ? `<div class="rule-warn">⚠️ Regla desactivada — puede afectar comportamiento</div>` : ''}
+        ${r.custom ? `<button onclick="deleteCustomRule('${r.id}')" style="background:none;border:none;cursor:pointer;color:var(--rd);font-size:.65rem;margin-top:3px;padding:0;opacity:.7">🗑 Eliminar regla personalizada</button>` : ''}
+      </div>
+    </div>`).join('');
+  document.getElementById('abs-rules-list').innerHTML =
+    `<div class="hint" style="margin-bottom:6px;font-weight:700;color:var(--rd)">NUNCA (${nunca.length}):</div>` +
+    renderGroup(nunca) +
+    `<div class="hint" style="margin-top:10px;margin-bottom:6px;font-weight:700;color:var(--ok)">SIEMPRE (${siempre.length}):</div>` +
+    renderGroup(siempre);
+}
+
+function toggleRule(id, val) {
+  if (!val) {
+    const rule = absRules.find(r => r.id === id);
+    if (!confirm(`⚠️ Desactivar [${id}]: "${rule ? rule.label : id}"\n\n¿Seguro?`)) {
+      document.getElementById('rule-'+id).checked = true;
+      return;
+    }
+  }
+  const r = absRules.find(x => x.id === id);
+  if (r) r.active = val;
+  renderAbsRules();
+  autoSave();
+}
+
+function resetRules() {
+  if (!confirm('¿Restaurar TODAS las reglas al estándar Indisutex?')) return;
+  absRules = JSON.parse(JSON.stringify(ABS_RULES_DEFAULT));
+  renderAbsRules();
+  autoSave();
+  toast('✅ Reglas restauradas');
+}
+
+let ruleModalTipo = 'N';
+function addCustomRule(tipo) {
+  ruleModalTipo = tipo;
+  sv('rm-tipo', tipo);
+  sv('rm-label', '');
+  sv('rm-desc', '');
+  document.getElementById('rule-modal-title').textContent = tipo === 'N' ? '+ NUNCA personalizado' : '+ SIEMPRE personalizado';
+  document.getElementById('rule-modal').classList.add('on');
+}
+function closeRuleModal() { document.getElementById('rule-modal').classList.remove('on'); }
+function saveCustomRule() {
+  const tipo = gv('rm-tipo');
+  const label = gv('rm-label');
+  const desc = gv('rm-desc');
+  if (!label) { toast('Ingresa el texto de la regla'); return; }
+  const id = nextRuleNum(tipo);
+  absRules.push({ id, tipo, label, desc, active: true, custom: true });
+  renderAbsRules();
+  autoSave();
+  closeRuleModal();
+  toast('✅ Regla ' + id + ' agregada');
+}
+function deleteCustomRule(id) {
+  if (!confirm('¿Eliminar esta regla personalizada?')) return;
+  absRules = absRules.filter(r => r.id !== id);
+  renderAbsRules();
+  autoSave();
+}
+
+// ════════════════════════════════════════
+// FAVORITES
+// ════════════════════════════════════════
+function getFavorites() {
+  return state.store.favorites || [];
+}
+
+function toggleFavorite(prodId, ev) {
+  if (ev) ev.stopPropagation();
+  if (!state.store.favorites) state.store.favorites = [];
+  const idx = state.store.favorites.indexOf(prodId);
+  if (idx !== -1) {
+    state.store.favorites.splice(idx, 1);
+    toast('Eliminado de favoritos');
+  } else {
+    state.store.favorites.push(prodId);
+    toast('⭐ Agregado a favoritos');
+  }
+  renderCatalog();
+  autoSave();
+}
+
+function renderFavGrid() {
+  const favs = getFavorites();
+  const favProds = products.filter(p => favs.includes(p.id));
+  const section = document.getElementById('fav-section');
+  const grid = document.getElementById('fav-grid');
+  if (!section || !grid) return;
+  if (favProds.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  grid.innerHTML = favProds.map(p => prodCardHTML(p, false)).join('');
+}
+
+// ════════════════════════════════════════
+// CATALOG BRAND PILLS
+// ════════════════════════════════════════
+function getBrands() {
+  const brands = state.store.brands || [];
+  return brands.map(b => ({id: b.id || b.name, name: b.name}));
+}
+
+function renderBrandPills() {
+  const brands = getBrands();
+  const favCount = getFavorites().length;
+  document.getElementById('cat-brand-pills').innerHTML =
+    `<button class="bpill ${catFilter==='all'?'sel':''}" onclick="setCatFilter('all')">Todos</button>` +
+    (favCount > 0 ? `<button class="bpill ${catFilter==='favs'?'sel':''}" onclick="setCatFilter('favs')" style="border-color:#f5c842;${catFilter==='favs'?'background:#f5c842;color:#fff':'color:#b45309'}">⭐ Favoritos (${favCount})</button>` : '') +
+    brands.map(b => `<button class="bpill ${catFilter===b.id?'sel':''}" onclick="setCatFilter('${esc(b.id)}')">${esc(b.name)}</button>`).join('') +
+    `<button class="bpill ${catFilter==='custom'?'sel':''}" onclick="setCatFilter('custom')">Personalizado</button>`;
+}
+function setCatFilter(id) { catFilter = id; renderBrandPills(); renderCatalog(); }
+
+function renderSelBrandPills() {
+  const brands = getBrands();
+  document.getElementById('sel-brand-pills').innerHTML =
+    `<button class="bpill ${selFilter==='all'?'sel':''}" onclick="setSelFilter('all')">Todos</button>` +
+    brands.map(b => `<button class="bpill ${selFilter===b.id?'sel':''}" onclick="setSelFilter('${esc(b.id)}')">${esc(b.name)}</button>`).join('') +
+    `<button class="bpill ${selFilter==='custom'?'sel':''}" onclick="setSelFilter('custom')">Personalizado</button>`;
+}
+function setSelFilter(id) { selFilter = id; renderSelBrandPills(); renderSelGrid(); }
+
+// ════════════════════════════════════════
+// CATALOG GRID
+// ════════════════════════════════════════
+function prodCardHTML(p, selMode) {
+  const isSel = state.selectedIds.includes(p.id);
+  const isFav = getFavorites().includes(p.id);
+  const imgSrc = p.dropiImg || (p.galeria && p.galeria[0] && p.galeria[0].url) || '';
+  const img = imgSrc
+    ? `<img class="pc-img" src="${esc(imgSrc)}" alt="${esc(p.name)}" onclick="${!selMode?'event.stopPropagation();openLightbox(\''+imgSrc+'\')'  :''}" onerror="this.style.display='none'">`
+    : `<div class="pc-img-ph">👗</div>`;
+  const click = selMode ? `toggleSel('${p.id}')` : '';
+  const brandName = getBrandName(p.brand);
+
+  // Selection order badge
+  const selPos = selMode ? state.selectedIds.indexOf(p.id) : -1;
+  const posLabels = ['Principal','2ª opción','3ª opción'];
+  const posBg     = ['#fef3c7','#dbeafe','#f3e8ff'];
+  const posBorder = ['#f59e0b','#93c5fd','#d8b4fe'];
+  const posColors = ['#92400e','#1e40af','#6b21a8'];
+  const posBtnBg  = ['#f59e0b','#1d4ed8','#7e22ce'];
+  const posEmoji  = ['🥇','🥈','🥉'];
+
+  // Dropi earnings badge — use new format: pagas X → te sobran Y limpios
+  const firstTier = (p.tiers||[])[0];
+  const earningBadge = firstTier && firstTier.margen ? `<span class="pc-badge" style="background:#dcfce7;color:#166534">💰 +${esc(firstTier.margen)} x${esc(firstTier.rango)}</span>` : '';
+  const refBadge = p.refMercado ? `<span class="pc-badge" style="background:#fff7ed;color:#c2410c;border:1px solid #fed7aa">Ref.mcdo $${fmtNum(p.refMercado)}</span>` : '';
+  const dropiBadge = p.dropiId ? `<span class="pc-badge dropi">Dropi #${esc(p.dropiId)}</span>` : '';
+  // Get brand-level links for this product
+  const _prodBrand = (state.store.brands||[]).find(b => (b.id||b.name) === p.brand);
+  const _brandCatWa = _prodBrand && _prodBrand.catWa ? _prodBrand.catWa : '';
+  const _brandIg    = _prodBrand && _prodBrand.instagram ? _prodBrand.instagram : '';
+  const _brandTt    = _prodBrand && _prodBrand.tiktok ? _prodBrand.tiktok : '';
+  const _brandMaps  = _prodBrand && _prodBrand.maps ? _prodBrand.maps : '';
+  const _brandDropiUrl = _prodBrand && _prodBrand.dropiUrl ? _prodBrand.dropiUrl : (p.dropiUrl ? p.dropiUrl : '');
+  const _brandDropiAfl = _prodBrand && _prodBrand.dropiAfl ? _prodBrand.dropiAfl : 'https://app.dropi.co/auth/register?afl=807272';
+
+  const dropiBtn = (_brandDropiUrl || p.dropiUrl || p.dropiId) && !selMode
+    ? `<a href="${esc(_brandDropiUrl || p.dropiUrl || 'https://app.dropi.co/products/'+p.dropiId)}" target="_blank" onclick="event.stopPropagation()" style="display:block;text-align:center;background:var(--blue);color:#fff;padding:5px 0;border-radius:6px;font-size:.62rem;font-weight:700;margin-top:4px;text-decoration:none;transition:all .2s" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">🛍 Ver en Dropi →</a>` : '';
+  
+  // Brand social/catalog quick links for catalog view
+  const brandQuickLinks = !selMode && (_brandCatWa || _brandIg || _brandTt || _brandMaps) ? `<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:5px">
+    ${_brandCatWa ? `<a href="${esc(_brandCatWa)}" target="_blank" onclick="event.stopPropagation()" style="font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:5px;text-decoration:none;background:#d1fae5;color:#065f46;border:1px solid #6ee7b7">📋 Cat.WA</a>` : ''}
+    ${_brandIg    ? `<a href="${esc(_brandIg)}"    target="_blank" onclick="event.stopPropagation()" style="font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:5px;text-decoration:none;background:#fce7f3;color:#be185d;border:1px solid #fbcfe8">📸 IG</a>` : ''}
+    ${_brandTt    ? `<a href="${esc(_brandTt)}"    target="_blank" onclick="event.stopPropagation()" style="font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:5px;text-decoration:none;background:#f3f4f6;color:#374151;border:1px solid #d1d5db">🎵 TT</a>` : ''}
+    ${_brandMaps  ? `<a href="${esc(_brandMaps)}"  target="_blank" onclick="event.stopPropagation()" style="font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:5px;text-decoration:none;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">📍 Maps</a>` : ''}
+  </div>` : '';
+  const recursosBtn = p.recursosUrl && !selMode
+    ? `<a href="${esc(p.recursosUrl)}" target="_blank" onclick="event.stopPropagation()" style="display:block;text-align:center;background:#7e22ce;color:#fff;padding:5px 0;border-radius:6px;font-size:.62rem;font-weight:700;margin-top:3px;text-decoration:none;transition:all .2s" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">🎨 Creativos / Pauta →</a>` : '';
+  const editBtn = !selMode ? `<button onclick="event.stopPropagation();openEditProductModal('${p.id}')" style="background:var(--rl);border:1.5px solid var(--rose);color:var(--rd);padding:4px 10px;border-radius:6px;font-size:.62rem;font-weight:700;cursor:pointer;margin-top:6px;width:100%">✏️ Editar</button>` : '';
+  const favBtn = !selMode ? `<div class="pc-fav ${isFav?'active':''}" onclick="toggleFavorite('${p.id}',event)" title="${isFav?'Quitar de favoritos':'Agregar a favoritos'}" style="${isFav?'background:#f5c842;color:#fff':''}">⭐</div>` : '';
+
+  const selBadge = selMode && selPos >= 0 ? `
+    <div style="position:absolute;top:0;left:0;right:0;background:${posBg[selPos]};border-bottom:2px solid ${posBorder[selPos]};padding:4px 8px;display:flex;align-items:center;gap:5px;z-index:3">
+      <div style="background:${posBtnBg[selPos]};color:#fff;font-weight:800;font-size:.65rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${selPos+1}</div>
+      <span style="font-size:.62rem;font-weight:800;color:${posColors[selPos]}">${posEmoji[selPos]} ${posLabels[selPos]}</span>
+    </div>` : '';
+  const cardPadTop = selMode && selPos >= 0 ? 'padding-top:28px' : '';
+
+  return `
+    <div class="pcard ${isSel && selMode?'sel':''} ${isFav && !selMode?'fav':''}" onclick="${click}" style="position:relative">
+      ${selBadge}
+      <div class="pc-check" style="${selPos>=0?'background:'+posBtnBg[selPos]+';top:34px':''}">✓</div>
+      ${favBtn}
+      <div class="pc-img-wrap" style="${cardPadTop}">${img}</div>
+      <div class="pc-body">
+        <div class="pc-name">${esc(p.name)}</div>
+        <div class="pc-tela">${esc(p.tela||'')} — <em style="color:var(--rose);font-size:.6rem">${esc(brandName)}</em></div>
+        <div class="pc-disenos">${(p.disenos||[]).slice(0,3).join(', ')}${(p.disenos||[]).length>3?'…':''}</div>
+        <div class="pc-badges">
+          ${dropiBadge}
+          ${refBadge}
+          ${earningBadge}
+        </div>
+        ${dropiBtn}
+        ${brandQuickLinks}
+        ${recursosBtn}
+        ${editBtn}
+      </div>
+    </div>`;
+}
+
+function renderBrandSocialPanel() {
+  const el = document.getElementById('brand-social-panel');
+  if (!el) return;
+  const brands = (state.store.brands || []).filter(b => b.catWa || b.maps || b.instagram || b.tiktok || b.facebook || b.dropiUrl);
+  if (brands.length === 0) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div style="background:#fff;border:1.5px solid var(--bdr);border-radius:12px;padding:12px 15px">
+    <div style="font-size:.7rem;font-weight:700;color:var(--rd);margin-bottom:8px">🔗 Redes y catálogos por marca</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      ${brands.map(b => `
+        <div style="border:1px solid var(--bdr);border-radius:9px;padding:8px 12px;min-width:180px;flex:1">
+          <div style="font-size:.74rem;font-weight:700;color:var(--ink);margin-bottom:5px">🏷️ ${esc(b.name)}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            ${b.catWa ? `<a href="${esc(b.catWa)}" target="_blank" style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;text-decoration:none;background:#d1fae5;color:#065f46;border:1px solid #6ee7b7">📋 Catálogo WA</a>` : ''}
+            ${b.instagram ? `<a href="${esc(b.instagram)}" target="_blank" style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;text-decoration:none;background:#fce7f3;color:#be185d;border:1px solid #fbcfe8">📸 Instagram</a>` : ''}
+            ${b.tiktok ? `<a href="${esc(b.tiktok)}" target="_blank" style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;text-decoration:none;background:#f3f4f6;color:#374151;border:1px solid #d1d5db">🎵 TikTok</a>` : ''}
+            ${b.facebook ? `<a href="${esc(b.facebook)}" target="_blank" style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;text-decoration:none;background:#dbeafe;color:#1e40af;border:1px solid #93c5fd">👍 Facebook</a>` : ''}
+            ${b.maps ? `<a href="${esc(b.maps)}" target="_blank" style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;text-decoration:none;background:#fef3c7;color:#92400e;border:1px solid #fde68a">📍 Maps</a>` : ''}
+            ${b.dropiUrl ? `<a href="${esc(b.dropiUrl)}" target="_blank" style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:6px;text-decoration:none;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">🛍 Dropi</a>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderCatalog() {
+  const knownBrandIds = getBrands().map(b=>b.id);
+  const favs = getFavorites();
+  const prods = products.filter(p => {
+    if (catFilter === 'all') return true;
+    if (catFilter === 'favs') return favs.includes(p.id);
+    if (catFilter === 'custom') return !knownBrandIds.includes(p.brand);
+    return p.brand === catFilter;
+  });
+  document.getElementById('cat-grid').innerHTML = prods.map(p => prodCardHTML(p, false)).join('') +
+    `<div class="pcard" onclick="openNewProductModal()" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:160px;border-style:dashed;border-color:#c8b8c0">
+      <div style="font-size:2rem">＋</div>
+      <div style="font-size:.76rem;font-weight:700;color:var(--mu)">Nuevo producto</div>
+    </div>`;
+  renderFavGrid();
+  renderBrandSocialPanel();
+}
+
+function renderSelGrid() {
+  const prods = products.filter(p => {
+    if (selFilter === 'all') return true;
+    if (selFilter === 'custom') return !getBrands().map(b=>b.id).includes(p.brand);
+    return p.brand === selFilter;
+  });
+  document.getElementById('sel-grid').innerHTML = prods.map(p => prodCardHTML(p, true)).join('');
+  renderSelConfigs();
+  updateCharBar();
+}
+
+function toggleSel(id) {
+  const idx = state.selectedIds.indexOf(id);
+  if (idx !== -1) {
+    state.selectedIds.splice(idx, 1);
+  } else {
+    if (state.selectedIds.length >= 3) { toast('Máximo 3 productos por prompt'); return; }
+    state.selectedIds.push(id);
+  }
+  renderSelGrid();
+  autoSave();
+}
+
+// ════════════════════════════════════════
+// SEL CONFIGS
+// ════════════════════════════════════════
+function renderSelConfigs() {
+  const prods = state.selectedIds.map(id => products.find(x => x.id === id)).filter(Boolean);
+  if (prods.length === 0) { document.getElementById('sel-configs').innerHTML = ''; return; }
+  const roleLabels = ['🥇 Principal — ChateaPro + IA de entrada','🥈 Segunda opción — IA muestra al pedir más diseños','🥉 Tercera opción — Cierre del portafolio'];
+  const roleColors = ['#92400e','#1e40af','#581c87'];
+  document.getElementById('sel-configs').innerHTML = prods.map((p, idx) => `
+    <div class="cfg-panel active">
+      <div class="cfg-head" onclick="toggleCfg('scfg-${p.id}','scfgtog-${p.id}')">
+        <div class="cfg-num">${idx+1}</div>
+        <div style="flex:1">
+          <div class="cfg-title">Configuración: ${esc(p.name)}</div>
+          <div style="font-size:.61rem;font-weight:700;color:${roleColors[idx]||'var(--mu)'};margin-top:1px">${roleLabels[idx]||''}</div>
+        </div>
+        <div class="cfg-tog" id="scfgtog-${p.id}">▼</div>
+      </div>
+      <div class="cfg-body open" id="scfg-${p.id}">
+        ${renderCfgBody(p.id, p)}
+      </div>
+    </div>`).join('');
+}
+
+function renderCfgBody(id, p) {
+  const ref = p.refMercado || 0;
+  const tiers = p.tiers || [];
+
+  // Render each tier with auto-calc
+  const tiersHtml = tiers.map((t, i) => {
+    const cant    = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    const totalNum  = cant && precioU           ? cant * precioU   : null;
+    const ventaNum  = cant && ref               ? cant * ref        : null;
+    const margenNum = totalNum !== null && ventaNum !== null ? ventaNum - totalNum : null;
+    const isNeg = margenNum !== null && margenNum < 0;
+    const margenColor = isNeg ? '#dc2626' : '#166534';
+    const margenBg    = isNeg ? '#fef2f2' : '#edfaf4';
+    const totalStr    = totalNum  !== null ? fmtMil(totalNum)  : '—';
+    const ventaStr    = ventaNum  !== null ? fmtMil(ventaNum)  : '—';
+    const margenStr   = margenNum !== null ? fmtMil(margenNum) : '—';
+    // Update stored values
+    if (margenNum !== null) { t.total = fmtMil(totalNum); t.venta = fmtMil(ventaNum); t.margen = fmtMil(margenNum); }
+
+    return `
+    <div style="background:#fff;border:1.5px solid ${margenNum!==null?(isNeg?'#fca5a5':'#86efac'):'var(--bdr)'};border-radius:9px;padding:8px 10px;margin-bottom:6px">
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr 28px;gap:6px;align-items:end">
+        <div>
+          <div style="font-size:.57rem;color:var(--mu);font-weight:700;margin-bottom:2px">CANTIDAD</div>
+          <input class="tier-input" value="${esc(t.rango)}" placeholder="12u"
+            oninput="updTier('${id}',${i},'rango',this.value)"
+            style="text-align:center;font-weight:800;font-size:.8rem;background:#f9f0ff;border-color:#d8b4fe">
+        </div>
+        <div>
+          <div style="font-size:.57rem;color:var(--mu);font-weight:700;margin-bottom:2px">PRECIO FÁBRICA/u <span style="color:var(--rose)">*</span></div>
+          <input class="tier-input" value="${esc(t.precio)}" placeholder="16500"
+            oninput="updTier('${id}',${i},'precio',this.value)"
+            style="font-weight:700;background:#fff8f0;border-color:#fed7aa">
+        </div>
+        <div style="background:${margenBg};border-radius:7px;padding:5px 8px;text-align:center;border:1px solid ${isNeg?'#fca5a5':'#86efac'}">
+          <div style="font-size:.57rem;color:${margenColor};font-weight:700">TE SOBRAN 💰</div>
+          <div style="font-size:.88rem;font-weight:800;color:${margenColor}">${margenStr}</div>
+          <div style="font-size:.53rem;color:${margenColor}">${margenNum!==null?fmtMil(ventaNum)+' − '+fmtMil(totalNum):'ingresa cant. y precio'}</div>
+        </div>
+        <button class="tier-del" onclick="delTier('${id}',${i})" ${tiers.length<=3?'disabled':''}>🗑</button>
+      </div>
+      <div style="font-size:.6rem;color:var(--mu);background:#f9f9f9;border-radius:5px;padding:3px 7px;margin-top:5px;font-family:monospace">
+        ${esc(t.rango||'?')} a ${esc(t.precio||'?')} → pagas <b>${totalStr}</b> → vendes <b>${ventaStr}</b> → te sobran <b style="color:${margenColor}">${margenStr}</b> limpios
+      </div>
+    </div>`;
+  }).join('');
+
+  // Build planilla preview with live calc
+  const planillaText = buildPlanilla(p);
+
+  const galRows = (p.galeria||[]).map((g, i) => {
+    const thumb = g.url
+      ? `<div class="gal-thumb" onclick="openLightbox('${esc(g.url)}')"><img src="${esc(g.url)}" alt="" onerror="this.parentNode.innerHTML='📷'"></div>`
+      : `<div class="gal-thumb" style="font-size:1.2rem;display:flex;align-items:center;justify-content:center">📷</div>`;
+    return `<div class="gal-row">
+      ${thumb}
+      <input value="${esc(g.url)}" placeholder="URL ChateaPro..." oninput="updGal('${id}',${i},'url',this.value);updateGalThumb(this,${i},'${id}')">
+      <input value="${esc(g.label)}" placeholder="Nombre" oninput="updGal('${id}',${i},'label',this.value)" style="font-size:.7rem;width:60px">
+      <button class="gal-del" onclick="delGal('${id}',${i})">🗑</button>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="margen-box" style="font-size:.69rem;padding:9px 12px">
+    ⚡ <strong>Cálculo automático:</strong> Ingresa la <strong>Ref. mercado</strong> y el <strong>precio fábrica/u</strong> de cada tramo — el sistema calcula solo lo que te sobran. La Ref. mercado es la base del margen.
+  </div>
+  <div class="g2">
+    <div class="fg"><label>Ref. mercado / ancla ($) <span class="req">*</span></label>
+      <input type="number" value="${p.refMercado||0}" oninput="updP('${id}','refMercado',this.value)" style="font-weight:700;font-size:.95rem">
+      <div class="hint">Precio al que vende tu cliente. Base del margen.</div>
+    </div>
+    <div class="fg"><label>Precio 1 unidad (detal)</label>
+      <input value="${esc(p.precio1||'')}" placeholder="$26.500" oninput="updP('${id}','precio1',this.value)">
+    </div>
+  </div>
+  <label style="margin-bottom:6px;display:block">Tramos de precio — mínimo 3 <span style="font-size:.62rem;color:var(--mu);font-weight:400">(cantidad + precio fábrica → calcula automático)</span></label>
+  <div id="tiers-cfg-${id}">
+    ${tiersHtml}
+  </div>
+  <button class="gal-add" onclick="addTier('${id}')" style="margin-bottom:8px">+ Agregar tramo</button>
+  <div class="plan-prev" id="pp-${id}">${planillaText}</div>
+  <div class="div"></div>
+  <label>Diseños disponibles</label>
+  <div class="tag-wrap" id="tags-${id}">${(p.disenos||[]).map(d=>`<span class="tag">${esc(d)}<button onclick="delDiseno('${id}','${d.replace(/'/g,"\\'")}')">×</button></span>`).join('')}</div>
+  <div class="tag-add"><input id="newtag-${id}" placeholder="Nuevo diseño..." onkeydown="if(event.key==='Enter')addDiseno('${id}')"><button onclick="addDiseno('${id}')">+</button></div>
+  <div class="div"></div>
+  <label>Galería — mínimo 3 fotos de <strong>diferentes colores</strong></label>
+  <div class="al aorange" style="font-size:.67rem;margin-bottom:6px">⚠️ Las fotos deben ser de <strong>colores distintos</strong> y diferentes a las de bienvenida en ChateaPro.</div>
+  <div class="gal-list" id="gal-${id}">${galRows}</div>
+  <button class="gal-add" onclick="addGal('${id}')">+ Foto</button>
+  <div class="div"></div>
+  <div class="g3">
+    <div class="fg"><label>Alt. MAYOR/EMP (por cantidad)</label>
+      <input value="${esc(p.altMayor||'')}" oninput="updP('${id}','altMayor',this.value)">
+    </div>
+    <div class="fg"><label>Alt. DETAL/REGALO (por diseño)</label>
+      <input value="${esc(p.altDetal||'')}" oninput="updP('${id}','altDetal',this.value)">
+    </div>
+    <div class="fg"><label>Top diseño (el más pedido)</label>
+      <input value="${esc(p.topDiseno||'')}" oninput="updP('${id}','topDiseno',this.value)">
+    </div>
+  </div>`;
+}
+
+function toggleCfg(bodyId, togId) {
+  const body = document.getElementById(bodyId);
+  const tog = document.getElementById(togId);
+  if (!body) return;
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  if (tog) tog.textContent = open ? '▶' : '▼';
+}
+
+function updTier(id, i, key, val) {
+  const p = products.find(x => x.id === id);
+  if (p && p.tiers && p.tiers[i] !== undefined) {
+    p.tiers[i][key] = val;
+    // Re-render tiers section + planilla preview
+    const tiersEl = document.getElementById('tiers-cfg-'+id);
+    if (tiersEl) {
+      // Rebuild just tiers HTML without full re-render (preserve focus via timeout)
+      const ref = p.refMercado || 0;
+      p.tiers.forEach((t, ti) => {
+        const cant    = parseRangoNum(t.rango);
+        const precioU = parsePrecioNum(t.precio);
+        if (cant && precioU && ref) {
+          t.total  = fmtMil(cant * precioU);
+          t.venta  = fmtMil(cant * ref);
+          t.margen = fmtMil(cant * ref - cant * precioU);
+        }
+      });
+    }
+    // Update planilla preview text
+    const el = document.getElementById('pp-'+id);
+    if (el) el.textContent = buildPlanilla(p);
+    // Debounce full re-render to avoid losing focus
+    clearTimeout(p._rerenderTimer);
+    p._rerenderTimer = setTimeout(() => {
+      const body = document.getElementById('scfg-'+id);
+      if (body) body.innerHTML = renderCfgBody(id, p);
+    }, 800);
+    updateCharBar();
+  }
+}
+
+function updP(id, key, val) {
+  const p = products.find(x => x.id === id);
+  if (p) {
+    p[key] = key === 'refMercado' ? parseInt(val)||0 : val;
+    if (['refMercado','precio1'].includes(key)) {
+      // Recalculate all tiers when ref changes
+      if (key === 'refMercado') {
+        const refNum = parseInt(val)||0;
+        p.tiers.forEach(t => {
+          const cant    = parseRangoNum(t.rango);
+          const precioU = parsePrecioNum(t.precio);
+          if (cant && precioU && refNum) {
+            t.total  = fmtMil(cant * precioU);
+            t.venta  = fmtMil(cant * refNum);
+            t.margen = fmtMil(cant * refNum - cant * precioU);
+          }
+        });
+        // Full re-render to update all tier cards
+        clearTimeout(p._rerenderTimer);
+        p._rerenderTimer = setTimeout(() => {
+          const body = document.getElementById('scfg-'+id);
+          if (body) body.innerHTML = renderCfgBody(id, p);
+        }, 600);
+      }
+      const el = document.getElementById('pp-'+id);
+      if (el) el.textContent = buildPlanilla(p);
+    }
+    updateCharBar();
+  }
+}
+function delTier(id, i) {
+  const p = products.find(x => x.id === id);
+  if (!p || !p.tiers) return;
+  if (p.tiers.length <= 3) { toast('Mínimo 3 tramos requeridos'); return; }
+  p.tiers.splice(i, 1);
+  const body = document.getElementById('scfg-'+id);
+  if (body) body.innerHTML = renderCfgBody(id, p);
+  updateCharBar();
+}
+function addTier(id) {
+  const p = products.find(x => x.id === id); if (!p) return;
+  if (!p.tiers) p.tiers = [];
+  p.tiers.push({rango:'+X unid', precio:'', margen:''});
+  const body = document.getElementById('scfg-'+id);
+  if (body) body.innerHTML = renderCfgBody(id, p);
+  updateCharBar();
+}
+function updGal(id, i, key, val) {
+  const p = products.find(x => x.id === id);
+  if (p && p.galeria && p.galeria[i]) p.galeria[i][key] = val;
+}
+function updateGalThumb(input, i, id) {
+  const gal = document.getElementById('gal-'+id);
+  if (!gal) return;
+  const rows = gal.querySelectorAll('.gal-row');
+  if (rows[i]) {
+    const thumb = rows[i].querySelector('.gal-thumb');
+    if (thumb) thumb.innerHTML = input.value ? `<img src="${esc(input.value)}" alt="" onerror="this.parentNode.innerHTML='📷'" style="width:100%;height:100%;object-fit:cover">` : '📷';
+  }
+}
+function delGal(id, i) {
+  const p = products.find(x => x.id === id);
+  if (p && p.galeria) {
+    p.galeria.splice(i, 1);
+    const body = document.getElementById('scfg-'+id);
+    if (body) body.innerHTML = renderCfgBody(id, p);
+  }
+}
+function addGal(id) {
+  const p = products.find(x => x.id === id); if (!p) return;
+  if (!p.galeria) p.galeria = [];
+  p.galeria.push({label:'Foto', url:''});
+  const body = document.getElementById('scfg-'+id);
+  if (body) body.innerHTML = renderCfgBody(id, p);
+}
+function addDiseno(id) {
+  const inp = document.getElementById('newtag-'+id);
+  const val = (inp.value||'').trim(); if (!val) return;
+  const p = products.find(x => x.id === id); if (!p) return;
+  if (!p.disenos) p.disenos = [];
+  p.disenos.push(val); inp.value = '';
+  document.getElementById('tags-'+id).innerHTML = (p.disenos||[]).map(d =>
+    `<span class="tag">${esc(d)}<button onclick="delDiseno('${id}','${d.replace(/'/g,"\\'")}')">×</button></span>`).join('');
+}
+function delDiseno(id, d) {
+  const p = products.find(x => x.id === id); if (!p) return;
+  p.disenos = (p.disenos||[]).filter(x => x !== d);
+  document.getElementById('tags-'+id).innerHTML = (p.disenos||[]).map(dd =>
+    `<span class="tag">${esc(dd)}<button onclick="delDiseno('${id}','${dd.replace(/'/g,"\\'")}')">×</button></span>`).join('');
+}
+function buildPlanilla(p) {
+  // Siempre calcular desde precio × rango × refMercado — nunca usar valores guardados con '?'
+  const tiers  = p.tiers || [];
+  const refNum = p.refMercado || 0;
+  const ref    = fmtNum(refNum);
+  let lines = `Ref.mercado: $${ref} — precio cliente final\n`;
+  tiers.forEach(t => {
+    const cant    = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    let totalStr, ventaStr, margenStr;
+    if (cant && precioU && refNum) {
+      totalStr  = fmtMil(cant * precioU);
+      ventaStr  = fmtMil(cant * refNum);
+      margenStr = fmtMil(cant * refNum - cant * precioU);
+    } else {
+      totalStr  = t.total  || (cant && precioU ? fmtMil(cant*precioU) : '?');
+      ventaStr  = t.venta  || (cant && refNum  ? fmtMil(cant*refNum)  : '?');
+      margenStr = t.margen || '?';
+    }
+    lines += `${t.rango} a ${t.precio} → pagas ${totalStr} → vendes ${ventaStr} → te sobran ${margenStr} limpios\n`;
+  });
+  lines += `1u: ${p.precio1||'$0'}\nLa primera semana recuperas lo invertido.`;
+  return lines;
+}
+
+function buildPlanillaMayor(p) {
+  const tiers  = p.tiers || [];
+  const refNum = p.refMercado || 0;
+  const ref    = fmtNum(refNum);
+  let lines = `${p.name}|Tela:${p.tela||''}|Disenos: ${(p.disenos||[]).join(',')}\n`;
+  lines += `Ref.mercado: $${ref} — precio que cobra tu cliente final\n`;
+  tiers.forEach(t => {
+    const cant    = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    const totalStr  = cant && precioU          ? fmtMil(cant * precioU)           : (t.total  || '?');
+    const ventaStr  = cant && refNum           ? fmtMil(cant * refNum)            : (t.venta  || '?');
+    const margenStr = cant && precioU && refNum? fmtMil(cant*refNum - cant*precioU): (t.margen || '?');
+    lines += `${t.rango} a ${t.precio} → pagas ${totalStr} → vendes ${ventaStr} → te sobran ${margenStr} limpios\n`;
+  });
+  lines += `1u: ${p.precio1||'$0'}\nLa primera semana recuperas lo invertido.`;
+  return lines;
+}
+
+function buildPlanillaDetal(p) {
+  const ref = fmtNum(p.refMercado||0);
+  return `${p.name} ${p.tela||''}. Talla unica cubre S a L. ${p.precio1||'$0'}+flete. Ref.mcdo $${ref}. Disenos: ${(p.disenos||[]).join(', ')}.`;
+}
+
+function buildPlanillaRegalo(p) {
+  const ref = fmtNum(p.refMercado||0);
+  return `El regalo mas pedido. ${p.precio1||'$0'}+flete, llega en 1-4 dias. Talla unica cubre S a L. Disenos: ${(p.disenos||[]).join(', ')}.`;
+}
+
+// ════════════════════════════════════════
+// PRODUCT MODAL
+// ════════════════════════════════════════
+let mTiers = [], mGal = [], mDisenos = [];
+const MIN_TIERS = 3;
+
+function openNewProductModal() {
+  sv('modal-edit-id','');
+  document.getElementById('modal-title').textContent = 'Nuevo producto';
+  ['m-name','m-tela','m-argumento','m-top','m-refmcdo','m-p1','m-altmayor','m-altdetal','m-dropi-id','m-dropi-url','m-dropi-img','m-catwa','m-recursos-url'].forEach(id => sv(id,''));
+  sv('m-altmayor','¿Arrancamos con 12 o prefieres 6?');
+  mTiers = [{rango:'12u',precio:'',total:'',venta:'',margen:''},{rango:'6u',precio:'',total:'',venta:'',margen:''},{rango:'3u',precio:'',total:'',venta:'',margen:''}];
+  mGal = [{label:'Foto 1',url:''},{label:'Foto 2',url:''},{label:'Foto 3',url:''}];
+  mDisenos = [];
+  const prev = document.getElementById('m-dropi-img-preview');
+  if (prev) prev.style.display = 'none';
+  renderMTiers(); renderMGal(); renderMTags();
+  populateBrandSelect();
+  document.getElementById('prod-modal').classList.add('on');
+}
+
+function openEditProductModal(id) {
+  const p = products.find(x => x.id === id); if (!p) return;
+  sv('modal-edit-id', id);
+  document.getElementById('modal-title').textContent = 'Editar: ' + p.name;
+  sv('m-name', p.name||''); sv('m-tela', p.tela||''); sv('m-argumento', p.argumento||'');
+  sv('m-top', p.topDiseno||''); sv('m-refmcdo', p.refMercado||''); sv('m-p1', p.precio1||'');
+  sv('m-altmayor', p.altMayor||''); sv('m-altdetal', p.altDetal||'');
+  sv('m-dropi-id', p.dropiId||''); sv('m-dropi-url', p.dropiUrl||'');
+  sv('m-dropi-img', p.dropiImg||''); sv('m-catwa', p.catWa||'');
+  sv('m-recursos-url', p.recursosUrl||'');
+  if (p.dropiImg) previewDropiImg(p.dropiImg);
+  mTiers = JSON.parse(JSON.stringify(p.tiers||[{rango:'12u',precio:'',total:'',venta:'',margen:''},{rango:'6u',precio:'',total:'',venta:'',margen:''},{rango:'3u',precio:'',total:'',venta:'',margen:''}]));
+  mGal = JSON.parse(JSON.stringify(p.galeria||[]));
+  mDisenos = [...(p.disenos||[])];
+  renderMTiers(); renderMGal(); renderMTags();
+  populateBrandSelect();
+  const sel = document.getElementById('m-brand');
+  if (sel) sel.value = p.brand || 'custom';
+  document.getElementById('prod-modal').classList.add('on');
+}
+
+function closeModal() { document.getElementById('prod-modal').classList.remove('on'); }
+
+// ── TIER CALC HELPERS ──────────────────────────────────────────
+function parsePrecioNum(val) {
+  // Extract number from strings like "$16.500/u", "16500", "$16.500"
+  if (!val) return 0;
+  return parseInt(String(val).replace(/[^0-9]/g,'')) || 0;
+}
+function parseRangoNum(val) {
+  // Extract first number from "12u", "+12 unid", "12"
+  if (!val) return 0;
+  const m = String(val).match(/\d+/);
+  return m ? parseInt(m[0]) : 0;
+}
+function fmtMil(n) {
+  // Format as "$198mil" if >= 1000, else "$500"
+  if (!n || isNaN(n)) return '?';
+  if (n >= 1000000) return `$${(n/1000000).toFixed(1).replace('.0','')}M`;
+  if (n >= 1000) {
+    const mil = Math.round(n/1000);
+    return `$${mil}mil`;
+  }
+  return `$${n.toLocaleString('es-CO')}`;
+}
+function fmtPrecioU(n) {
+  if (!n || isNaN(n)) return '';
+  return `$${n.toLocaleString('es-CO')}/u`;
+}
+function calcTier(t, refMercado) {
+  const cant   = parseRangoNum(t.rango);
+  const precioU = parsePrecioNum(t.precio);
+  if (!cant || !precioU) return {...t};
+  const total  = cant * precioU;
+  const venta  = cant * (refMercado || 0);
+  const margen = venta - total;
+  return {
+    ...t,
+    total:  fmtMil(total),
+    venta:  fmtMil(venta),
+    margen: fmtMil(margen)
+  };
+}
+function recalcAllTiers() {
+  const ref = parseInt(document.getElementById('m-refmcdo')?.value || 0) || 0;
+  let changed = false;
+  mTiers = mTiers.map(t => {
+    const cant   = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    if (cant && precioU && ref) {
+      const total  = cant * precioU;
+      const venta  = cant * ref;
+      const margen = venta - total;
+      changed = true;
+      return { ...t, total: fmtMil(total), venta: fmtMil(venta), margen: fmtMil(margen) };
+    }
+    return t;
+  });
+  if (changed) renderMTiers();
+}
+function updateMargenSummary() {
+  const ref = parseInt(document.getElementById('m-refmcdo')?.value || 0) || 0;
+  const el  = document.getElementById('m-margen-summary');
+  if (!el) return;
+  const calcTiers = mTiers.filter(t => parseRangoNum(t.rango) && parsePrecioNum(t.precio) && ref);
+  if (!calcTiers.length) { el.style.display='none'; return; }
+  let html = '<strong>📊 Resumen de márgenes:</strong><br>';
+  calcTiers.forEach(t => {
+    const cant    = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    const total   = cant * precioU;
+    const venta   = cant * ref;
+    const margen  = venta - total;
+    const pct     = venta > 0 ? Math.round((margen/venta)*100) : 0;
+    const color   = margen < 0 ? '#dc2626' : '#166534';
+    html += `<span style="color:${color}">${t.rango} a ${fmtPrecioU(precioU)} → pagas <b>${fmtMil(total)}</b> → vendes <b>${fmtMil(venta)}</b> → <b>te sobran ${fmtMil(margen)} (${pct}%)</b></span><br>`;
+  });
+  el.style.display='block';
+  el.innerHTML = html;
+}
+function onRefChange() {
+  recalcAllTiers();
+  updateMargenSummary();
+}
+function onTierInputCalc(i, field, val) {
+  mTiers[i][field] = val;
+  const t = mTiers[i];
+  const cant    = parseRangoNum(t.rango);
+  const precioU = parsePrecioNum(t.precio);
+  const ref     = parseInt(document.getElementById('m-refmcdo')?.value || 0) || 0;
+  if (cant && precioU && ref) {
+    const total  = cant * precioU;
+    const venta  = cant * ref;
+    const margen = venta - total;
+    mTiers[i].total  = fmtMil(total);
+    mTiers[i].venta  = fmtMil(venta);
+    mTiers[i].margen = fmtMil(margen);
+    const margenColor = margen < 0 ? '#dc2626' : '#166534';
+    const preview  = document.getElementById(`tier-preview-${i}`);
+    const totalEl  = document.getElementById(`tier-total-${i}`);
+    const ventaEl  = document.getElementById(`tier-venta-${i}`);
+    const margenEl = document.getElementById(`tier-margen-${i}`);
+    if (preview)  preview.innerHTML  = `${esc(t.rango||'?')} a ${esc(t.precio||'?')} → pagas <strong>${fmtMil(total)}</strong> → vendes <strong>${fmtMil(venta)}</strong> → te sobran <strong style="color:${margenColor}">${fmtMil(margen)}</strong> limpios`;
+    if (totalEl)  totalEl.value  = fmtMil(total);
+    if (ventaEl)  ventaEl.value  = fmtMil(venta);
+    if (margenEl) margenEl.value = fmtMil(margen);
+    updateMargenSummary();
+  }
+}
+
+function renderMTiers() {
+  const ref = parseInt(document.getElementById('m-refmcdo')?.value || 0) || 0;
+  document.getElementById('m-tiers').innerHTML = mTiers.map((t, i) => {
+    // Auto-calc if possible
+    const cant    = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    let totalVal = t.total, ventaVal = t.venta, margenVal = t.margen;
+    let autoCalc = false;
+    if (cant && precioU && ref) {
+      totalVal  = fmtMil(cant * precioU);
+      ventaVal  = fmtMil(cant * ref);
+      margenVal = fmtMil(cant * ref - cant * precioU);
+      mTiers[i].total  = totalVal;
+      mTiers[i].venta  = ventaVal;
+      mTiers[i].margen = margenVal;
+      autoCalc = true;
+    }
+    const margenNum = cant && precioU && ref ? (cant * ref - cant * precioU) : 0;
+    const isNeg = margenNum < 0;
+    const margenColor = isNeg ? '#dc2626' : '#166534';
+    const margenBg    = isNeg ? '#fef2f2' : '#edfaf4';
+    return `
+    <div style="margin-bottom:10px;background:#fff;border:1.5px solid ${autoCalc?'#86efac':isNeg?'#fca5a5':'var(--bdr)'};border-radius:10px;padding:10px 12px;transition:border-color .2s">
+      <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:6px;align-items:end;margin-bottom:6px">
+        <div>
+          <div style="font-size:.58rem;color:var(--mu);font-weight:700;margin-bottom:2px">CANTIDAD</div>
+          <input class="tier-input" id="tier-rango-${i}" value="${esc(t.rango)}" placeholder="12"
+            oninput="mTiers[${i}].rango=this.value;onTierInputCalc(${i},'rango',this.value)"
+            style="text-align:center;font-size:.85rem;font-weight:800;background:#f9f0ff;border-color:#d8b4fe">
+          <div style="font-size:.55rem;color:#7c3aed;text-align:center;margin-top:1px">unidades</div>
+        </div>
+        <div>
+          <div style="font-size:.58rem;color:var(--mu);font-weight:700;margin-bottom:2px">PRECIO FÁBRICA/u <span style="color:var(--rose)">*</span></div>
+          <input class="tier-input" id="tier-precio-${i}" value="${esc(t.precio)}" placeholder="16500"
+            oninput="mTiers[${i}].precio=this.value;onTierInputCalc(${i},'precio',this.value)"
+            style="font-size:.85rem;font-weight:700;background:#fff8f0;border-color:#fed7aa">
+          <div style="font-size:.55rem;color:#c2410c;text-align:center;margin-top:1px">lo que pagas a fábrica</div>
+        </div>
+        <button class="tier-del" onclick="mDelTier(${i})" ${mTiers.length<=MIN_TIERS?'disabled':''}>🗑</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:6px">
+        <div style="background:#fff8f0;border-radius:7px;padding:5px 7px;text-align:center">
+          <div style="font-size:.57rem;color:#c2410c;font-weight:700">PAGAS TOTAL</div>
+          <input class="tier-input" id="tier-total-${i}" value="${esc(totalVal||'')}" placeholder="auto"
+            oninput="mTiers[${i}].total=this.value"
+            style="background:transparent;border:none;text-align:center;font-size:.8rem;font-weight:700;color:#92400e;padding:2px 0;width:100%">
+          <div style="font-size:.53rem;color:#92400e">${cant&&precioU?cant+'×'+fmtPrecioU(precioU):'escribe cantidad y precio'}</div>
+        </div>
+        <div style="background:#f0f8ff;border-radius:7px;padding:5px 7px;text-align:center">
+          <div style="font-size:.57rem;color:#1d4ed8;font-weight:700">VENDES TOTAL</div>
+          <input class="tier-input" id="tier-venta-${i}" value="${esc(ventaVal||'')}" placeholder="auto"
+            oninput="mTiers[${i}].venta=this.value"
+            style="background:transparent;border:none;text-align:center;font-size:.8rem;font-weight:700;color:#1e40af;padding:2px 0;width:100%">
+          <div style="font-size:.53rem;color:#1e40af">${cant&&ref?cant+'×Ref.$'+fmtNum(ref):'requiere Ref.mercado'}</div>
+        </div>
+        <div style="background:${margenBg};border-radius:7px;padding:5px 7px;text-align:center;border:${autoCalc?'1.5px solid #86efac':'1.5px solid transparent'}">
+          <div style="font-size:.57rem;color:${margenColor};font-weight:700">TE SOBRAN 💰</div>
+          <input class="tier-input" id="tier-margen-${i}" value="${esc(margenVal||'')}" placeholder="auto"
+            oninput="mTiers[${i}].margen=this.value"
+            style="background:transparent;border:none;text-align:center;font-size:.88rem;font-weight:800;color:${margenColor};padding:2px 0;width:100%">
+          <div style="font-size:.53rem;color:${margenColor}">${autoCalc?'calculado automático':'vendes - pagas'}</div>
+        </div>
+      </div>
+      <div id="tier-preview-${i}" style="font-size:.62rem;color:var(--mu);background:#f9f9f9;border-radius:5px;padding:4px 7px;font-family:monospace">
+        ${esc(t.rango||'?')} a ${esc(t.precio||'?')} → pagas <strong>${totalVal||'?'}</strong> → vendes <strong>${ventaVal||'?'}</strong> → te sobran <strong style="color:${margenColor}">${margenVal||'?'}</strong> limpios
+      </div>
+    </div>`;
+  }).join('') +
+  `<button class="gal-add" style="margin-top:4px" onclick="mTiers.push({rango:'',precio:'',total:'',venta:'',margen:''});renderMTiers()">+ Tramo de precio</button>`;
+  updateMargenSummary();
+}
+function mDelTier(i) {
+  if (mTiers.length <= MIN_TIERS) { toast('Mínimo 3 tramos requeridos'); return; }
+  mTiers.splice(i, 1); renderMTiers();
+}
+function renderMGal() {
+  document.getElementById('m-galeria').innerHTML = mGal.map((g,i) => {
+    const thumb = g.url
+      ? `<div class="gal-thumb" onclick="openLightbox('${esc(g.url)}')"><img src="${esc(g.url)}" alt="" onerror="this.parentNode.innerHTML='📷'" style="width:100%;height:100%;object-fit:cover"></div>`
+      : `<div class="gal-thumb" style="font-size:1.2rem;display:flex;align-items:center;justify-content:center">📷</div>`;
+    return `<div class="gal-row">
+      ${thumb}
+      <input value="${esc(g.url)}" placeholder="URL ChateaPro o CDN Dropi..." oninput="mGal[${i}].url=this.value">
+      <input value="${esc(g.label)}" placeholder="Nombre" oninput="mGal[${i}].label=this.value" style="font-size:.7rem;width:60px">
+      <button class="gal-del" onclick="mGal.splice(${i},1);renderMGal()">🗑</button>
+    </div>`;
+  }).join('') + `<button class="gal-add" style="margin-top:4px" onclick="mAddGal()">+ Foto</button>`;
+}
+function mAddGal() { mGal.push({label:'Foto', url:''}); renderMGal(); }
+function renderMTags() {
+  document.getElementById('m-tags').innerHTML = mDisenos.map(d =>
+    `<span class="tag">${esc(d)}<button onclick="mDisenos=mDisenos.filter(x=>x!=='${d.replace(/'/g,"\\'")}');renderMTags()">×</button></span>`).join('');
+}
+function mAddTag() {
+  const inp = document.getElementById('m-newtag');
+  const val = (inp.value||'').trim(); if (!val) return;
+  mDisenos.push(val); inp.value = ''; renderMTags();
+}
+
+function previewDropiImg(url) {
+  const prev = document.getElementById('m-dropi-img-preview');
+  const thumb = document.getElementById('m-dropi-img-thumb');
+  if (!prev || !thumb) return;
+  if (url) { thumb.src = url; prev.style.display = 'block'; }
+  else prev.style.display = 'none';
+}
+
+function saveProduct() {
+  const name = gv('m-name').trim();
+  if (!name) { toast('El nombre del producto es obligatorio'); return; }
+  const editId = gv('modal-edit-id');
+  const id = editId || 'prod_' + Date.now();
+  const brandSel = document.getElementById('m-brand');
+  const brand = brandSel ? brandSel.value : 'custom';
+  const refMercado = parseInt(gv('m-refmcdo'))||0;
+
+  // Final recalc before saving
+  const finalTiers = mTiers.map(t => {
+    const cant    = parseRangoNum(t.rango);
+    const precioU = parsePrecioNum(t.precio);
+    if (cant && precioU && refMercado) {
+      const total  = cant * precioU;
+      const venta  = cant * refMercado;
+      const margen = venta - total;
+      return { ...t, total: fmtMil(total), venta: fmtMil(venta), margen: fmtMil(margen) };
+    }
+    return t;
+  });
+
+  // Auto-format precio1 if it's a raw number
+  let precio1 = gv('m-p1');
+  if (precio1 && /^\d+$/.test(precio1)) {
+    precio1 = '$' + parseInt(precio1).toLocaleString('es-CO');
+  }
+
+  const product = {
+    id, brand, name,
+    tela: gv('m-tela'), disenos: [...mDisenos], argumento: gv('m-argumento'),
+    refMercado,
+    tiers: JSON.parse(JSON.stringify(finalTiers)),
+    tablaInterna: compactTabla(finalTiers.map(t => `${t.rango}=${t.precio}`).join('|')),
+    precio1, topDiseno: gv('m-top'),
+    altMayor: gv('m-altmayor'), altDetal: gv('m-altdetal'),
+    galeria: JSON.parse(JSON.stringify(mGal)),
+    dropiId: gv('m-dropi-id'), dropiUrl: gv('m-dropi-url'),
+    dropiImg: gv('m-dropi-img'), catWa: gv('m-catwa'),
+    recursosUrl: gv('m-recursos-url')
+  };
+  if (editId) {
+    const idx = products.findIndex(x => x.id === editId);
+    if (idx !== -1) products[idx] = product; else products.push(product);
+  } else { products.push(product); }
+  closeModal();
+  renderCatalog();
+  renderSelGrid();
+  saveAll();
+  toast(editId ? '✅ Producto actualizado' : '✅ Producto agregado al catálogo');
+}
+
+// ════════════════════════════════════════
+// LIGHTBOX
+// ════════════════════════════════════════
+function openLightbox(src) {
+  if (!src) return;
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  if (lb && img) { img.src = src; lb.classList.add('on'); }
+}
+function closeLightbox() {
+  document.getElementById('lightbox')?.classList.remove('on');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeModal(); } });
+
+// ════════════════════════════════════════
+// CHAR BAR
+// ════════════════════════════════════════
+function updateCharBar() {
+  const len = buildPrompt().length;
+  const pct = Math.min(100, (len/11000)*100);
+  const bar = document.getElementById('bar-sel');
+  const lbl = document.getElementById('bar-sel-lbl');
+  const hcnt = document.getElementById('hcnt');
+  const over = len > 11000;
+  const warn = len > 9500 && len <= 11000;
+  if (bar) { bar.style.width = pct+'%'; bar.className = 'cbar-fg'+(over?' over':warn?' warn':''); }
+  if (lbl) lbl.textContent = `${len.toLocaleString()} / 11.000 chars ${over?'⚠️ SUPERA LÍMITE':warn?'⚠️ Cerca del límite':'✅ OK para ChateaPro'}`;
+  if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 11.000`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
+}
+
+// ════════════════════════════════════════
+// EXPORT / IMPORT CONFIG
+// ════════════════════════════════════════
+function exportConfig() {
+  readStoreFields();
+  const data = {
+    store: state.store,
+    products: products,
+    selectedIds: state.selectedIds,
+    absRules: absRules,
+    exportedAt: new Date().toISOString(),
+    version: 'v6'
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const nombre = (state.store.empresa || 'indisutex').toLowerCase().replace(/\s+/g,'_');
+  a.href = url;
+  a.download = `config_${nombre}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ Configuración exportada');
+}
+
+function importConfig(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!confirm(`¿Cargar la configuración de "${data.store?.empresa || 'archivo'}"?\n\nEsto reemplazará tu configuración actual.`)) return;
+      if (data.store) {
+        state.store = { ...JSON.parse(JSON.stringify(DEFAULT_STATE.store)), ...data.store };
+        if (!state.store.favorites) state.store.favorites = [];
+      }
+      if (data.products && data.products.length) products = data.products;
+      if (data.absRules && data.absRules.length) absRules = data.absRules;
+      if (data.selectedIds) state.selectedIds = data.selectedIds;
+      fillStoreFields();
+      renderPayList();
+      renderFleteRows();
+      renderSocialList();
+      renderBrandsConfig();
+      renderAbsRules();
+      renderCatalog();
+      renderSelGrid();
+      renderBrandPills();
+      renderSelBrandPills();
+      updateHeaderLinks();
+      updateCharBar();
+      populateBrandSelect();
+      renderBrandSocialPanel();
+      saveAll();
+      toast('✅ Configuración importada correctamente');
+    } catch(err) {
+      toast('❌ Error al leer el archivo — verifica que sea un JSON válido');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// ════════════════════════════════════════
+// BREVO CONTACT SYNC
+// ════════════════════════════════════════
+function syncBrevoWithNegocio() {
+  const email = localStorage.getItem('indisutex_user_email') || '';
+  if (!email) return;
+  // Solo sincronizar si tiene empresa definida y no se ha hecho aún con negocio
+  const empresa = gv('s-empresa') || state.store.empresa || '';
+  const yaConNegocio = localStorage.getItem('indisutex_brevo_negocio_synced');
+  if (empresa && empresa !== 'Indisutex SAS' && !yaConNegocio) {
+    fetch('/.netlify/functions/brevo-contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: email.split('@')[0],
+        correo: email,
+        negocio: empresa
+      })
+    }).then(() => {
+      localStorage.setItem('indisutex_brevo_negocio_synced', '1');
+    }).catch(() => {}); // silencioso
+  }
+}
+
+// ════════════════════════════════════════
+// PROMPT GENERATOR
+// ════════════════════════════════════════
+function goGenerate() {
+  if (state.selectedIds.length === 0) { toast('Selecciona al menos 1 producto'); return; }
+  readStoreFields();
+  syncBrevoWithNegocio(); // registrar negocio en Brevo al generar (fire-and-forget)
+  generatePrompt();
+  showTab('tab-prompt');
+}
+
+function generatePrompt() {
+  const prompt = buildPrompt();
+  document.getElementById('pout').textContent = prompt;
+  const len = prompt.length;
+  const pill = document.getElementById('cpill');
+  const over = len > 11000;
+  const warn = len > 9500 && len <= 11000;
+  pill.textContent = `${len.toLocaleString()} chars`;
+  pill.className = 'cpill'+(over?' over':warn?' warn':' ok');
+  const hcnt = document.getElementById('hcnt');
+  if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 11.000`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
+  renderChecklist(prompt, len);
+}
+
+function compactTabla(tablaStr) {
+  if (!tablaStr) return tablaStr;
+  // Already compact if first entry is a range like "1-2u=" or multi-digit "12+u="
+  const firstEntry = tablaStr.split('|')[0].trim();
+  if (/^\d+-\d+u=/.test(firstEntry) || /^\d{2,}\+u=/.test(firstEntry)) return tablaStr;
+  // Normalize: remove spaces around pipes and equals
+  const clean = tablaStr.replace(/\s*\|\s*/g, '|').replace(/\s*=\s*/g, '=');
+  const entries = clean.split('|').map(e => {
+    const m = e.trim().match(/^(\d+)\+?u=(.+)$/);
+    return m ? { n: parseInt(m[1]), price: m[2].trim() } : null;
+  }).filter(Boolean);
+  if (entries.length === 0) return tablaStr;
+  entries.sort((a,b) => a.n - b.n);
+  const ranges = [];
+  let i = 0;
+  while (i < entries.length) {
+    const price = entries[i].price;
+    const start = entries[i].n;
+    let end = start;
+    while (i + 1 < entries.length && entries[i+1].price === price) { i++; end = entries[i].n; }
+    const isLast = (i === entries.length - 1);
+    if (start === end) {
+      ranges.push(isLast ? `${start}+u=${price}` : `${start}u=${price}`);
+    } else {
+      ranges.push(isLast ? `${start}+u=${price}` : `${start}-${end}u=${price}`);
+    }
+    i++;
+  }
+  return ranges.join('|');
+}
+
+function buildPrompt() {
+  const s = state.store;
+  const brands  = s.brands  || [];
+  const fletes  = s.fletes  || [];
+  const pagos   = s.pagos   || [];
+
+  const prods = state.selectedIds.map(id => products.find(x=>x.id===id)).filter(Boolean);
+  const multi = prods.length > 1;
+
+  let nombre  = s.nombre  || 'Laura';
+  let empresa = s.empresa || 'Indisutex SAS';
+  if (prods.length > 0) {
+    const firstBrandId = prods[0].brand;
+    const brandCfg = brands.find(b => (b.id||b.name) === firstBrandId);
+    if (brandCfg) {
+      if (brandCfg.nombreIA)  nombre  = brandCfg.nombreIA;
+      if (brandCfg.empresaIA) empresa = brandCfg.empresaIA;
+    }
+  }
+
+  const anos    = s.anos    || '8';
+  const tiendas = (s.tiendas || '+5 tiendas').replace(/^\+/, '');
+  const dir     = s.dir     || 'Cl.14 #7-95 Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm';
+  const maps    = s.maps    || 'https://maps.app.goo.gl/wsrgxhU6B7xYZ61M7';
+  const catalogo= s.catalogo|| 'https://wa.me/c/573235753226';
+  const atencion= s.atencion|| 'https://wa.me/573222475957';
+  const tppal   = s.tppal   || '1-4d';
+  const tmuni   = s.tmuni   || '5-8d';
+
+  const firstBrand   = prods.length > 0 ? brands.find(b => (b.id||b.name) === prods[0].brand) : null;
+  const brandCatWa   = (firstBrand && firstBrand.catWa)    ? firstBrand.catWa    : catalogo;
+  const brandEcomm   = s.ecomm || '';
+  const brandMaps    = (firstBrand && firstBrand.maps)      ? firstBrand.maps     : maps;
+  const brandDropiAfl= (firstBrand && firstBrand.dropiAfl)  ? firstBrand.dropiAfl : 'https://app.dropi.co/auth/register?afl=807272';
+
+  const pagoStr  = pagos.length  ? pagos.map(p=>`${p.tipo}:${p.detalle}`).join('|') : 'Bancolombia Ahorros|Cta:80300004229|Indisutex SAS';
+  const fleteStr = fletes.length ? fletes.map(f=>`${f.rango}=${f.valor}`).join('|') : '1-3u=$22k|4-6u=$24k|7+u=$27k';
+  const waGroupStr = brands.filter(b=>b.waUrl).map(b=>`${b.name}:${b.waUrl}`).join('|');
+
+  const mainProd = prods[0];
+  const mainName = mainProd ? mainProd.name.replace(/^PIJAMA /,'') : 'PRODUCTO';
+
+  const prodKey = p => { const w=p.name.toUpperCase().split(' '); return w.includes('PANTALON')?'PANTALON':w.includes('BATOLA')?'BATOLA':w.includes('SHORT')?'SHORT':w.slice(-1)[0]; };
+  const tableKey = p => { const w=p.name.toUpperCase().split(' '); return w.includes('PANTALON')?'PANTALON':w.includes('BATOLA')?'BATOLA':w.includes('SHORT')?'SHORT':w.slice(-1)[0]; };
+  const prodKeywords = p => { const w=p.name.toUpperCase(); if(w.includes('PANTALON')) return 'pantalon|tiras|largo'; if(w.includes('BATOLA')) return 'batola|vestido'; if(w.includes('SHORT')) return 'short|tira|conjunto'; return p.name.toLowerCase().split(' ').slice(-1)[0]; };
+  const calcT = (t, refNum) => { const cant=parseRangoNum(t.rango); const precioU=parsePrecioNum(t.precio); if(cant&&precioU&&refNum){return{...t,total:fmtMil(cant*precioU),venta:fmtMil(cant*refNum),margen:fmtMil(cant*refNum-cant*precioU)};} return t; };
+  const kFmt = str => { if(!str) return str; return str.replace(/\$?([\d.,]+)/g,(m,n)=>{ const num=parseInt(n.replace(/\D/g,'')); if(!num) return m; const k=num/1000; return '$'+(Number.isInteger(k)?k:parseFloat(k.toFixed(1))).toString()+'k'; }); };
+
+  let out = '';
+
+  // R0: FUERA DE CATALOGO
+  if (multi) {
+    const catNames = prods.map(p=>prodKey(p)).join('/');
+    const retoma = prods.map(p=>`${prodKey(p)}=>"${p.name.replace(/^PIJAMA /,'')} se mueve bien. ¿Lo vemos? 😊"`).join('|');
+    out += `# R0 — FUERA DE CATALOGO [N45]\nRef no es ${catNames} => "Esa ref 👉 ${brandCatWa} 😊" => retomar segun flujo: ${retoma}. NO "lamentablemente". NO listar. NO cerrar.\n\n`;
+  } else {
+    out += `# R0 — FUERA DE CATALOGO [N45]\nRef no es ${mainName} => "Esa ref 👉 ${brandCatWa} 😊" => retomar: "${mainName} se mueve bien. ¿Lo vemos? 😊". NO "lamentablemente". NO listar. NO cerrar.\n\n`;
+  }
+
+  // R0: IMAGENES CLIENTE
+  if (multi) {
+    const imgCheck = prods.map(p=>`${prodKey(p)}=${p.tela||''}+${(p.disenos||[]).join('/')}`).join(' | ');
+    out += `# R0 — IMAGENES CLIENTE [N44]\nVerificar: ${imgCheck}. Si NO coincide => "No identifico ese articulo 👉 ${brandCatWa} 😊". Insiste => "Necesito confirmar la ref. ¿Lo vemos? 😊". NUNCA precio por imagen.\n\n`;
+  } else {
+    const disList = (mainProd?.disenos||[]).join('/');
+    out += `# R0 — IMAGENES CLIENTE [N44]\nVerificar: ${mainName}=${mainProd?.tela||''}+${disList}. Si NO coincide => "No identifico ese articulo 👉 ${brandCatWa} 😊". Insiste => "Necesito confirmar la ref. ¿Lo vemos? 😊". NUNCA precio por imagen.\n\n`;
+  }
+
+  // R0: IMGS DESPACHO
+  out += `# R0 — IMGS DESPACHO: activar ANTES de otra instruccion\n`;
+  out += `TRIGGERS:ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|mandame|muestrame|mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|pantalon|catalogo\n`;
+  out += `REGLA MADRE:URL primero. 4 msgs. NUNCA <3 imgs. visual+compra=>GALERIA primero.\n`;
+  out += `CATALOGO:"catalogo"/"todo"=>MSG1+MSG2+MSG3+GALERIA-A+"Todo 👉 ${brandEcomm||brandCatWa} 😊"\n\n`;
+  out += `TABLA DESPACHO — cada URL=msg separado.\n`;
+
+  prods.forEach((p, pi) => {
+    const gal = (p.galeria||[]).filter(g=>g.url);
+    const letra = String.fromCharCode(65+pi);
+    const pShort = p.name.replace(/^PIJAMA /,'');
+    out += `[GALERIA-${letra}/${pShort}]:\n`;
+    gal.forEach((g,gi) => { out += `MSG${gi+1}=>${g.url}\n`; });
+    out += `MSG${gal.length+1}=>[M/E]"${p.altMayor||'¿12 o prefieres 6?'} 😊"|[D/R]"${p.altDetal||'¿Cual diseno?'} 😊"\n`;
+    const tSlots = [p.tiers?.[0],p.tiers?.[1],p.tiers?.[2],p.tiers?.[3]].filter(Boolean);
+    const tablaInline = tSlots.map(t=>{ const c=parseRangoNum(t.rango),pu=parsePrecioNum(t.precio); return c&&pu?`${t.rango}=${kFmt(t.precio)}`:null; }).filter(Boolean).join('|');
+    if (tablaInline) out += `[precio sin cant]=>"${tableKey(p)}:${tablaInline} ¿Cuantas? 😊"\n`;
+    if (multi) {
+      const next = prods.find((_,i)=>i!==pi);
+      if (next) {
+        const nKey=prodKey(next),nRef=next.refMercado||0,t12n=next.tiers?.[0];
+        const c12n=t12n?parseRangoNum(t12n.rango):12,pu12n=t12n?parsePrecioNum(t12n.precio):0;
+        const paga12n=c12n&&pu12n?fmtMil(c12n*pu12n):(t12n?.total||'?');
+        const sobra12n=c12n&&pu12n&&nRef?fmtMil(c12n*nRef-c12n*pu12n):(t12n?.margen||'?');
+        out += `[upsell]=>"${nKey} Ref $${fmtNum(nRef)} — ${c12n}u:pagas ${paga12n},sobran ${sobra12n}. ¿Las dos o solo ${prodKey(p)}? 😊"\n`;
+      }
+    }
+  });
+
+  out += `[+MAS]=>${brandCatWa}\n[img no llega]=>reenviar URLs bloque anterior 1 x msg sin texto.\n`;
+  if (multi) { prods.forEach((p,i)=>{ out += `[pide ${prodKeywords(p)}]=>GALERIA-${String.fromCharCode(65+i)}\n`; }); }
+  out += `\n`;
+
+  // ROL
+  out += `# ROL\nEres ${nombre}, asesora ${empresa}. Tutea. Certeza total. Sin !!. Sin disculpas. Cada msg cierra con accion. Celebras cada si antes de avanzar.\n\n`;
+
+  // REGLAS ABSOLUTAS
+  const s16val = multi ? prods.map(p=>`$${fmtNum(p.refMercado||0)}`).filter((v,i,a)=>a.indexOf(v)===i).join('/') : `$${fmtNum(mainProd?.refMercado||0)}`;
+  const n48desc = multi ? prods.map(p=>`1u ${prodKey(p)}=${p.precio1||'?'}`).join('|')+'. NUNCA mayorista como total 1u.' : `1u=${mainProd?.precio1||'?'} siempre. ${mainProd?.tiers?.[0]?.precio||'?'}/u=solo ${mainProd?.tiers?.[0]?.rango||'12+u'}. NUNCA como total de 1u.`;
+  out += `# REGLAS ABSOLUTAS\n`;
+  out += `NUNCA:[N01]descuento|[N02]precio antes I2|[N07]inv precio/flete|[N08]I5 sin 10 campos|[N09]confirmar antes si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir arg|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]preg abierta tras I2|[N23]envio gratis|[N25]precio antes Ref|[N26]inv precio|[N27]sin margen|[N28]mezclar tablas|[N30]markdown|[N31]Ref como venta|[N32]inv combo|[N35]ref hermana|[N37]pago anticipado|[N39]reserva|[N40]score<70%|[N44]precio imagen|[N45]lamentablemente|[N46]IRP a intl|[N47]flete intl sin ciudad\n`;
+  out += `NUNCA:[N48]${n48desc}\n`;
+  out += `SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito:preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra=>I4 INMEDIATO|[S12]prueba social ante duda|[S16]Ref ${s16val} ancla|[S17]cant=>tabla exacta|[S18]M/E:pagas $X=>sobran $Z limpios|[S20]texto plano|[S21]min 3 msgs:dato=>arg=>cierre|[S22]intl:prod+flete juntos|[S23]vender/negocio/emprender=>I2 MAYOR\n\n`;
+
+  // CONTEXTO
+  out += `# CONTEXTO\n${empresa}|${anos}anos|+${tiendas}/mes\nLocal:${dir}\nMaps:${brandMaps}\n${pagoStr}\nAtt:${atencion}\n`;
+  if (multi) out += `Refs:${prods.map(p=>p.name.replace(/^PIJAMA /,'')).join('|')}\n`;
+  if (waGroupStr) out += `Mayoristas:${waGroupStr}\n`;
+  if (brandDropiAfl) out += `DROPI:${brandDropiAfl}\n`;
+  out += `\n`;
+
+  // IDENTIFICAR (solo multi)
+  if (multi) {
+    out += `# IDENTIFICAR\n`;
+    prods.forEach(p => { out += `${prodKeywords(p)}=>${p.name.replace(/^PIJAMA /,'')}\n`; });
+    out += `Sin keyword=>"¿Te interesa ${prods.map(p=>prodKey(p)).join(', ')}? 😊"\n\n`;
+  }
+
+  // EVALUACION SILENCIOSA
+  const p4detal = multi ? prods.map(p=>`1u ${prodKey(p)}=${p.precio1||'?'}`).join('|') : `1u=${mainProd?.precio1||'?'} siempre. ${mainProd?.tiers?.[0]?.precio||'?'}/u=solo ${mainProd?.tiers?.[0]?.rango||'12+u'}. NUNCA como total de 1u.`;
+  out += `# EVALUACION SILENCIOSA\nI1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos\nSENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio):sin datos=>I4 INMEDIATO|con datos=>I5\nMAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender|REGALO=regalo\nSIN PERFIL=>"¿Para surtir tu tienda, para ti o como regalo? 😊"\nYA COMPRO=>C5|[P4]${p4detal}\n\n`;
+
+  // PLANILLAS
+  prods.forEach(p => {
+    const refNum=p.refMercado||0, ref=fmtNum(refNum);
+    const tiersCalc=(p.tiers||[]).map(t=>calcT(t,refNum));
+    const shortName=p.name.replace(/^PIJAMA /,''), dis=(p.disenos||[]).join(',');
+    out += `# PLANILLA ${shortName}\n[M/E]:${shortName}|${p.tela||''}|Dis:${dis}|Ref:$${ref}\n`;
+    tiersCalc.forEach(t => { const rLbl=t.rango.replace(/^\+/,'').replace(/\s*unid\b/i,'u').trim(); out+=`${rLbl}=${kFmt(t.precio)}=>pagas ${t.total||'?'}=>vendes ${t.venta||'?'}=>sobran ${t.margen||'?'} limpios\n`; });
+    out += `1u:${p.precio1||'$0'}.\n`;
+    out += `[D]:"${shortName} ${p.tela||''}. S-L. ${p.precio1||'$0'}+flete. Ref $${ref}. Dis:${dis}"\n`;
+    out += `[R]:"Regalo ideal. ${p.precio1||'$0'}+flete,1-4d. Dis:${dis}"\n\n`;
+  });
+
+  // TABLAS INTERNAS
+  const detalHeader = multi ? prods.map(p=>`${tableKey(p)}=${p.precio1||'?'}`).join('|') : (mainProd?.precio1?`1u=${mainProd.precio1} SIEMPRE`:'');
+  out += `# TABLAS INTERNAS — NO enviar.${detalHeader?' DETAL:'+detalHeader+'.':''}\n`;
+  prods.forEach(p => {
+    const tiersRaw=p.tiers||[];
+    let tablaStr=compactTabla(p.tablaInterna||'');
+    if(tiersRaw.length>0&&tiersRaw.every(t=>t.rango&&t.precio)){if(!tablaStr||tablaStr.includes('?'))tablaStr=tiersRaw.map(t=>`${t.rango}=${t.precio}`).join('|');}
+    out += `${tableKey(p)}:${tablaStr}\n`;
+  });
+  out += `REGLA:cada REF usa SOLO su tabla. NUNCA cruzar.\nMARGEN:"Nu a $pu=>pagas $total=>vendes $refxN=>sobran $G limpios"\n`;
+  if (multi && prods.length>=2) {
+    const pa=prods[0],pb=prods[1];
+    const t6a=pa.tiers?.find(t=>parseRangoNum(t.rango)===6)||pa.tiers?.[1];
+    const t6b=pb.tiers?.find(t=>parseRangoNum(t.rango)===6)||pb.tiers?.[1];
+    if(t6a&&t6b){const pua6=parsePrecioNum(t6a.precio),pub6=parsePrecioNum(t6b.precio);if(pua6&&pub6){out+=`COMBO EJ:6${prodKey(pa)}+6${prodKey(pb)}=${fmtMil(6*pua6)}+${fmtMil(6*pub6)}=${fmtMil(6*pua6+6*pub6)} — ¿Arrancamos? 😊\n`;}}
+  }
+  out += `\n`;
+
+  // FLETES Y PAGO
+  out += `# FLETES Y PAGO\nColombia=>IRP. Intl(+1/+52/+58/+51 o ciudad ext)=>NO IRP.\nIRP:${fleteStr}. Ppales ${tppal}|Muni ${tmuni} habiles.\nINTL: "Confirmame ciudad y pais. 😊"=>cotizar prod+flete=>"Son $X+$Y a [CIUDAD]. ¿Arrancamos? 😊"\nNUNCA IRP a intl. NUNCA inventar flete. Contra entrega:Colombia siempre.\nCuenta:"Pagas al recibir. ${pagoStr} 😊"\n\n`;
+
+  // SCORE DROPI
+  out += `# SCORE DROPI\n[70%+]=>I5-F directo. [<70%]:"Listo [NOMBRE], asesora te contacta. 🩷"=>derivar. NUNCA mencionar score.\n\n`;
+
+  // FLUJO
+  const p0=prods[0],ref0=p0?.refMercado||0,t12raw=p0?.tiers?.[0],t6raw=p0?.tiers?.[1];
+  const cant12=t12raw?parseRangoNum(t12raw.rango):12,precio12=t12raw?parsePrecioNum(t12raw.precio):0;
+  const cant6=t6raw?parseRangoNum(t6raw.rango):6,precio6=t6raw?parsePrecioNum(t6raw.precio):0;
+  const paga12=cant12&&precio12?fmtMil(cant12*precio12):(t12raw?.total||'?');
+  const sobra12=cant12&&precio12&&ref0?fmtMil(cant12*ref0-cant12*precio12):(t12raw?.margen||'?');
+  const paga6=cant6&&precio6?fmtMil(cant6*precio6):(t6raw?.total||'?');
+  const sobra6=cant6&&precio6&&ref0?fmtMil(cant6*ref0-cant6*precio6):(t6raw?.margen||'?');
+  const altD0=p0?.altDetal||'¿Cual diseno?',top0=p0?.topDiseno||(p0?.disenos||[])[0]||'el diseno mas pedido';
+  const objCaroStr = (() => {
+    if(!multi) return cant6&&precio6&&ref0?`[${tableKey(p0||prods[0])}]"6u=>pagas ${paga6}=>sobran ${sobra6}. ¿Lo intentamos? 😊"`:'¿Lo intentamos? 😊';
+    return prods.map(p=>{const t6p=p.tiers?.find(t=>parseRangoNum(t.rango)===6)||p.tiers?.[1];const c6=t6p?parseRangoNum(t6p.rango):6,pu6=t6p?parsePrecioNum(t6p.precio):0,r=p.refMercado||0;if(!c6||!pu6||!r)return null;return `[${tableKey(p)}]"6u=>pagas ${fmtMil(c6*pu6)}=>sobran ${fmtMil(c6*r-c6*pu6)}. ¿Lo intentamos? 😊"`;}).filter(Boolean).join('|');
+  })();
+
+  out += `# FLUJO\nI1:vender/negocio/emprender/surtir=>I2 MAYOR directo. Sin perfil=>preguntar.\n`;
+  out += `I2 MAYOR:"Mira lo que deja [REF] 👇"=>Planilla M/E=>"+${tiendas} 🩷"=>GALERIA=>cierre cantidad\n`;
+  out += `I2 EMP:"Como arrancan muchas tiendas 👇"=>Planilla M/E=>"+${tiendas} sin local 🩷"=>GALERIA=>cierre cantidad\n`;
+  out += `I2 DETAL/REGALO=>Planilla D/R=>GALERIA=>cierre diseno\n`;
+  const i3top = multi ? prods.map(p=>`[${prodKey(p)}]${p.topDiseno||(p.disenos||[])[0]||''}`).join('|') : top0;
+  out += `I3:"Buena eleccion 🩷"=>"${i3top} es la que mas piden."=>"¿6 o 12? 😊"\n`;
+  out += `I4:"Perfecto 🩷"=>"Tus datos 👇"=>UN MSG: 1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Dir 7.Horario 8.Talla 9.Diseno 10.Cant\nI4:datos ya dados=>no repetir.\n`;
+  out += `I5:1-10+ref+total+flete+"Pagas al recibir. ¿Quedaron bien tus datos? 😊"\n`;
+  out += `I5-F:"Todo confirmado 🎉 Pagas al recibir al llegar. 🚚"\n\n`;
+
+  // SENALES DE COMPRA
+  out += `# SENALES DE COMPRA — I4 INMEDIATO\nenvio=>ciudad=>$IRP=>"¿Coordinamos? 😊"|intl=>pedir ciudad+pais\ndemora=>"Ppales ${tppal}|Muni ${tmuni}. ¿Tu ciudad? 😊"\nstock=>"Si, hoy. Pagas al recibir. ¿Arrancamos? 😊"\nNequi/contra entrega=>"Si, al llegar. Nada antes. 🩷"=>I4 DIRECTO\ncuenta/numero=>I4 DIRECTO|precio=>I2 segun perfil\n"Donde quedan?"=>"${dir}."=>${brandMaps}\n\n`;
+
+  // SEGUIMIENTO
+  out += `# SEGUIMIENTO\n2h:"¿Pudiste revisar? ¿Cual te llamo mas? 😊"\nDia sig:"¿Lo coordinamos? 🚚"\n3d:"[NOMBRE], aun puedo separarte las [CANT]. ¿Arrancamos? 🩷"=>Cancela:"Claro 🩷" Max 3.\n\n`;
+
+  // C5
+  out += `# C5 CLIENTE YA COMPRO\n"Hola [NOMBRE], que bueno verte 🩷 ¿Como te fue?"\nBien=>"Nueva coleccion. ¿Lo vemos? 😍"|Directo=>I2|Problema=>${atencion}|"¿Pedimos igual? 😊"\n\n`;
+
+  // OBJECIONES
+  const esSubl = ((p0?.tela||'')+(p0?.argumento||'')).toLowerCase().includes('sublim');
+  out += `# OBJECIONES\ntalla unica=>"Cubre S a L. Queda muy bien. ¿6 o 12? 😊"\nno confio/estafaron=>local+${anos}a+${tiendas}+Maps+guia rastreable\nno confio Nequi=>"Pagas al recibir. Nada antes. 🩷"\nmuy caro=>${objCaroStr}\nlo pienso=>"¿Que frenaria la decision? A veces lo resuelvo ahora 😊"\nya tengo proveedor=>"¿Comparamos margen? ${esSubl?'Sublimados generan demanda propia':'Trending se venden solos'} 😊"\nsin plata=>"¿Cuando? Te guardo la info 🩷"\nsin local=>"WhatsApp+6u es suficiente. ¿Lo intentamos? 😊"\npagar antes=>"Pagas al recibir. Nada antes. 🩷"\ndiseno NA=>"No lo manejamos. Mas parecido:[SIMILAR] ¿lo vemos? 😊"\ndama+caballero=>"Para el 👉 ${brandCatWa} 😊 ¿Para surtir, para ti o regalo? 😊"\nhombre/nino/ref NA=>"Esa ref 👉 ${brandCatWa} 😊 [REF ACTIVA] se mueve mucho. ¿La vemos? 😊"\nexterior=>"Confirmame ciudad y pais para cotizarte. 😊"\nqueja/devolucion=>${atencion}`;
+  if (waGroupStr) out += `\nMAYORISTAS:${waGroupStr}`;
+  if (brandDropiAfl) out += `\nDROPI:${brandDropiAfl}`;
+
+  return out;
+}
+
+
+
+function renderChecklist(prompt, len) {
+  const prods = state.selectedIds.map(id => products.find(x=>x.id===id)).filter(Boolean);
+  const checks = [
+    {label:'✅ Bajo 11.000 chars — listo para pegar en ChateaPro', pass: len <= 11000, critical: true},
+    {label:'R0 — Fuera de catálogo con retorno contextual por flujo', pass: prompt.includes('R0 — FUERA DE CATALOGO') && prompt.includes('retomar segun flujo')},
+    {label:'R0 — Imágenes cliente con verificación tela+diseños [N44]', pass: prompt.includes('R0 — IMAGENES CLIENTE') && prompt.includes('Verificar:')},
+    {label:'R0 — Tabla de despacho con GALERIA-A', pass: prompt.includes('GALERIA-A')},
+    {label:'Triggers upsell y precio-sin-cant en cada galería', pass: prompt.includes('[upsell]') && prompt.includes('[precio sin cant]')},
+    {label:'IDENTIFICAR — keywords por producto (multi)', pass: !prods.length || prods.length < 2 || prompt.includes('# IDENTIFICAR')},
+    {label:'Flujo I1→I2→I3→I4→I5-F completo', pass: prompt.includes('I1:') && prompt.includes('I5-F:')},
+    {label:'Planillas M/E con valores calculados (sin "?")', pass: prompt.includes('sobran') && prompt.includes('limpios') && !prompt.match(/pagas \?|vendes \?|sobran \?/)},
+    {label:'Planillas D y R incluidas', pass: prompt.includes('[D]:') && prompt.includes('[R]:')},
+    {label:'Objeción "muy caro" diferenciada por ref activa', pass: prompt.includes('muy caro=>') && (prods.length < 2 || prompt.includes('[PANTALON]"') || prompt.includes('[BATOLA]"') || prompt.includes('[SHORT]"'))},
+    {label:'Ref.mercado configurada en todos los productos', pass: prods.every(p => p.refMercado > 0)},
+    {label:'Tabla interna de precios configurada', pass: prods.every(p => !!(p.tablaInterna))},
+    {label:'Tramos con total y ganancia (pagas→sobran)', pass: prods.every(p => (p.tiers||[]).every(t => t.total && t.margen))},
+    {label:'Fletes internacionales — flujo separado', pass: prompt.includes('INTL:') || prompt.includes('FLUJO INTL')},
+    {label:'N48 — precio detal 1u protegido', pass: prompt.includes('[N48]')},
+    {label:'S23 — trigger vender/negocio→I2 MAYOR', pass: prompt.includes('[S23]')},
+    {label:'I4 INMEDIATO configurado', pass: prompt.includes('I4 INMEDIATO') || prompt.includes('I4 DIRECTO')},
+    {label:'Score Dropi incluido', pass: prompt.includes('SCORE DROPI')},
+    {label:'C5 cliente que ya compró incluido', pass: prompt.includes('C5 CLIENTE YA COMPRO')},
+    {label:'Seguimiento 2h / día sig / 3d incluido', pass: prompt.includes('SEGUIMIENTO')},
+    {label:'Dropi y Mayoristas en el prompt', pass: prompt.includes('DROPI:')},
+    {label:'Galería mínimo 3 fotos por producto', pass: prods.every(p=>(p.galeria||[]).filter(g=>g.url).length>=3)},
+    {label:'Sin markdown en el prompt', pass: !prompt.match(/\*\*|#{2,}/)},
+    {label:'Catálogo y atención configurados', pass: !!(state.store.catalogo && state.store.atencion)},
+  ];
+  const passCount = checks.filter(c=>c.pass).length;
+  const criticalPass = checks[0].pass;
+  document.getElementById('cl-items').innerHTML =
+    `<div style="font-size:.67rem;color:${criticalPass?'#5dde9a':'#ff6070'};font-weight:700;margin-bottom:6px;padding:6px 8px;background:${criticalPass?'rgba(45,200,120,.1)':'rgba(255,80,100,.12)'};border-radius:6px">
+      ${criticalPass ? '🟢 LISTO — El prompt cabe en ChateaPro (≤11.000 chars). Copia y pega.' : '🔴 ATENCIÓN — El prompt supera 11.000 chars. Reduce productos o galerías.'}
+    </div>` +
+    `<div style="font-size:.62rem;color:rgba(255,255,255,.35);margin-bottom:6px">Los ❌ NO bloquean el prompt — son ítems opcionales para mejorar resultados. Solo el primer ítem es crítico.</div>` +
+    checks.map(c =>
+      `<div class="cl-item ${c.pass?'pass':'fail'}"><span>${c.pass?'✅':'❌'}</span>${c.label}</div>`).join('') +
+    `<div style="font-size:.64rem;color:rgba(255,255,255,.3);margin-top:8px">${passCount}/${checks.length} puntos · ${checks.length-passCount} opcionales pendientes</div>`;
+}
+
+function copyPrompt() {
+  const txt = document.getElementById('pout').textContent;
+  if (txt.length > 11000) {
+    toast('⛔ El prompt supera 11.000 chars. Reduce productos o galerías antes de copiar.');
+    return;
+  }
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.textContent = '✅ Copiado'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = '📋 Copiar prompt'; btn.classList.remove('ok'); }, 2500);
+    toast('✅ Prompt copiado. Pégalo en ChateaPro → Prompt del producto → Guardar.');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('✅ Prompt copiado');
+  });
+}
+
+function downloadPrompt() {
+  const txt = document.getElementById('pout').textContent;
+  if (txt.length > 12000) {
+    toast('⛔ El prompt supera 12.000 chars (límite ChateaPro). Reduce productos o galerías.');
+    return;
+  }
+  const storeName = (document.getElementById('inp-nombre')||{}).value || 'prompt';
+  const safe = storeName.replace(/[^a-zA-Z0-9_\-]/g,'_').toLowerCase();
+  const date = new Date().toISOString().slice(0,10);
+  const fname = `prompt_${safe}_${date}.txt`;
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✅ Prompt descargado como ' + fname);
+}
+
+// ════════════════════════════════════════
+// SAVE / LOAD
+// ════════════════════════════════════════
+function saveAll() {
+  readStoreFields();
+  localStorage.setItem(STORE_KEY, JSON.stringify({
+    store: state.store,
+    products: products,
+    selectedIds: state.selectedIds,
+    absRules: absRules
+  }));
+  toast('✅ Configuración guardada');
+}
+
+function autoSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    readStoreFields();
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      store: state.store, products, selectedIds: state.selectedIds, absRules
+    }));
+  }, 600);
+}
+
+// ════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════
+function gv(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function sv(id, val) { const el = document.getElementById(id); if (el) el.value = val || ''; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtNum(n) { return (parseInt(n)||0).toLocaleString('es-CO'); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = 1;
+  setTimeout(() => t.style.opacity = 0, 3200);
+}
+
+// ════════════════════════════════════════
+// LOGOUT
+// ════════════════════════════════════════
+function logoutUser() {
+  if (!confirm('¿Cerrar sesión? Tus datos guardados se conservarán.')) return;
+  localStorage.removeItem('indisutex_access_granted');
+  window.location.href = 'index.html';
+}
+
+// ════════════════════════════════════════
+// BOOT
+// ════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
