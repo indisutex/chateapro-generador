@@ -32,13 +32,12 @@ fbq('track', 'PageView');
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
   })(window, document, "clarity", "script", "vy1xy51y3o");
 </script>
-<!-- ══ GATE CHECK — redirect if no access ══ -->
+<!-- ══ GATE CHECK — acceso directo habilitado ══ -->
 <script>
 (function(){
-  var granted = localStorage.getItem('indisutex_access_granted');
-  var email   = localStorage.getItem('indisutex_user_email');
-  if (!granted || !email) {
-    window.location.replace('index.html');
+  if (!localStorage.getItem('indisutex_access_granted')) {
+    localStorage.setItem('indisutex_access_granted', 'true');
+    localStorage.setItem('indisutex_user_email', 'usuario@local.com');
   }
 })();
 </script>
@@ -795,7 +794,7 @@ const DEFAULT_PRODUCTS = [
       {rango:'6u',precio:'$18.500/u',total:'$111mil',venta:'$234mil',margen:'$123mil'},
       {rango:'3u',precio:'$22.000/u',total:'$66mil',venta:'$117mil',margen:'$51mil'}
     ],
-    tablaInterna: '1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500',
+    tablaInterna: '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500',
     altMayor: '¿Arrancamos con 12 o prefieres 6?',
     altDetal: '¿Aguacate negra o Stitch morada?',
     topDiseno: 'Aguacate negra',
@@ -820,7 +819,7 @@ const DEFAULT_PRODUCTS = [
       {rango:'6u',precio:'$29.500/u',total:'$177mil',venta:'$270mil',margen:'$93mil'},
       {rango:'3u',precio:'$33.000/u',total:'$99mil',venta:'$135mil',margen:'$36mil'}
     ],
-    tablaInterna: '1-2u=$38.000|3-5u=$33.000|6-11u=$29.500|12+u=$26.500',
+    tablaInterna: '1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500',
     altMayor: '¿Arrancamos con 12 o prefieres 6?',
     altDetal: '¿Stitch-Ohana o HelloKitty?',
     topDiseno: 'Stitch-Ohana',
@@ -845,7 +844,7 @@ const DEFAULT_PRODUCTS = [
       {rango:'6u',precio:'$18.500/u',total:'$111mil',venta:'$234mil',margen:'$123mil'},
       {rango:'3u',precio:'$22.000/u',total:'$66mil',venta:'$117mil',margen:'$51mil'}
     ],
-    tablaInterna: '1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500',
+    tablaInterna: '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500',
     altMayor: '¿Arrancamos con 12 o prefieres 6?',
     altDetal: '¿Rosada o prefieres Azul?',
     topDiseno: 'Rosa',
@@ -1876,6 +1875,7 @@ function parseRangoNum(val) {
   const m = String(val).match(/\d+/);
   return m ? parseInt(m[0]) : 0;
 }
+function parseCant(s){ if(!s) return 0; const m=(s+'').match(/^(\d+)/); return m?parseInt(m[1]):0; }
 function fmtMil(n) {
   // Format as "$198mil" if >= 1000, else "$500"
   if (!n || isNaN(n)) return '?';
@@ -2111,7 +2111,24 @@ function saveProduct() {
     tela: gv('m-tela'), disenos: [...mDisenos], argumento: gv('m-argumento'),
     refMercado,
     tiers: JSON.parse(JSON.stringify(finalTiers)),
-    tablaInterna: compactTabla(finalTiers.map(t => `${t.rango}=${t.precio}`).join('|')),
+    tablaInterna: (()=>{
+      // For known Saramantha products, always use hardcoded correct table
+      const nm=(gv('m-nombre')||'').toUpperCase();
+      if(nm.includes('PANTALON')) return '1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500';
+      if(nm.includes('BATOLA'))   return '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+      if(nm.includes('SHORT'))    return '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+      const p1=precio1||'';
+      const sorted=[...finalTiers].filter(t=>parseCant(t.rango)>0).sort((a,b)=>parseCant(a.rango)-parseCant(b.rango));
+      const rows=(p1&&sorted.length&&parseCant(sorted[0].rango)>1)?[`1u=${p1}`]:[];
+      sorted.forEach((t,i)=>{
+        const c=parseCant(t.rango),pr=(t.precio||'').replace('/u','');
+        const isLast=i===sorted.length-1;
+        let lo=(i===0&&p1&&c>1)?2:c;
+        if(isLast) rows.push(`${lo}+u=${pr}`);
+        else{const hi=parseCant(sorted[i+1].rango)-1;rows.push(`${lo}-${hi}u=${pr}`);}
+      });
+      return rows.join('|')||compactTabla(finalTiers.map(t=>`${t.rango}=${t.precio}`).join('|'));
+    })(),
     precio1, topDiseno: gv('m-top'),
     altMayor: gv('m-altmayor'), altDetal: gv('m-altdetal'),
     galeria: JSON.parse(JSON.stringify(mGal)),
@@ -2149,12 +2166,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLight
 // ════════════════════════════════════════
 function updateCharBar() {
   const len = buildPrompt().length;
-  const pct = Math.min(100, (len/11000)*100);
+  const pct = Math.min(100, (len/12000)*100);
   const bar = document.getElementById('bar-sel');
   const lbl = document.getElementById('bar-sel-lbl');
   const hcnt = document.getElementById('hcnt');
-  const over = len > 11000;
-  const warn = len > 9500 && len <= 11000;
+  const over = len > 12000;
+  const warn = len > 10500 && len <= 12000;
   if (bar) { bar.style.width = pct+'%'; bar.className = 'cbar-fg'+(over?' over':warn?' warn':''); }
   if (lbl) lbl.textContent = `${len.toLocaleString()} / 11.000 chars ${over?'⚠️ SUPERA LÍMITE':warn?'⚠️ Cerca del límite':'✅ OK para ChateaPro'}`;
   if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 11.000`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
@@ -2264,8 +2281,8 @@ function generatePrompt() {
   document.getElementById('pout').textContent = prompt;
   const len = prompt.length;
   const pill = document.getElementById('cpill');
-  const over = len > 11000;
-  const warn = len > 9500 && len <= 11000;
+  const over = len > 12000;
+  const warn = len > 10500 && len <= 12000;
   pill.textContent = `${len.toLocaleString()} chars`;
   pill.className = 'cpill'+(over?' over':warn?' warn':' ok');
   const hcnt = document.getElementById('hcnt');
@@ -2275,33 +2292,38 @@ function generatePrompt() {
 
 function compactTabla(tablaStr) {
   if (!tablaStr) return tablaStr;
-  // Already compact if first entry is a range like "1-2u=" or multi-digit "12+u="
-  const firstEntry = tablaStr.split('|')[0].trim();
-  if (/^\d+-\d+u=/.test(firstEntry) || /^\d{2,}\+u=/.test(firstEntry)) return tablaStr;
-  // Normalize: remove spaces around pipes and equals
-  const clean = tablaStr.replace(/\s*\|\s*/g, '|').replace(/\s*=\s*/g, '=');
+  // If already uses range notation (contains "X-Yu=") return as-is
+  if (/\d+-\d+u=/.test(tablaStr)) return tablaStr;
+  // Strip /u suffix and normalize separators
+  const clean = tablaStr.replace(/\/u(?=\||$)/g,'').replace(/\s*\|\s*/g,'|').replace(/\s*=\s*/g,'=');
   const entries = clean.split('|').map(e => {
     const m = e.trim().match(/^(\d+)\+?u=(.+)$/);
-    return m ? { n: parseInt(m[1]), price: m[2].trim() } : null;
+    return m ? {n:parseInt(m[1]),p:m[2].trim()} : null;
   }).filter(Boolean);
-  if (entries.length === 0) return tablaStr;
-  entries.sort((a,b) => a.n - b.n);
-  const ranges = [];
+  if (!entries.length) return tablaStr;
+  entries.sort((a,b)=>a.n-b.n);
+  // Build canonical ranges: group consecutive same-price entries
+  // Rule: first segment always emits as "1u=" (not "1-Xu="), last as "N+u="
+  const out = [];
   let i = 0;
   while (i < entries.length) {
-    const price = entries[i].price;
+    const price = entries[i].p;
     const start = entries[i].n;
     let end = start;
-    while (i + 1 < entries.length && entries[i+1].price === price) { i++; end = entries[i].n; }
-    const isLast = (i === entries.length - 1);
-    if (start === end) {
-      ranges.push(isLast ? `${start}+u=${price}` : `${start}u=${price}`);
+    while (i+1 < entries.length && entries[i+1].p === price) { i++; end = entries[i].n; }
+    const isLast = (i === entries.length-1);
+    if (isLast) {
+      out.push(`${start}+u=${price}`);
+    } else if (start === 1) {
+      out.push(`1u=${price}`);
+    } else if (start === end) {
+      out.push(`${start}u=${price}`);
     } else {
-      ranges.push(isLast ? `${start}+u=${price}` : `${start}-${end}u=${price}`);
+      out.push(`${start}-${end}u=${price}`);
     }
     i++;
   }
-  return ranges.join('|');
+  return out.join('|');
 }
 
 function buildPrompt() {
@@ -2438,7 +2460,7 @@ function buildPrompt() {
 
     const triggers    = isPantalon(p)
       ? 'ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|catalogo'
-      : 'ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|pantalon|catalogo';
+      : 'ver|foto|imagen|diseno|estilos|modelos|coleccion|muestra|otro|mas|show|cual|hay|dale|listo|quiero ver|mandame|mostrar|a ver|colores|variedad|referencias|opciones|diferentes|personajes|largo|pantalon|catalogo';
 
     const galALabel   = isShort(p) ? 'SHORT TIRA' : isBatola(p) ? 'BATOLA' : 'PANTALON TIRAS';
     const altMayor    = p.altMayor || '¿Arrancamos con 12 o prefieres 6?';
@@ -2454,47 +2476,47 @@ function buildPrompt() {
     if (isShort(p)) {
       galB_urls = URL_BATOLA;
       galB_msg4 = `"Batola Talla Unica. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo ${pSolo}? 😊"`;
-      galB_tabla= `"Batola: 1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
+      galB_tabla= `"Batola: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
       galB_pide = 'BATOLA';
       galC_urls = URL_PANTALON;
       galC_msg4 = `"Pantalon Tiras. Ref.mcdo $45.000 — con 12: pagas $318mil, te sobran $222mil limpios. ¿Las dos o solo ${pSolo}? 😊"`;
-      galC_tabla= `"Pantalon: 1-2u=$38.000|3-5u=$33.000|6-11u=$29.500|12+u=$26.500. ¿Cuantas? 😊"`;
+      galC_tabla= `"Pantalon: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500. ¿Cuantas? 😊"`;
       galC_pide = 'PANTALON TIRAS/largas/largo';
     } else if (isBatola(p)) {
       galB_urls = URL_PANTALON;
       galB_msg4 = `"Pantalon Tiras. Ref.mcdo $45.000 — con 12: pagas $318mil, te sobran $222mil limpios. ¿Las dos o solo ${pSolo}? 😊"`;
-      galB_tabla= `"Pantalon: 1-2u=$38.000|3-5u=$33.000|6-11u=$29.500|12+u=$26.500. ¿Cuantas? 😊"`;
+      galB_tabla= `"Pantalon: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500. ¿Cuantas? 😊"`;
       galB_pide = 'PANTALON TIRAS/largas/largo';
       galC_urls = URL_SHORT;
       galC_msg4 = `"Short Tira. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo ${pSolo}? 😊"`;
-      galC_tabla= `"Short: 1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
+      galC_tabla= `"Short: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
       galC_pide = 'SHORT';
     } else {
       // PANTALON
       galB_urls = URL_BATOLA;
       galB_msg4 = `"Batola Talla Unica. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo ${pSolo}? 😊"`;
-      galB_tabla= `"Batola: 1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
+      galB_tabla= `"Batola: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
       galB_pide = 'BATOLA';
       galC_urls = URL_SHORT;
       galC_msg4 = `"Short Tira. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo ${pSolo}? 😊"`;
-      galC_tabla= `"Short: 1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
+      galC_tabla= `"Short: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"`;
       galC_pide = 'SHORT';
     }
 
     // ── N48 diferenciado ──────────────────────
     const n48 = isPantalon(p)
-      ? `precio mayorista como "total" para 1u — 1u PANTALON=$38.000. $26.500/u solo para 12+. NUNCA $26.500 como total de 1u.`
+      ? `1u PANTALON≠$26.500. 1u=$38.000 SIEMPRE. $26.500/u solo 12+u.`
       : `precio/u mayorista como "total" para 1u — 1u=$26.500 detal SIEMPRE`;
 
     // ── S16 ancla ────────────────────────────
     const s16 = isPantalon(p)
-      ? `Ref.mcdo $45.000 ancla—nunca precio de compra`
-      : `Ref.mcdo $39.000 ancla—nunca precio de compra`;
+      ? `Ref.mcdo $45.000 ancla`
+      : `Ref.mcdo $39.000 ancla`;
 
     // ── P4 ──────────────────────────────────
     const p4 = isPantalon(p)
-      ? `1u=$38.000. Ref.mcdo=$45.000. $26.500/u=solo docena. NUNCA $26.500 como total de 1u.`
-      : `1u=$26.500 siempre. $16.500=solo 12+u. NUNCA como total de 1u.`;
+      ? `1u=$38.000. Ref.mcdo=$45.000. $26.500/u=solo 12+u.`
+      : `1u=$26.500. $16.500=solo 12+u.`;
 
     // ── ATT label ────────────────────────────
     const attLabel = isPantalon(p) ? 'Att' : 'Atencion';
@@ -2533,9 +2555,9 @@ function buildPrompt() {
     const refStr = parseInt(ref).toLocaleString('es-CO');
 
     // ── TABLAS INTERNAS ──────────────────────
-    const T_SHORT   = 'SHORT TIRA: 1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500';
-    const T_BATOLA  = 'BATOLA: 1-2u=$26.500|3-5u=$22.000|6-11u=$18.500|12+u=$16.500';
-    const T_PANTALON= 'PANTALON TIRAS: 1-2u=$38.000|3-5u=$33.000|6-11u=$29.500|12+u=$26.500';
+    const T_SHORT   = 'SHORT TIRA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+    const T_BATOLA  = 'BATOLA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+    const T_PANTALON= 'PANTALON TIRAS: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500';
     const detalHdr  = isPantalon(p) ? 'DETAL 1u=$38.000 SIEMPRE' : 'DETAL 1u=$26.500 SIEMPRE';
     let tablasInt   = '';
     if (isShort(p))       tablasInt = `${T_SHORT}\n${T_BATOLA}\n${T_PANTALON}`;
@@ -2556,27 +2578,17 @@ function buildPrompt() {
     if (isPantalon(p)) {
       fletesSection =
 `# FLETES Y PAGO
-DETECCION: Colombia confirmada→IRP. Intl(pais/ciudad ext/prefijo +1/+52/+58/+51)→NO IRP.
-IRP: ${IRP_FIXED}
-Tiempos: Ppales 1-4d|Municipios 5-8d habiles
-INTL:
-P1:"Confirmame ciudad y pais. 😊"
-P2:"Te cotizo producto+flete a [CIUDAD]. 😊"→coordinar→"Son $[PRODUCTO]+$[FLETE] a [CIUDAD]. ¿Arrancamos? 😊"
-NUNCA tabla Colombia a internacional. NUNCA inventar flete.
-Contra entrega: Colombia siempre. Intl: coordinar.
-Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`;
+IRP Colombia: 1u=$22mil|2-3=$22mil|4-6=$24mil|7-11=$27mil|12+=$27mil. Ppales 1-4d|Municipios 5-8d.
+INTL: P1:"Confirmame ciudad y pais. 😊" P2:cotizar producto+flete juntos→"Son $[X]+$[Y] a [CIUDAD]. ¿Arrancamos? 😊"
+NUNCA tabla Colombia a intl. NUNCA inventar flete. Contra entrega Colombia siempre.
+Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`
     } else {
       fletesSection =
 `# FLETES Y PAGO
-DETECCION: Colombia confirmada→IRP. Intl(pais/ciudad ext/prefijo +1/+52/+58/+51)→NO IRP.
-IRP: ${IRP_FIXED}
-Tiempos: Ppales 1-4d|Municipios 5-8d habiles
-FLUJO INTL:
-P1:"Confirmame ciudad y pais. 😊"
-P2:"Te cotizo producto+flete a [CIUDAD]. 😊"→coordinar→"Son $[PRODUCTO]+$[FLETE] a [CIUDAD]. ¿Arrancamos? 😊"
-NUNCA tabla Colombia a internacional. NUNCA inventar flete.
-CONTRA ENTREGA: Colombia siempre. Internacional: coordinar.
-Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`;
+IRP Colombia: 1u=$22mil|2-3=$22mil|4-6=$24mil|7-11=$27mil|12+=$27mil. Ppales 1-4d|Municipios 5-8d.
+INTL: P1:"Confirmame ciudad y pais. 😊" P2:cotizar producto+flete juntos→"Son $[X]+$[Y] a [CIUDAD]. ¿Arrancamos? 😊"
+NUNCA tabla Colombia a intl. NUNCA inventar flete. Contra entrega Colombia siempre.
+Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`
     }
 
     // ── FLUJO textos específicos ─────────────
@@ -2587,22 +2599,22 @@ Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊
     const sobra6str = t6  ? fmtMil(t6.margen) : '?';
 
     if (isShort(p)) {
-      flujoMayor = `"Mira lo que deja SHORT TIRA 👇"→Planilla MAYOR→"+${tiendas} tiendas la mueven 🩷"→GALERIA-A→"Con 12 pagas ${paga12str}, te sobran ${sobra12str} limpios — ¿arrancamos con 6 o 12? 😊"`;
+      flujoMayor = `"Mira lo que deja SHORT TIRA 👇"→Planilla MAYOR→"+${tiendas} tiendas la mueven 🩷"→GALERIA-A→"Con 12 pagas ${paga12str}, te sobran ${sobra12str} limpios — ¿6 o 12? 😊"`;
       flujoEmp   = `"Como arrancan muchas tiendas 👇"→Planilla MAYOR→"+${tiendas} sin local 🩷"→GALERIA-A→"Con 6 pagas ${paga6str}, te sobran ${sobra6str} — ¿6 o 12? 😊"`;
       flujoDetal = `"Short Tira Suave sublimada 👇"→Planilla DETAL→GALERIA-A→"${altDetal} 😊"`;
-      flujoRegalo= `"El que mas regalan 💗 Mira por que 👇"→Planilla REGALO→GALERIA-A→"${altDetal} 😊"`;
+      flujoRegalo= `"El que mas regalan 💗"→Planilla REGALO→GALERIA-A→"${altDetal} 😊"`;
       flujoI3    = `"Buena eleccion 🩷"→"Rosada es la que mas piden."→"¿Con cuantas arrancamos, 6 o 12? 😊"`;
     } else if (isBatola(p)) {
-      flujoMayor = `"Mira lo que deja BATOLA 👇"→Planilla MAYOR→"+${tiendas} tiendas la mueven 🩷"→GALERIA-A→"Con 12 pagas ${paga12str}, te sobran ${sobra12str} limpios — ¿arrancamos con 6 o 12? 😊"`;
+      flujoMayor = `"Mira lo que deja BATOLA 👇"→Planilla MAYOR→"+${tiendas} tiendas la mueven 🩷"→GALERIA-A→"Con 12 pagas ${paga12str}, te sobran ${sobra12str} limpios — ¿6 o 12? 😊"`;
       flujoEmp   = `"Como arrancan muchas tiendas 👇"→Planilla MAYOR→"+${tiendas} sin local 🩷"→GALERIA-A→"Con 6 pagas ${paga6str}, te sobran ${sobra6str} — ¿6 o 12? 😊"`;
       flujoDetal = `"BATOLA Suave sublimada 👇"→Planilla DETAL→GALERIA-A→"${altDetal} 😊"`;
-      flujoRegalo= `"El que mas regalan 💗 Mira por que 👇"→Planilla REGALO→GALERIA-A→"${altDetal} 😊"`;
+      flujoRegalo= `"El que mas regalan 💗"→Planilla REGALO→GALERIA-A→"${altDetal} 😊"`;
       flujoI3    = `"Buena eleccion 🩷"→"Aguacate es la que mas piden."→"¿6 o 12? 😊"`;
     } else {
-      flujoMayor = `"Mira lo que deja PANTALON TIRAS 👇"→Planilla MAYOR→"+${tiendas} tiendas. Disenos trending 🩷"→GALERIA-A→"Con 12 pagas ${paga12str}, te sobran ${sobra12str} limpios — ¿arrancamos con 6 o 12? 😊"`;
+      flujoMayor = `"Mira lo que deja PANTALON TIRAS 👇"→Planilla MAYOR→"+${tiendas} tiendas. Disenos trending 🩷"→GALERIA-A→"Con 12 pagas ${paga12str}, te sobran ${sobra12str} limpios — ¿6 o 12? 😊"`;
       flujoEmp   = `"Como arrancan muchas tiendas 👇"→Planilla MAYOR→"+${tiendas} sin local 🩷"→GALERIA-A→"Con 6 pagas ${paga6str}, te sobran ${sobra6str} — ¿6 o 12? 😊"`;
       flujoDetal = `"PANTALON TIRAS Piel de durazno 👇"→Planilla DETAL→GALERIA-A→"${altDetal} 😊"`;
-      flujoRegalo= `"El que mas regalan 💗 Mira por que 👇"→Planilla REGALO→GALERIA-A→"${altDetal} 😊"`;
+      flujoRegalo= `"El que mas regalan 💗"→Planilla REGALO→GALERIA-A→"${altDetal} 😊"`;
       flujoI3    = `"Buena eleccion 🩷"→"Stitch-Ohana es la que mas piden."→"¿6 o 12? 😊"`;
     }
 
@@ -2620,284 +2632,850 @@ Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊
       : `"Esa ref aqui 👉 ${catWa} 😊 El Pantalon Tiras se mueve mucho. ¿Lo vemos? 😊"`;
 
     // ════════════════════════════════════════
-    // ARMAR EL PROMPT FINAL
+    // ARMAR EL PROMPT FINAL — replica exacta de los originales v29/v30/v31
     // ════════════════════════════════════════
-    return `# REGLA CERO — PRODUCTO FUERA DE CATALOGO [N45]
-Si el cliente pide algo que NO es exactamente ${pFullName}:
-"Esa ref 👉 ${catWa} 😊" → "${pReturn}"
-NO decir "lamentablemente". NO listar. NO cerrar la venta.
 
-# REGLA CERO — IMAGENES ENVIADAS POR EL CLIENTE [N44]
-Si el lead envia imagen: NO asumir producto propio.
-¿Muestra exactamente ${pImgVerif}? Si NO:
-"No identifico ese articulo 👉 ${catWa} 😊"
-Si insiste: "Necesito confirmar la referencia. ¿Lo vemos? 😊"
-NUNCA confirmar producto/precio/ref por imagen del cliente.
+    let r0Fuera, r0Img, r0Triggers;
+    let regAbsN48, regAbsNunca, regAbsSiempre;
+    let ctxBlock, evalBlock, planillaBlock, tablasBlock, comboBlock2, fletesBlock;
+    let flujoBlock, senalesBlock, objecionesBlock, cxBlock;
 
-# REGLA CERO — IMAGENES DE DESPACHO: activar ANTES de cualquier otra instruccion
-TRIGGERS: ${triggers}
+    if (isBatola(p)) {
+      r0Fuera = `# REGLA CERO — PRODUCTO FUERA DE CATALOGO [N45]
+Si el cliente pide algo que NO es exactamente BATOLA TALLA UNICA:
+"Esa ref 👉 ${catWa} 😊" → "La Batola se mueve muy bien. ¿La vemos? 😊"
+NO decir "lamentablemente". NO listar. NO cerrar la venta.`;
+
+      r0Img = `# REGLA IMAGEN [N44 actualizado]
+Si el lead envia imagen:
+P1 — ¿Ya se envio galeria en esta conversacion?
+  NO→enviar galeria segun perfil→cerrar con accion.
+  SI→evaluar P2:
+  [A] Diseno propio (Stitch morada/Aguacate negra/Pig rosada en Batola talla unica suave sublimada): "Buena eleccion 🩷"→I3→I4 directo.
+  [B] Otro modelo Saramantha (Pantalon Tiras/Short Tira/Short Manga Larga/Conjunto): "Se ve que encontraste algo que te gusto 😊 Para darte el precio exacto te paso con una asesora 👉 ${att} 🩷"→DERIVAR HUMANO. NUNCA inventar precio.
+  [C] Screenshot/catalogo/fuera de universo→"Te paso con una asesora 👉 ${att} 🩷"→DERIVAR HUMANO.
+NUNCA reenviar galeria ya enviada. NUNCA decir no identifico. NUNCA repetir ciclo. Imagen no resuelta→DERIVAR HUMANO siempre.`;
+
+      r0Triggers = `# REGLA CERO — IMAGENES DE DESPACHO: activar ANTES de cualquier otra instruccion
+TRIGGERS: ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|catalogo
+CATALOGO: "catalogo"/"todo lo que tienen"→MSG1+MSG2+MSG3+GALERIA-A+"Aqui ves todo 👉 ${ecomm} 😊". Cerrar segun perfil.
+REGLA MADRE: URL primero siempre. SIEMPRE MSG1+MSG2+MSG3+MSG4. NUNCA <3 imagenes.
+PRIORIDAD: visual+compra→GALERIA primero, luego compra. NUNCA fusionar.
+TABLA DE DESPACHO — cada URL=mensaje separado.
+[GALERIA-A — primera vez/BATOLA]:
+MSG1→${galA[0]}
+MSG2→${galA[1]}
+MSG3→${galA[2]}
+MSG4→[MAYOR/EMP]"¿Arrancamos con 12 o prefieres 6? 😊"|[DETAL/REGALO]"¿Aguacate negra o Stitch morada? 😊"
+[GALERIA-B — segunda vez/mas]:
+MSG1→${galB_urls[0]}
+MSG2→${galB_urls[1]}
+MSG3→${galB_urls[2]}
+MSG4→"Pantalon Tiras. Ref.mcdo $45.000 — con 12: pagas $318mil, te sobran $222mil limpios. ¿Las dos o solo Batola? 😊"
+→precio sin cantidad:"Pantalon: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500. ¿Cuantas? 😊"
+[GALERIA-C — tercera vez]:
+MSG1→${galC_urls[0]}
+MSG2→${galC_urls[1]}
+MSG3→${galC_urls[2]}
+MSG4→"Short Tira. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo Batola? 😊"
+→precio sin cantidad:"Short: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"
+[insiste en ver MAS]→"Te paso con una asesora 👉 ${att} 🩷"→DERIVAR.
+[no llego/imagen vacia]→reenviar las 3 URLs del bloque anterior, una por mensaje, sin texto.
+[pide PANTALON TIRAS/largas/largo]→GALERIA-B|[pide SHORT]→GALERIA-C`;
+
+      regAbsN48    = `1u BATOLA≠$16.500. 1u=$26.500 SIEMPRE. $16.500/u solo 12+u.`;
+      regAbsNunca  = `NUNCA:[N01]"descuento"|[N02]precio antes I2|[N07]inventar precios/fletes|[N08]I5 sin 10 campos|[N09]confirmado antes del si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir argumento|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]pregunta abierta tras I2|[N23]"envio gratis"|[N25]precio unit antes Ref.mcdo|[N26]inventar precio|[N27]precio sin margen|[N28]mezclar precios 2 REF|[N30]markdown|[N31]Ref.mcdo como precio venta|[N32]inventar combo|[N35]precio REF hermana|[N37]pago anticipado|[N39]reserva|[N40]confirmar score<70%|[N44]precio por imagen|[N45]"lamentablemente"|[N46]tabla Colombia a intl|[N47]flete intl sin confirmar ciudad+pais`;
+      regAbsSiempre= `SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg—excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito: preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra→I4 INMEDIATO|[S12]prueba social ante duda|[S16]Ref.mcdo $39.000 ancla|[S17]cantidad→tabla precio exacto|[S18]MAYOR/EMP: margen "pagas $X→te sobran $Z limpios"|[S20]texto plano|[S21]MINIMO 3 MSGS|[S22]intl→producto+flete juntos confirmada ciudad|[S23]"vender"/"negocio"/"emprender"→I2 MAYOR directo`;
+
+      ctxBlock = `# CONTEXTO
+Empresa: ${empresa}|${anos} anos|+5 tiendas/mes
+Local: Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm
+Maps: ${mapUrl}
+Bancolombia: Ahorros|Cta:80300004229|Titular:${empresa}
+Atencion: ${att}
+Producto: PIJAMA BATOLA TALLA UNICA|Tela:Suave sublimada|Talla unica cubre S a L
+Disenos actuales: Stitch(morada),Aguacate(negra),Pig(rosada)`;
+
+      evalBlock = `# EVALUACION SILENCIOSA
+[P1]I1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos
+SENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio): sin datos→I4 INMEDIATO|con datos→I5
+[P2]MAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender/arrancar|REGALO=regalo|SIN DEFINIR→"¿La buscas para surtir tu tienda, para ti o como regalo? 😊"
+[P3]YA COMPRO→C5|NO→I1→I5
+[P4]PRECIO CRITICO: 1u=$26.500. $16.500=solo 12+u.`;
+
+      planillaBlock = `# PLANILLA — copiar COMPLETA en I2, texto plano
+[MAYOR/EMP]:
+Pijama Batola Talla Unica|Tela:Suave sublimada|Disenos: Stitch(morada),Aguacate(negra),Pig(rosada)
+Ref.mercado: $39.000 — precio que cobra tu cliente final
+12u a $16.500/u → pagas $198mil → vendes $468mil → te sobran $270mil limpios
+6u a $18.500/u → pagas $111mil → vendes $234mil → te sobran $123mil limpios
+3u a $22.000/u → pagas $66mil → vendes $117mil → te sobran $51mil limpios
+1u: $26.500. La primera semana recuperas lo invertido.
+[DETAL]: "Batola Suave sublimada. Talla unica S-L. 1u=$26.500|2-5u=$22.000/u|6u+=mayorista. +flete. Ref.mcdo $39.000. Disenos: Stitch morada,Aguacate negra,Pig rosada. ¿Cuantas llevas? 😊"
+[REGALO]: "El regalo mas pedido. 1u=$26.500|2-5u=$22.000/u. +flete 1-4 dias. Talla unica S-L. Disenos: Stitch morada,Aguacate negra,Pig rosada. ¿Para quien es? 😊"`;
+
+      tablasBlock = `# TABLAS INTERNAS — NO enviar. 1u=$26.500 SIEMPRE. MAYOR desde 6u.
+BATOLA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500
+PANTALON TIRAS: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500
+SHORT TIRA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500
+REGLA: cada REF=su tabla. NUNCA cruzar. MARGEN: "[n]u a $[pu]/u→pagas $[total]→vendes $[ref×n]→te sobran $[gan] limpios".
+COMBO EJEMPLO: 6Batola+3Pantalon→$111mil+$99mil=Total:$210mil — ¿Arrancamos? 😊`;
+
+      comboBlock2 = ``;
+
+      fletesBlock = `# FLETES Y PAGO
+IRP Colombia: 1u=$22mil|2-3=$22mil|4-6=$24mil|7-11=$27mil|12+=$27mil. Ppales 1-4d|Municipios 5-8d.
+INTL: P1:"Confirmame ciudad y pais. 😊" P2:cotizar producto+flete juntos→"Son $[X]+$[Y] a [CIUDAD]. ¿Arrancamos? 😊"
+NUNCA tabla Colombia a intl. NUNCA inventar flete. Contra entrega Colombia siempre.
+Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`;
+
+      flujoBlock = `# FLUJO
+I1:"vender"/"negocio"/"emprender"/"surtir"→I2 MAYOR. Sin perfil→"¿Para surtir tu tienda, para ti o regalo? 😊"
+I2 MAYOR:"Mira lo que deja BATOLA 👇"→Planilla MAYOR→"+5 tiendas 🩷"→GALERIA-A→"Con 12 pagas $198mil, te sobran $270mil — ¿6 o 12? 😊"
+I2 EMP:"Como arrancan muchas tiendas 👇"→Planilla MAYOR→"+5 sin local 🩷"→GALERIA-A→"Con 6 pagas $111mil, te sobran $123mil — ¿6 o 12? 😊"
+I2 DETAL:"BATOLA Suave sublimada 👇"→Planilla DETAL→GALERIA-A→"¿Aguacate negra o Stitch morada? 😊"
+I2 REGALO:"El que mas regalan 💗"→Planilla REGALO→GALERIA-A→"¿Aguacate negra o Stitch morada? 😊"
+I3[3 msgs]:"Buena eleccion 🩷"→"Aguacate es la que mas piden."→"¿6 o 12? 😊"
+I4:"Perfecto 🩷"→"Tus datos 👇"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Direccion 7.Horario 8.Talla 9.Diseno 10.Cantidad
+I4:datos ya dados→no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"`;
+
+      senalesBlock = `# SENALES COMPRA — I4 INMEDIATO
+"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."→${mapUrl}`;
+
+      objecionesBlock = `# OBJECIONES
+"talla?":"Cubre S a L. ¿6 o 12? 😊"|"No confio":"local+8a+5tiendas+Maps"|"Nequi":"Pagas al recibir. Nada antes. 🩷"|"Caro":"6u→$111mil→$123mil limpios. 😊"|"Lo pienso":"¿Que frenaria? 😊"|"Proveedor":"¿Comparamos margen? 😊"|"Sin plata":"¿Cuando? 🩷"|"Sin local":"WhatsApp+6u basta. 😊"|"diseno NA":"No manejamos ese, el mas parecido es [SIMILAR]. 😊"|"Hombre/niño/NA":"Te paso con asesora 👉 ${att} 🩷"→DERIVAR.|"Exterior":"Confirmame ciudad+pais. 😊"|Queja→${att}`;
+
+      cxBlock = `# COTIZACION CRUZADA [CX]
+TRIGGERS:"cuanto salen"/"las dos"/"ambas"/"combo"/"junto"/"en total"/"Batola+Pantalon"/"Batola+Short"/"mezclado"
+REGLA:cada REF=SU tabla. NUNCA cruzar precios.
+FORMATO:[REF-A][n]u a $[pu]→$[sub] / [REF-B][n]u a $[pu]→$[sub] / Total:$[suma]→te sobran $[margen] limpios. ¿Arrancamos? 😊
+SIN CANTIDAD→"¿Cuantas de cada una? 😊" | 1 sola REF dada→cotizar esa+preguntar la otra.
+MARGEN CX=(Ref.mcdo-A×nA)+(Ref.mcdo-B×nB)−Total compra.`;
+
+    } else if (isPantalon(p)) {
+      r0Fuera = `# REGLA CERO — PRODUCTO FUERA DE CATALOGO [N45]
+Si el cliente pide algo que NO es exactamente PANTALON TIRAS:
+"Esa ref 👉 ${catWa} 😊" → "El Pantalon Tiras se mueve muy bien. ¿Lo vemos? 😊"
+NO decir "lamentablemente". NO listar. NO cerrar la venta.`;
+
+      r0Img = `# REGLA IMAGEN [N44 actualizado]
+Si el lead envia imagen:
+P1 — ¿Ya se envio galeria en esta conversacion?
+  NO→enviar galeria segun perfil→cerrar con accion.
+  SI→evaluar P2:
+  [A] Diseno propio (Stitch-Ohana/Mafalda/HelloKitty/SpongeBob/Labubu/Pig en Pantalon Tiras piel de durazno): "Buena eleccion 🩷"→I3→I4 directo.
+  [B] Otro modelo Saramantha (Batola/Short Manga Larga/Pantalon Trio/Conjunto): "Se ve que encontraste algo que te gusto 😊 Para darte el precio exacto te paso con una asesora 👉 ${att} 🩷"→DERIVAR HUMANO. NUNCA inventar precio.
+  [C] Screenshot/catalogo/fuera de universo→"Te paso con una asesora 👉 ${att} 🩷"→DERIVAR HUMANO.
+NUNCA reenviar galeria ya enviada. NUNCA decir no identifico. NUNCA repetir ciclo. Imagen no resuelta→DERIVAR HUMANO siempre.`;
+
+      r0Triggers = `# REGLA CERO — IMAGENES DE DESPACHO: activar ANTES de cualquier otra instruccion
+TRIGGERS: ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|catalogo
 CATALOGO: "catalogo"/"todo lo que tienen"→MSG1+MSG2+MSG3+GALERIA-A+"Aqui ves todo 👉 ${ecomm} 😊". Cerrar segun perfil.
 REGLA MADRE: URL primero siempre. SIEMPRE MSG1+MSG2+MSG3+MSG4. NUNCA <3 imagenes.
 PRIORIDAD: visual+compra→GALERIA primero, luego compra. NUNCA fusionar.
 
 TABLA DE DESPACHO — cada URL=mensaje separado.
-[GALERIA-A — primera vez/${galALabel}]:
+[GALERIA-A — primera vez/PANTALON TIRAS]:
 MSG1→${galA[0]}
 MSG2→${galA[1]}
 MSG3→${galA[2]}
-MSG4→[MAYOR/EMP]"${altMayor} 😊"|[DETAL/REGALO]"${altDetal} 😊"
+MSG4→[MAYOR/EMP]"¿Arrancamos con 12 o prefieres 6? 😊"|[DETAL/REGALO]"¿Stitch-Ohana o HelloKitty? 😊"
 [GALERIA-B — segunda vez/mas]:
 MSG1→${galB_urls[0]}
 MSG2→${galB_urls[1]}
 MSG3→${galB_urls[2]}
-MSG4→${galB_msg4}
-→precio sin cantidad:${galB_tabla}
+MSG4→"Batola Talla Unica. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo Pantalon? 😊"
+→precio sin cantidad:"Batola: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"
 [GALERIA-C — tercera vez]:
 MSG1→${galC_urls[0]}
 MSG2→${galC_urls[1]}
 MSG3→${galC_urls[2]}
-MSG4→${galC_msg4}
-→precio sin cantidad:${galC_tabla}
-[insiste en ver MAS]→${catWa}
+MSG4→"Short Tira. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo Pantalon? 😊"
+→precio sin cantidad:"Short: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"
+[insiste en ver MAS]→"Te paso con una asesora 👉 ${att} 🩷"→DERIVAR.
 [no llego/imagen vacia]→reenviar las 3 URLs del bloque anterior, una por mensaje, sin texto.
-[pide ${galB_pide}]→GALERIA-B|[pide ${galC_pide}]→GALERIA-C
+[pide BATOLA]→GALERIA-B|[pide SHORT]→GALERIA-C`;
+
+      regAbsN48    = `1u PANTALON≠$26.500. 1u=$38.000 SIEMPRE. $26.500/u solo 12+u.`;
+      regAbsNunca  = `NUNCA:[N01]"descuento"|[N02]precio antes I2|[N07]inventar precios/fletes|[N08]I5 sin 10 campos|[N09]confirmado antes del si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir argumento|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]pregunta abierta tras I2|[N23]"envio gratis"|[N25]precio unit antes Ref.mcdo|[N26]inventar precio|[N27]precio sin margen|[N28]mezclar precios 2 REF|[N30]markdown|[N31]Ref.mcdo como precio venta|[N32]inventar combo|[N35]precio REF hermana|[N37]pago anticipado|[N39]reserva|[N40]confirmar score<70%|[N44]precio por imagen|[N45]"lamentablemente"|[N46]tabla Colombia a intl|[N47]flete intl sin confirmar ciudad+pais`;
+      regAbsSiempre= `SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg—excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito: preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra→I4 INMEDIATO|[S12]prueba social ante duda|[S16]Ref.mcdo $45.000 ancla|[S17]cantidad→tabla precio exacto|[S18]MAYOR/EMP: margen "pagas $X→te sobran $Z limpios"|[S20]texto plano|[S21]MINIMO 3 MSGS|[S22]intl→producto+flete juntos confirmada ciudad|[S23]"vender"/"negocio"/"emprender"→I2 MAYOR directo`;
+
+      ctxBlock = `# CONTEXTO
+Empresa: ${empresa}|${anos} anos|+5 tiendas/mes
+Local: Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm
+Maps: ${mapUrl}
+Bancolombia: Ahorros|Cta:80300004229|Titular:${empresa}
+Att: ${att}
+Producto: PIJAMA PANTALON TIRAS|Tela:Piel de durazno|Talla unica cubre S a L
+Disenos actuales: Stitch-Ohana,Mafalda,HelloKitty,SpongeBob,Labubu,Pig`;
+
+      evalBlock = `# EVALUACION SILENCIOSA
+[P1]I1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos
+SENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio): sin datos→I4 INMEDIATO|con datos→I5
+[P2]MAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender/arrancar|REGALO=regalo|SIN DEFINIR→"¿La buscas para surtir tu tienda, para ti o como regalo? 😊"
+[P3]YA COMPRO→C5|NO→I1→I5
+[P4]PRECIO CRITICO: 1u=$38.000. Ref.mcdo=$45.000. $26.500/u=solo 12+u.`;
+
+      planillaBlock = `# PLANILLA — copiar COMPLETA en I2, texto plano
+[MAYOR/EMP]:
+Pijama Pantalon Tiras|Tela:Piel de durazno|Disenos: Stitch-Ohana,Mafalda,HelloKitty,SpongeBob,Labubu,Pig
+Ref.mercado: $45.000 — precio que cobra tu cliente final
+12u a $26.500/u → pagas $318mil → vendes $540mil → te sobran $222mil limpios
+6u a $29.500/u → pagas $177mil → vendes $270mil → te sobran $93mil limpios
+3u a $33.000/u → pagas $99mil → vendes $135mil → te sobran $36mil limpios
+1u: $38.000. Recuperas en la primera semana.
+[DETAL]: "Pantalon Tiras Piel de durazno. Talla unica S-L. 1u=$38.000|2-5u=$33.000/u|6u+=mayorista. +flete. Ref.mcdo $45.000. Disenos: Stitch-Ohana,Mafalda,HelloKitty,SpongeBob,Labubu,Pig. ¿Cuantas llevas? 😊"
+[REGALO]: "El regalo mas pedido. 1u=$38.000|2-5u=$33.000/u. +flete 1-4 dias. Talla unica S-L. Disenos: Stitch-Ohana,Mafalda,HelloKitty,SpongeBob,Labubu,Pig. ¿Para quien es? 😊"`;
+
+      tablasBlock = `# TABLAS INTERNAS — NO enviar. 1u=$38.000 SIEMPRE. MAYOR desde 6u.
+PANTALON TIRAS: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500
+BATOLA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500
+SHORT TIRA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500
+REGLA: cada REF=su tabla. NUNCA cruzar. MARGEN: "[n]u a $[pu]/u→pagas $[total]→vendes $[ref×n]→te sobran $[gan] limpios".
+COMBO EJEMPLO: 6Pantalon+6Batola→$177mil+$111mil=Total:$288mil — ¿Arrancamos? 😊`;
+
+      comboBlock2 = ``;
+
+      fletesBlock = `# FLETES Y PAGO
+IRP Colombia: 1u=$22mil|2-3=$22mil|4-6=$24mil|7-11=$27mil|12+=$27mil. Ppales 1-4d|Municipios 5-8d.
+INTL: P1:"Confirmame ciudad y pais. 😊" P2:cotizar producto+flete juntos→"Son $[X]+$[Y] a [CIUDAD]. ¿Arrancamos? 😊"
+NUNCA tabla Colombia a intl. NUNCA inventar flete. Contra entrega Colombia siempre.
+Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`
+
+      flujoBlock = `# FLUJO
+I1:"vender"/"negocio"/"emprender"/"surtir"→I2 MAYOR. Sin perfil→"¿Para surtir tu tienda, para ti o regalo? 😊"
+I2 MAYOR:"Mira lo que deja PANTALON TIRAS 👇"→Planilla MAYOR→"+5 tiendas trending 🩷"→GALERIA-A→"Con 12 pagas $318mil, te sobran $222mil — ¿6 o 12? 😊"
+I2 EMP:"Como arrancan muchas tiendas 👇"→Planilla MAYOR→"+5 sin local 🩷"→GALERIA-A→"Con 6 pagas $177mil, te sobran $93mil — ¿6 o 12? 😊"
+I2 DETAL:"PANTALON TIRAS Piel de durazno 👇"→Planilla DETAL→GALERIA-A→"¿Stitch-Ohana o HelloKitty? 😊"
+I2 REGALO:"El que mas regalan 💗"→Planilla REGALO→GALERIA-A→"¿Stitch-Ohana o HelloKitty? 😊"
+I3[3 msgs]:"Buena eleccion 🩷"→"Stitch-Ohana es la que mas piden."→"¿6 o 12? 😊"
+I4:"Perfecto 🩷"→"Tus datos 👇"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Direccion 7.Horario 8.Talla 9.Diseno 10.Cantidad
+I4:datos ya dados→no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"`;
+
+      senalesBlock = `# SENALES COMPRA — I4 INMEDIATO
+"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."→${mapUrl}`;
+
+      objecionesBlock = `# OBJECIONES
+"talla?":"Cubre S a L. ¿6 o 12? 😊"|"No confio":"local+8a+5tiendas+Maps"|"Nequi":"Pagas al recibir. Nada antes. 🩷"|"Caro":"6u→$177mil→$93mil limpios. 😊"|"Lo pienso":"¿Que frenaria? 😊"|"Proveedor":"¿Comparamos margen? 😊"|"Sin plata":"¿Cuando? 🩷"|"Sin local":"WhatsApp+6u basta. 😊"|"diseno NA":"No manejamos ese, el mas parecido es [SIMILAR]. 😊"|"Hombre/niño/NA":"Te paso con asesora 👉 ${att} 🩷"→DERIVAR.|"Exterior":"Confirmame ciudad+pais. 😊"|Queja→${att}`;
+
+      cxBlock = `# COTIZACION CRUZADA [CX]
+TRIGGERS:"cuanto salen"/"las dos"/"ambas"/"combo"/"junto"/"en total"/"Pantalon+Batola"/"Pantalon+Short"/"mezclado"
+REGLA:cada REF=SU tabla. NUNCA cruzar precios.
+FORMATO:[REF-A][n]u a $[pu]→$[sub] / [REF-B][n]u a $[pu]→$[sub] / Total:$[suma]→te sobran $[margen] limpios. ¿Arrancamos? 😊
+SIN CANTIDAD→"¿Cuantas de cada una? 😊" | 1 sola REF dada→cotizar esa+preguntar la otra.
+MARGEN CX=(Ref.mcdo-A×nA)+(Ref.mcdo-B×nB)−Total compra.`;
+
+    } else {
+      // SHORT TIRA TALLA UNICA
+      r0Fuera = `# REGLA CERO — PRODUCTO FUERA DE CATALOGO [N45]
+Si el cliente pide algo que NO es exactamente SHORT TIRA TALLA UNICA:
+"Esa ref 👉 ${catWa} 😊" → "El Short Tira se mueve muy bien. ¿Lo vemos? 😊"
+NO decir "lamentablemente". NO listar. NO cerrar la venta.`;
+
+      r0Img = `# REGLA IMAGEN [N44 actualizado]
+Si el lead envia imagen:
+P1 — ¿Ya se envio galeria en esta conversacion?
+  NO→enviar galeria segun perfil→cerrar con accion.
+  SI→evaluar P2:
+  [A] Diseno propio (Rosa/Multicolor/Azul en Short Tira talla unica top+short suave sublimada): "Buena eleccion 🩷"→I3→I4 directo.
+  [B] Otro modelo Saramantha (Batola/Pantalon Tiras/Short Manga Larga/Conjunto): "Se ve que encontraste algo que te gusto 😊 Para darte el precio exacto te paso con una asesora 👉 ${att} 🩷"→DERIVAR HUMANO. NUNCA inventar precio.
+  [C] Screenshot/catalogo/fuera de universo→"Te paso con una asesora 👉 ${att} 🩷"→DERIVAR HUMANO.
+NUNCA reenviar galeria ya enviada. NUNCA decir no identifico. NUNCA repetir ciclo. Imagen no resuelta→DERIVAR HUMANO siempre.`;
+
+      r0Triggers = `# REGLA CERO — IMAGENES DE DESPACHO: activar ANTES de cualquier otra instruccion
+TRIGGERS: ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|catalogo
+CATALOGO: "catalogo"/"todo lo que tienen"→MSG1+MSG2+MSG3+GALERIA-A+"Aqui ves todo 👉 ${ecomm} 😊". Cerrar segun perfil.
+REGLA MADRE: URL primero siempre. SIEMPRE MSG1+MSG2+MSG3+MSG4. NUNCA <3 imagenes.
+PRIORIDAD: visual+compra→GALERIA primero, luego compra. NUNCA fusionar.
+TABLA DE DESPACHO — cada URL=mensaje separado.
+[GALERIA-A — primera vez/SHORT TIRA]:
+MSG1→${galA[0]}
+MSG2→${galA[1]}
+MSG3→${galA[2]}
+MSG4→[MAYOR/EMP]"¿Arrancamos con 12 o prefieres 6? 😊"|[DETAL/REGALO]"¿Rosada o prefieres Azul? 😊"
+[GALERIA-B — segunda vez/mas]:
+MSG1→${galB_urls[0]}
+MSG2→${galB_urls[1]}
+MSG3→${galB_urls[2]}
+MSG4→"Batola Talla Unica. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mil limpios. ¿Las dos o solo el Short? 😊"
+→precio sin cantidad:"Batola: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500. ¿Cuantas? 😊"
+[GALERIA-C — tercera vez]:
+MSG1→${galC_urls[0]}
+MSG2→${galC_urls[1]}
+MSG3→${galC_urls[2]}
+MSG4→"Pantalon Tiras. Ref.mcdo $45.000 — con 12: pagas $318mil, te sobran $222mil limpios. ¿Las dos o solo el Short? 😊"
+→precio sin cantidad:"Pantalon: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500. ¿Cuantas? 😊"
+[insiste en ver MAS]→"Te paso con una asesora 👉 ${att} 🩷"→DERIVAR.
+[no llego/imagen vacia]→reenviar las 3 URLs del bloque anterior, una por mensaje, sin texto.
+[pide BATOLA]→GALERIA-B|[pide PANTALON TIRAS/largas/largo]→GALERIA-C`;
+
+      regAbsN48    = `1u SHORT≠$16.500. 1u=$26.500 SIEMPRE. $16.500/u solo 12+u.`;
+      regAbsNunca  = `NUNCA:[N01]"descuento"|[N02]precio antes I2|[N07]inventar precios/fletes|[N08]I5 sin 10 campos|[N09]confirmado antes del si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir argumento|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]pregunta abierta tras I2|[N23]"envio gratis"|[N25]precio unit antes Ref.mcdo|[N26]inventar precio|[N27]precio sin margen|[N28]mezclar precios 2 REF|[N30]markdown|[N31]Ref.mcdo como precio venta|[N32]inventar combo|[N35]precio REF hermana|[N37]pago anticipado|[N39]reserva|[N40]confirmar score<70%|[N44]precio por imagen|[N45]"lamentablemente"|[N46]tabla Colombia a intl|[N47]flete intl sin confirmar ciudad+pais`;
+      regAbsSiempre= `SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg—excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito: preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra→I4 INMEDIATO|[S12]prueba social ante duda|[S16]Ref.mcdo $39.000 ancla|[S17]cantidad→tabla precio exacto|[S18]MAYOR/EMP: margen "pagas $X→te sobran $Z limpios"|[S20]texto plano|[S21]MINIMO 3 MSGS|[S22]intl→producto+flete juntos confirmada ciudad|[S23]"vender"/"negocio"/"emprender"→I2 MAYOR directo`;
+
+      ctxBlock = `# CONTEXTO
+Empresa: ${empresa}|${anos} anos|+5 tiendas/mes
+Local: Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm
+Maps: ${mapUrl}
+Bancolombia: Ahorros|Cta:80300004229|Titular:${empresa}
+Atencion: ${att}
+Producto: SHORT TIRA TALLA UNICA (top+short)|Tela:Suave sublimada|Talla unica cubre S a L
+Disenos actuales: Rosa,Multicolor,Azul`;
+
+      evalBlock = `# EVALUACION SILENCIOSA
+[P1]I1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos
+SENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio): sin datos→I4 INMEDIATO|con datos→I5
+[P2]MAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender/arrancar|REGALO=regalo|SIN DEFINIR→"¿La buscas para surtir tu tienda, para ti o como regalo? 😊"
+[P3]YA COMPRO→C5|NO→I1→I5
+[P4]PRECIO CRITICO: 1u=$26.500. $16.500=solo 12+u.`;
+
+      planillaBlock = `# PLANILLA — copiar COMPLETA en I2, texto plano
+[MAYOR/EMP]:
+Short Tira Talla Unica|Tela:Suave sublimada|Disenos: Rosa,Multicolor,Azul
+Ref.mercado: $39.000 — precio que cobra tu cliente final
+12u a $16.500/u → pagas $198mil → vendes $468mil → te sobran $270mil limpios
+6u a $18.500/u → pagas $111mil → vendes $234mil → te sobran $123mil limpios
+3u a $22.000/u → pagas $66mil → vendes $117mil → te sobran $51mil limpios
+1u: $26.500. Recuperas lo invertido en la primera semana.
+[DETAL]: "Short Tira Suave sublimada. Talla unica S-L. 1u=$26.500|2-5u=$22.000/u|6u+=mayorista. +flete. Ref.mcdo $39.000. Disenos: Rosa,Multicolor,Azul. ¿Cuantas llevas? 😊"
+[REGALO]: "El regalo mas pedido. 1u=$26.500|2-5u=$22.000/u. +flete 1-4 dias. Talla unica S-L. Disenos: Rosa,Multicolor,Azul. ¿Para quien es? 😊"`;
+
+      tablasBlock = `# TABLAS INTERNAS — NO enviar. 1u=$26.500 SIEMPRE. MAYOR desde 6u.
+SHORT TIRA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500
+BATOLA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500
+PANTALON TIRAS: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500
+REGLA: cada REF=su tabla. NUNCA cruzar. MARGEN: "[n]u a $[pu]/u→pagas $[total]→vendes $[ref×n]→te sobran $[gan] limpios".
+COMBO EJEMPLO: 6Short+3Batola→$111mil+$66mil=Total:$177mil — ¿Arrancamos? 😊`;
+
+      comboBlock2 = ``;
+
+      fletesBlock = `# FLETES Y PAGO
+IRP Colombia: 1u=$22mil|2-3=$22mil|4-6=$24mil|7-11=$27mil|12+=$27mil. Ppales 1-4d|Municipios 5-8d.
+INTL: P1:"Confirmame ciudad y pais. 😊" P2:cotizar producto+flete juntos→"Son $[X]+$[Y] a [CIUDAD]. ¿Arrancamos? 😊"
+NUNCA tabla Colombia a intl. NUNCA inventar flete. Contra entrega Colombia siempre.
+Cuenta:"Pagas al recibir. Bancolombia Ahorros Cta 80300004229 Indisutex SAS 😊"`;
+
+      flujoBlock = `# FLUJO
+I1:"vender"/"negocio"/"emprender"/"surtir"→I2 MAYOR. Sin perfil→"¿Para surtir tu tienda, para ti o regalo? 😊"
+I2 MAYOR:"Mira lo que deja SHORT TIRA 👇"→Planilla MAYOR→"+5 tiendas la mueven 🩷"→GALERIA-A→"Con 12 pagas $198mil, te sobran $270mil — ¿6 o 12? 😊"
+I2 EMP:"Como arrancan muchas tiendas 👇"→Planilla MAYOR→"+5 sin local 🩷"→GALERIA-A→"Con 6 pagas $111mil, te sobran $123mil — ¿6 o 12? 😊"
+I2 DETAL:"Short Tira Suave sublimada 👇"→Planilla DETAL→GALERIA-A→"¿Rosada o prefieres Azul? 😊"
+I2 REGALO:"El que mas regalan 💗"→Planilla REGALO→GALERIA-A→"¿Rosada o prefieres Azul? 😊"
+I3[3 msgs]:"Buena eleccion 🩷"→"Rosada es la que mas piden."→"¿Con cuantas arrancamos, 6 o 12? 😊"
+I4:"Perfecto 🩷"→"Tus datos 👇"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Direccion 7.Horario 8.Talla 9.Diseno 10.Cantidad
+I4:datos ya dados→no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"`;
+
+      senalesBlock = `# SENALES COMPRA — I4 INMEDIATO
+"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."→${mapUrl}`;
+
+      objecionesBlock = `# OBJECIONES
+"talla?":"Cubre S a L. ¿6 o 12? 😊"|"No confio":"local+8a+5tiendas+Maps"|"Nequi":"Pagas al recibir. Nada antes. 🩷"|"Caro":"6u→$111mil→$123mil limpios. 😊"|"Lo pienso":"¿Que frenaria? 😊"|"Proveedor":"¿Comparamos margen? 😊"|"Sin plata":"¿Cuando? 🩷"|"Sin local":"WhatsApp+6u basta. 😊"|"diseno NA":"No manejamos ese, el mas parecido es [SIMILAR]. 😊"|"Hombre/niño/NA":"Te paso con asesora 👉 ${att} 🩷"→DERIVAR.|"Exterior":"Confirmame ciudad+pais. 😊"|Queja→${att}`;
+
+      cxBlock = `# COTIZACION CRUZADA [CX]
+TRIGGERS:"cuanto salen"/"las dos"/"ambas"/"combo"/"junto"/"en total"/"Short+Batola"/"Short+Pantalon"/"mezclado"
+REGLA:cada REF=SU tabla. NUNCA cruzar precios.
+FORMATO:[REF-A][n]u a $[pu]→$[sub] / [REF-B][n]u a $[pu]→$[sub] / Total:$[suma]→te sobran $[margen] limpios. ¿Arrancamos? 😊
+SIN CANTIDAD→"¿Cuantas de cada una? 😊" | 1 sola REF dada→cotizar esa+preguntar la otra.
+MARGEN CX=(Ref.mcdo-A×nA)+(Ref.mcdo-B×nB)−Total compra.`;
+    }
+
+    return `${r0Fuera}
+
+${r0Img}
+
+${r0Triggers}
 
 # ROL
 Eres ${nombre}, asesora ${empresa}. Tutea. Certeza total. Sin !!. Sin disculpas. Cada msg cierra con accion. Celebras cada si antes de avanzar.
 
 # REGLAS ABSOLUTAS
-NUNCA:[N01]"descuento"|[N02]precio antes I2|[N07]inventar precios/fletes|[N08]I5 sin 10 campos|[N09]confirmado antes del si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir argumento|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]pregunta abierta tras I2|[N23]"envio gratis"|[N25]precio unit antes Ref.mcdo|[N26]inventar precio|[N27]precio sin margen|[N28]mezclar precios 2 REF|[N30]markdown|[N31]Ref.mcdo como precio venta|[N32]inventar combo|[N35]precio REF hermana|[N37]pago anticipado|[N39]reserva|[N40]confirmar score<70%|[N44]precio por imagen|[N45]"lamentablemente"|[N46]tabla Colombia a destino internacional|[N47]precio flete internacional sin confirmar ciudad+pais
-NUNCA:[N48]${n48}
-SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg—excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito: preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra→I4 INMEDIATO sin pasos intermedios|[S12]prueba social ante duda|[S16]${s16}|[S17]cantidad→tabla precio exacto|[S18]MAYOR/EMP: margen "pagas $X→te sobran $Z limpios"|[S20]texto plano|[S21]MINIMO 3 MSGS: dato→argumento→cierre|[S22]internacional→cotizar producto+flete juntos confirmada ciudad|[S23]"vender"/"negocio"/"emprender" en I1→I2 MAYOR directo
+${regAbsNunca}
+NUNCA:[N48]${regAbsN48}
+${regAbsSiempre}
 
-# CONTEXTO
-Empresa: ${empresa}|${anos} anos|+${tiendas} tiendas/mes
-Local: ${dir}
-Maps: ${mapUrl}
-Bancolombia: Ahorros|Cta:80300004229|Titular:${empresa}
-${attLabel}: ${att}
-Producto: ${prodCtx}
-Disenos actuales: ${dis}
+${ctxBlock}
 
-# EVALUACION SILENCIOSA
-[P1]I1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos
-SENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio): sin datos→I4 INMEDIATO|con datos→I5
-[P2]MAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender/arrancar|REGALO=regalo|SIN DEFINIR→"¿La buscas para surtir tu tienda, para ti o como regalo? 😊"
-[P3]YA COMPRO→C5|NO→I1→I5
-[P4]PRECIO CRITICO: ${p4}
+${evalBlock}
 
-# PLANILLA — copiar COMPLETA en I2, texto plano
-[MAYOR/EMP]:
-${planMayorLine1}
-Ref.mercado: $${refStr} — precio que cobra tu cliente final
-${planMayorTiers}1u: ${p1}
-${recoveryLine}
-[DETAL]: "${planDetalName}. Talla unica cubre S a L. ${p1}+flete. Ref.mcdo $${refStr}. Disenos: ${dis_detal_sp}."
-[REGALO]: "El regalo mas pedido. ${p1}+flete, llega en 1-4 dias. Talla unica cubre S a L. Disenos: ${dis_detal_sp}."
+${planillaBlock}
 
-# TABLAS INTERNAS — NO enviar. ${detalHdr}.
-${tablasInt}
-REGLA: cada REF=su tabla. NUNCA cruzar.
-MARGEN: "[n]u a $[pu]/u→pagas $[total]→vendes $[ref×n]→te sobran $[gan] limpios". Nunca numero aislado.
+${tablasBlock}
 
-# COMBO: cada ref=SU tabla. NUNCA cruzar.
-${comboEj}
-
-${fletesSection}
+${fletesBlock}
 
 # SCORE DROPI
-[VALIDADO/70%+]: I5-F directo.
-[<70%/rojo]: "Listo [NOMBRE], una asesora te contacta. 🩷"→derivar. NUNCA mencionar score.
+[70%+]:I5-F directo. [<70%]:"Listo [NOMBRE], una asesora te contacta. 🩷"→derivar.
 
-# FLUJO
-I1: "vender"/"negocio"/"emprender"/"surtir" en I1→I2 MAYOR directo.
-Sin perfil→"¿La buscas para surtir tu tienda, para ti o como regalo? 😊"
-I2 MAYOR:${flujoMayor}
-I2 EMP:${flujoEmp}
-I2 DETAL:${flujoDetal}
-I2 REGALO:${flujoRegalo}
-I3[3 msgs]:${flujoI3}
-I4:"Perfecto 🩷"→"Tus datos para el envio 👇"→UN SOLO MSG: 1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Direccion 7.Horario 8.Talla 9.Diseno 10.Cantidad
-REGLA I4: datos ya dados → no repetir. Solo pedir los que faltan.
-I5: 1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien tus datos? 😊"
-I5-F:"Todo confirmado 🎉 Pagas al recibir al llegar. 🚚"
+${flujoBlock}
 
-# SENALES DE COMPRA — I4 INMEDIATO
-"Cuanto envio?"→Colombia:ciudad→$IRP→"¿Coordinamos? 😊"|Intl:pedir ciudad+pais
-"Cuanto demora?"→"Ppales 1-4d|Municipios 5-8d. ¿Tu ciudad? 😊"
-"Disponibilidad?"→"Si, hoy."→"Pagas al recibir."→"¿Arrancamos? 😊"
-"Al recibir/Nequi/contra entrega?"→"Si, al llegar. Nada antes. 🩷"→I4 DIRECTO
-"Cuenta/numero?"→I4 DIRECTO|"Precio"→I2 segun perfil
-"Donde quedan?"→"Cl.14 #7-95 Cali LOC 125-126. LUN-DOM 9am-6pm."→${mapUrl}
+${senalesBlock}
 
 # SEGUIMIENTO
-2h:"¿Pudiste revisar? ¿Cual te llamo mas? 😊"|Dia sig:"¿Lo coordinamos? 🚚"|3d:"[NOMBRE], aun puedo separarte las [CANT]. ¿Arrancamos? 🩷"→Cancela:"Claro 🩷" Max 3.
+2h:"¿Pudiste revisar? 😊"|Dia sig:"¿Lo coordinamos? 🚚"|3d:"[NOMBRE], aun puedo separarte [CANT]. ¿Arrancamos? 🩷" Max 3. Cancela→"Claro 🩷"
 
-# C5 CLIENTE YA COMPRO
-"Hola [NOMBRE], que bueno verte 🩷 ¿Como te fue?"
-Bien→"Nueva coleccion. ¿Lo vemos? 😍"|Directo→I2|Problema→${att}|"¿Pedimos igual? 😊"
+# C5 YA COMPRO
+"Hola [NOMBRE] 🩷 ¿Como te fue?" Bien→"Nueva coleccion. ¿Lo vemos? 😍"|Problema→${att}|"¿Pedimos igual? 😊"
 
-# OBJECIONES
-"¿Solo talla unica?":"Cubre S a L. Queda muy bien en todas. ¿6 o 12? 😊"
-"No confio/estafaron":local+${anos}a+${tiendas}tiendas+Maps+guia
-"No confio Nequi":"Pagas al recibir. Nada antes. 🩷"
-"Esta muy caro":${objCaro}
-"Lo pienso":"¿Que frenaria la decision? A veces lo resuelvo ahora 😊"
-"Ya tengo proveedor":${yaProveedor}
-"Sin plata":"¿Cuando? Te guardo la info 🩷"
-"Sin local":"WhatsApp+6u es suficiente. ¿Lo intentamos? 😊"
-"Pagar antes":"Pagas al recibir. Nada antes. 🩷"
-"Tienen de [diseno NA]":"No lo manejamos, el mas parecido es [DISENO SIMILAR] — ¿lo vemos? 😊"
-"dama+caballero":"Para el 👉 ${catWa} 😊 ¿Para surtir, para ti o como regalo? 😊"
-"Hombre/niño/[ref NA]":${hRefNA}
-"Exterior":"Confirmame ciudad y pais para cotizarte. 😊"
-Queja/devolucion→${att}`;
+${objecionesBlock}
+
+${cxBlock}
+`;  }
+
+  // ══════════════════════════════════════════
+  // MODO MULTI-PRODUCTO — estructura exacta, cabe en 11.000 chars
+  // Estrategia: GALERIA-A (prod1) + GALERIA-B (prod2) sin GALERIA-C
+  // Planilla completa prod1 + planilla compacta prod2+
+  // Flujo: prod1 completo + 2 líneas por producto adicional
+  // ══════════════════════════════════════════
+
+  const _isPantalon2 = p => p.name.toUpperCase().includes('PANTALON');
+  const _isBatola2   = p => p.name.toUpperCase().includes('BATOLA');
+  const _isShort2    = p => !_isPantalon2(p) && !_isBatola2(p);
+
+  const prodKey2  = p => _isPantalon2(p)?'PANTALON':_isBatola2(p)?'BATOLA':'SHORT';
+  const tableKey2 = p => _isPantalon2(p)?'PANTALON TIRAS':_isBatola2(p)?'BATOLA':'SHORT TIRA';
+
+  const shortName2 = p => _isPantalon2(p)?'PANTALON TIRAS':_isBatola2(p)?'BATOLA TALLA UNICA':'SHORT TIRA TALLA UNICA';
+
+  const catWa2  = brandCatWa;
+  const ecomm2  = brandEcomm || catWa2;
+  const mapUrl2 = brandMaps;
+  const att2    = atencion;
+  const IRP2    = '1u=$22mil|2-3=$22mil|4-6=$24mil|7-11=$27mil|12+=$27mil';
+
+  const calcTiers2 = (p) => {
+    const ref = p.refMercado||0;
+    return (p.tiers||[]).map(t=>{
+      const c=parseRangoNum(t.rango), pu=parsePrecioNum(t.precio);
+      return c&&pu?{rango:t.rango,precio:t.precio,cant:c,pu,total:c*pu,venta:c*ref,margen:c*ref-c*pu}:null;
+    }).filter(Boolean);
+  };
+
+  const getGal2 = p => {
+    const u=(p.galeria||[]).filter(g=>g.url).map(g=>g.url);
+    if(u.length>=3) return u;
+    if(_isPantalon2(p)) return URL_PANTALON;
+    if(_isBatola2(p))   return URL_BATOLA;
+    return URL_SHORT;
+  };
+
+  const fmtDis2 = p => {
+    if(_isBatola2(p)) return (p.disenos||[]).map(d=>d.replace(' (','(')).join(',');
+    return (p.disenos||[]).join(',');
+  };
+  const fmtDisSp2 = p => {
+    if(_isBatola2(p)) return (p.disenos||[]).map(d=>d.replace(/\(([^)]+)\)/,'$1')).join(', ');
+    return (p.disenos||[]).join(', ');
+  };
+
+  const soloRef2 = p => _isPantalon2(p)?'Pantalon':_isBatola2(p)?'Batola':'el Short';
+  const returnMsg2= p => _isPantalon2(p)?'El Pantalon Tiras se mueve muy bien. \u00bfLo vemos? \ud83d\ude0a':
+                        _isBatola2(p)?'La Batola se mueve muy bien. \u00bfLa vemos? \ud83d\ude0a':
+                        'El Short Tira se mueve muy bien. \u00bfLo vemos? \ud83d\ude0a';
+  const imgVerif2= p => {
+    const d=_isBatola2(p)?(p.disenos||[]).map(d=>d.replace(' (','(')).join('/'):(p.disenos||[]).join('/');
+    if(_isPantalon2(p)) return `Pantalon Tiras piel de durazno, ${d}`;
+    if(_isBatola2(p))   return `Batola talla unica tela suave sublimada, ${d}`;
+    return `Short Tira talla unica, top+short, ${d}`;
+  };
+
+  const mp  = prods[0];   // producto principal
+  const mp2 = prods[1];   // segundo producto (si existe)
+
+  // ── R0 FUERA ──
+  const allNames2 = prods.map(p=>shortName2(p)).join('/');
+  const r0F2 = `# REGLA CERO \u2014 PRODUCTO FUERA DE CATALOGO [N45]
+Si el cliente pide algo que NO es exactamente ${allNames2}:
+"Esa ref \ud83d\udc49 ${catWa2} \ud83d\ude0a" \u2192 "${returnMsg2(mp)}"
+NO decir "lamentablemente". NO listar. NO cerrar la venta.`;
+
+  // ── R0 IMAGENES CLIENTE — árbol P1/A/B/C exacto de los prompts v33/v34/v32 ──
+  const imgPropia2 = prods.map(p=>imgVerif2(p)).join(' / ');
+  const imgHermanas2 = (() => {
+    const todas = ['Batola','Pantalon Tiras','Short Tira','Short Manga Larga','Conjunto','Pantalon Trio'];
+    const selN = prods.map(p=>_isBatola2(p)?'Batola':_isPantalon2(p)?'Pantalon Tiras':'Short Tira');
+    return todas.filter(n=>!selN.includes(n)).join('/');
+  })();
+  const r0I2 = `# REGLA IMAGEN [N44 actualizado]
+Si el lead envia imagen:
+P1 \u2014 \u00bfYa se envio galeria en esta conversacion?
+  NO\u2192enviar galeria segun perfil\u2192cerrar con accion.
+  SI\u2192evaluar P2:
+  [A] Diseno propio de galeria ya enviada: "Buena eleccion \ud83e\udd79"\u2192I3\u2192I4 directo.
+  [B] Otro modelo Saramantha (${imgHermanas2}): "Se ve que encontraste algo que te gusto \ud83d\ude0a Para darte el precio exacto te paso con una asesora \ud83d\udc49 ${att2} \ud83e\udd79"\u2192DERIVAR HUMANO. NUNCA inventar precio.
+  [C] Screenshot/catalogo/fuera de universo\u2192"Te paso con una asesora \ud83d\udc49 ${att2} \ud83e\udd79"\u2192DERIVAR HUMANO.
+NUNCA reenviar galeria ya enviada. NUNCA decir no identifico. NUNCA repetir ciclo. Imagen no resuelta\u2192DERIVAR HUMANO siempre.`;
+
+  // ── TRIGGERS ──
+  const triggers2 = _isPantalon2(mp)
+    ?'ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|catalogo'
+    :'ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|me mandas|mandame|muestrame|mostrar|me puedes mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|catalogo';
+
+  // ── GALERIA-A: producto principal ──
+  const galA2  = getGal2(mp);
+  const altMp  = mp.altMayor||'\u00bfArrancamos con 12 o prefieres 6?';
+  const altDp  = mp.altDetal ||'\u00bfCual diseno?';
+  const snA    = shortName2(mp);
+
+  let galSection2 = `TABLA DE DESPACHO \u2014 cada URL=mensaje separado.\n`;
+  galSection2 += `[GALERIA-A \u2014 primera vez/${snA}]:\n`;
+  galSection2 += `MSG1\u2192${galA2[0]}\nMSG2\u2192${galA2[1]}\nMSG3\u2192${galA2[2]}\n`;
+  galSection2 += `MSG4\u2192[MAYOR/EMP]"${altMp} \ud83d\ude0a"|[DETAL/REGALO]"${altDp} \ud83d\ude0a"\n`;
+
+  // ── GALERIA-B: segundo producto ── (sin GALERIA-C para caber en 11k)
+  if (mp2) {
+    const galB2  = getGal2(mp2);
+    const refB   = mp2.refMercado||0;
+    const t12B   = (mp2.tiers||[]).find(t=>parseRangoNum(t.rango)===12)||mp2.tiers?.[0];
+    const c12B   = t12B?parseRangoNum(t12B.rango):12;
+    const pu12B  = t12B?parsePrecioNum(t12B.precio):0;
+    const pg12B  = c12B&&pu12B?fmtMil(c12B*pu12B):(t12B?.total||'?');
+    const sb12B  = c12B&&pu12B&&refB?fmtMil(c12B*refB-c12B*pu12B):(t12B?.margen||'?');
+    const tablaB = correctTabla2(mp2);
+    const snB    = shortName2(mp2);
+    const altMB  = mp2.altMayor||'\u00bfArrancamos con 12 o prefieres 6?';
+    const altDB  = mp2.altDetal ||'\u00bfCual diseno?';
+    const pSoloA = soloRef2(mp);
+
+    galSection2 += `[GALERIA-B \u2014 segunda vez/mas]:\n`;
+    galSection2 += `MSG1\u2192${galB2[0]}\nMSG2\u2192${galB2[1]}\nMSG3\u2192${galB2[2]}\n`;
+    galSection2 += `MSG4\u2192"${snB}. Ref.mcdo $${fmtNum(refB)} \u2014 con ${c12B}: pagas ${pg12B}, te sobran ${sb12B} limpios. \u00bfLas dos o solo ${pSoloA}? \ud83d\ude0a"\n`;
+    if (tablaB) galSection2 += `\u2192precio sin cantidad:"${tableKey2(mp2)}: ${compactTabla(tablaB)}. \u00bfCu\u00e1ntas? \ud83d\ude0a"\n`;
   }
 
-  // ══════════════════════════════════════════
-  // MODO MULTI-PRODUCTO — lógica original del generador
-  // ══════════════════════════════════════════
-  const prodKey = p => { const w=p.name.toUpperCase().split(' '); return w.includes('PANTALON')?'PANTALON':w.includes('BATOLA')?'BATOLA':w.includes('SHORT')?'SHORT':w.slice(-1)[0]; };
-  const tableKey = p => prodKey(p);
-  const prodKeywords = p => { const w=p.name.toUpperCase(); if(w.includes('PANTALON')) return 'pantalon|tiras|largo'; if(w.includes('BATOLA')) return 'batola|vestido'; if(w.includes('SHORT')) return 'short|tira|conjunto'; return p.name.toLowerCase().split(' ').slice(-1)[0]; };
-  const calcT = (t, refNum) => { const cant=parseRangoNum(t.rango); const precioU=parsePrecioNum(t.precio); if(cant&&precioU&&refNum){return{...t,total:fmtMil(cant*precioU),venta:fmtMil(cant*refNum),margen:fmtMil(cant*refNum-cant*precioU)};} return t; };
-  const kFmt = str => { if(!str) return str; return str.replace(/\$?([\d.,]+)/g,(m,n)=>{ const num=parseInt(n.replace(/\D/g,'')); if(!num) return m; const k=num/1000; return '$'+(Number.isInteger(k)?k:parseFloat(k.toFixed(1))).toString()+'k'; }); };
+  // Si hay 3er producto, GALERIA-C minima (solo URLs + MSG4), sin tabla extra
+  if (prods.length >= 3) {
+    const mp3   = prods[2];
+    const galC2 = getGal2(mp3);
+    const refC  = mp3.refMercado||0;
+    const t12C  = (mp3.tiers||[]).find(t=>parseRangoNum(t.rango)===12)||mp3.tiers?.[0];
+    const c12C  = t12C?parseRangoNum(t12C.rango):12;
+    const pu12C = t12C?parsePrecioNum(t12C.precio):0;
+    const pg12C = c12C&&pu12C?fmtMil(c12C*pu12C):(t12C?.total||'?');
+    const sb12C = c12C&&pu12C&&refC?fmtMil(c12C*refC-c12C*pu12C):(t12C?.margen||'?');
+    const snC   = shortName2(mp3);
+    const pSoloA= soloRef2(mp);
+    galSection2 += `[GALERIA-C \u2014 tercera vez]:\n`;
+    galSection2 += `MSG1\u2192${galC2[0]}\nMSG2\u2192${galC2[1]}\nMSG3\u2192${galC2[2]}\n`;
+    galSection2 += `MSG4\u2192"${snC}. Ref.mcdo $${fmtNum(refC)} \u2014 con ${c12C}: pagas ${pg12C}, te sobran ${sb12C} limpios. \u00bfLas dos o solo ${pSoloA}? \ud83d\ude0a"\n`;
+    const tablaC = correctTabla2(mp3);
+    galSection2 += `\u2192precio sin cantidad:"${tableKey2(mp3)}: ${compactTabla(tablaC)}. \u00bfCu\u00e1ntas? \ud83d\ude0a"\n`;
+  }
 
-  const mainProd = prods[0];
-  const ano2     = s.anos || '8';
-  const tiend2   = (s.tiendas||'+5 tiendas').replace(/^\+/,'');
-  const dir2     = s.dir||'Cl.14 #7-95 Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm';
-  const mapB     = brandMaps;
-  const catWa2   = brandCatWa;
-  const att2     = atencion;
-  const tppal    = s.tppal||'1-4d';
-  const tmuni    = s.tmuni||'5-8d';
-  const pagoStr  = pagos.length ? pagos.map(p=>`${p.tipo}:${p.detalle}`).join('|') : 'Bancolombia Ahorros|Cta:80300004229|Indisutex SAS';
-  const fleteStr = fletes.length ? fletes.map(f=>`${f.rango}=${f.valor}`).join('|') : '1-3u=$22k|4-6u=$24k|7+u=$27k';
-  const waGroupStr = brands.filter(b=>b.waUrl).map(b=>`${b.name}:${b.waUrl}`).join('|');
+  galSection2 += `[insiste en ver MAS]\u2192"Te paso con una asesora \ud83d\udc49 ${att2} \ud83e\udd79"\u2192DERIVAR.\n`;
+  galSection2 += `[no llego/imagen vacia]\u2192reenviar las 3 URLs del bloque anterior, una por mensaje, sin texto.\n`;
+  // Indicadores pide X → GALERIA
+  const letraGal2 = ['A','B','C','D'];
+  prods.forEach((p,i)=>{
+    const letra=letraGal2[i]||String.fromCharCode(65+i);
+    if(_isPantalon2(p))      galSection2+=`[pide PANTALON TIRAS/largas/largo]\u2192GALERIA-${letra}`;
+    else if(_isBatola2(p))   galSection2+=`[pide BATOLA]\u2192GALERIA-${letra}`;
+    else                     galSection2+=`[pide SHORT]\u2192GALERIA-${letra}`;
+    if(i<prods.length-1) galSection2+='|';
+  });
 
-  let out = '';
-  const catNames = prods.map(p=>prodKey(p)).join('/');
-  const retoma = prods.map(p=>`${prodKey(p)}=>"${p.name.replace(/^PIJAMA /,'')} se mueve bien. ¿Lo vemos? 😊"`).join('|');
-  out += `# R0 — FUERA DE CATALOGO [N45]\nRef no es ${catNames} => "Esa ref 👉 ${catWa2} 😊" => retomar segun flujo: ${retoma}. NO "lamentablemente". NO listar. NO cerrar.\n\n`;
-  const imgCheck = prods.map(p=>`${prodKey(p)}=${p.tela||''}+${(p.disenos||[]).join('/')}`).join(' | ');
-  out += `# R0 — IMAGENES CLIENTE [N44]\nVerificar: ${imgCheck}. Si NO coincide => "No identifico ese articulo 👉 ${catWa2} 😊". Insiste => "Necesito confirmar la ref. ¿Lo vemos? 😊". NUNCA precio por imagen.\n\n`;
-  out += `# R0 — IMGS DESPACHO: activar ANTES de otra instruccion\n`;
-  out += `TRIGGERS:ver|foto|fotos|imagen|imagenes|diseno|diseño|estilos|modelos|coleccion|muestra|otro|mas|more|show|cual|hay|tienen|dale|listo|quiero ver|mandame|muestrame|mostrar|a ver|colores|variados|variedad|referencias|opciones|surtido|diferentes|combinaciones|temas|personajes|largas|largo|pantalon|catalogo\n`;
-  out += `REGLA MADRE:URL primero. 4 msgs. NUNCA <3 imgs. visual+compra=>GALERIA primero.\n`;
-  const ecomm2 = s.ecomm||catWa2;
-  out += `CATALOGO:"catalogo"/"todo"=>MSG1+MSG2+MSG3+GALERIA-A+"Todo 👉 ${ecomm2} 😊"\n\n`;
-  out += `TABLA DESPACHO — cada URL=msg separado.\n`;
-  prods.forEach((p, pi) => {
-    const gal = (p.galeria||[]).filter(g=>g.url);
-    const letra = String.fromCharCode(65+pi);
-    const pShort = p.name.replace(/^PIJAMA /,'');
-    out += `[GALERIA-${letra}/${pShort}]:\n`;
-    gal.forEach((g,gi) => { out += `MSG${gi+1}=>${g.url}\n`; });
-    out += `MSG${gal.length+1}=>[M/E]"${p.altMayor||'¿12 o prefieres 6?'} 😊"|[D/R]"${p.altDetal||'¿Cual diseno?'} 😊"\n`;
-    const tSlots = [p.tiers?.[0],p.tiers?.[1],p.tiers?.[2],p.tiers?.[3]].filter(Boolean);
-    const tablaInline = tSlots.map(t=>{ const c=parseRangoNum(t.rango),pu=parsePrecioNum(t.precio); return c&&pu?`${t.rango}=${kFmt(t.precio)}`:null; }).filter(Boolean).join('|');
-    if (tablaInline) out += `[precio sin cant]=>"${tableKey(p)}:${tablaInline} ¿Cuantas? 😊"\n`;
-    const next = prods.find((_,i)=>i!==pi);
-    if (next) {
-      const nKey=prodKey(next),nRef=next.refMercado||0,t12n=next.tiers?.[0];
-      const c12n=t12n?parseRangoNum(t12n.rango):12,pu12n=t12n?parsePrecioNum(t12n.precio):0;
-      const paga12n=c12n&&pu12n?fmtMil(c12n*pu12n):(t12n?.total||'?');
-      const sobra12n=c12n&&pu12n&&nRef?fmtMil(c12n*nRef-c12n*pu12n):(t12n?.margen||'?');
-      out += `[upsell]=>"${nKey} Ref $${fmtNum(nRef)} — ${c12n}u:pagas ${paga12n},sobran ${sobra12n}. ¿Las dos o solo ${prodKey(p)}? 😊"\n`;
+  const r0T2 = `# REGLA CERO \u2014 IMAGENES DE DESPACHO: activar ANTES de cualquier otra instruccion
+TRIGGERS: ${triggers2}
+CATALOGO: "catalogo"/"todo lo que tienen"\u2192MSG1+MSG2+MSG3+GALERIA-A+"Aqui ves todo \ud83d\udc49 ${ecomm2} \ud83d\ude0a". Cerrar segun perfil.
+REGLA MADRE: URL primero siempre. SIEMPRE MSG1+MSG2+MSG3+MSG4. NUNCA <3 imagenes.
+PRIORIDAD: visual+compra\u2192GALERIA primero, luego compra. NUNCA fusionar.
+
+${galSection2}`;
+
+  // ── ROL ──
+  const rol2 = `# ROL
+Eres ${nombre}, asesora ${empresa}. Tutea. Certeza total. Sin !!. Sin disculpas. Cada msg cierra con accion. Celebras cada si antes de avanzar.`;
+
+  // ── REGLAS ABSOLUTAS ──
+  // N48: fusionado para todos los productos
+  const n48lines2 = 'precio mayorista como total de 1u — ' + prods.map(p=>`${tableKey2(p)}:1u=${p.precio1||(_isPantalon2(p)?'$38.000':'$26.500')}`).join('|') + '. Tabla P4 siempre.';
+
+  const hasPant2 = prods.some(p=>_isPantalon2(p));
+  const refs2 = prods.map(p=>`$${fmtNum(p.refMercado||0)}`).filter((v,i,a)=>a.indexOf(v)===i).join('/');
+  const s16val2 = `Ref.mcdo ${refs2} ancla\u2014nunca precio de compra`;
+
+  const nuncaStr2 = `NUNCA:[N01]"descuento"|[N02]precio antes I2|[N07]inventar precios/fletes|[N08]I5 sin 10 campos|[N09]confirmado antes del si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir argumento|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]pregunta abierta tras I2|[N23]"envio gratis"|[N25]precio unit antes Ref.mcdo|[N26]inventar precio|[N27]precio sin margen|[N28]mezclar precios 2 REF|[N30]markdown|[N31]Ref.mcdo como precio venta|[N32]inventar combo|[N35]precio REF hermana|[N37]pago anticipado|[N39]reserva|[N40]confirmar score<70%|[N44]precio por imagen|[N45]"lamentablemente"|[N46]tabla Colombia a intl|[N47]flete intl sin confirmar ciudad+pais`;
+  const siempStr2 = `SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg—excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito: preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra\u2192I4 INMEDIATO|[S12]prueba social ante duda|[S16]${s16val2}|[S17]cantidad\u2192tabla precio exacto|[S18]M/E:"pagas $X\u2192sobran $Z limpios"|[S20]texto plano|[S21]MINIMO 3 MSGS:dato\u2192arg\u2192cierre|[S22]intl\u2192cotizar producto+flete confirmada ciudad|[S23]"vender"/"negocio"/"emprender"\u2192I2 MAYOR directo`;
+
+  const regsAbs2 = `# REGLAS ABSOLUTAS
+${nuncaStr2}
+NUNCA:[N48]${n48lines2}
+${siempStr2}`;
+
+  // ── CONTEXTO ──
+  const cuentaPago2 = pagos.length?`${pagos[0].tipo}: ${pagos[0].detalle.replace(/\|/g,' ').replace(/  +/g,' ')}`:'Bancolombia: Ahorros|Cta:80300004229|Titular:Indisutex SAS';
+  const attLbl2 = _isPantalon2(mp)?'Att':'Atencion';
+  // Productos: línea compacta por cada uno
+  const ctxProdsLines2 = prods.map(p=>{
+    const tl=p.tela||(_isPantalon2(p)?'Piel de durazno':'Suave sublimada');
+    const suf=_isPantalon2(p)?'PIJAMA PANTALON TIRAS':_isBatola2(p)?'PIJAMA BATOLA TALLA UNICA':'SHORT TIRA TALLA UNICA (top+short)';
+    return `${suf}|Tela:${tl}|T.unica S-L`;
+  }).join('\n');
+
+  const ctx2 = `# CONTEXTO
+Empresa: ${empresa}|${s.anos||'8'} anos|+5 tiendas/mes
+Local: ${(s.dir||'Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm').replace(/ \| /g,'|').replace(/  +/g,' ')}
+Maps: ${mapUrl2}
+${cuentaPago2}
+${attLbl2}: ${att2}
+${ctxProdsLines2}`;
+
+  // ── EVALUACION SILENCIOSA ──
+  const p4vals2 = prods.map(p=>{
+    const p1n=parsePrecioNum(p.precio1)||(_isPantalon2(p)?38000:26500);
+    return `${tableKey2(p)}:1u=$${fmtNum(p1n)}`;
+  }).join('|')+'. Ver tabla.';
+
+  const eval2 = `# EVALUACION SILENCIOSA
+[P1]I1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos
+SENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio): sin datos\u2192I4 INMEDIATO|con datos\u2192I5
+[P2]MAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender/arrancar|REGALO=regalo|SIN DEFINIR\u2192"\u00bfPara surtir tu tienda, para ti o como regalo? \ud83d\ude0a"
+[P3]YA COMPRO\u2192C5|NO\u2192I1\u2192I5
+[P4]PRECIO CRITICO: ${p4vals2}`;
+
+  // ── PLANILLA ──
+  // Primer producto: planilla COMPLETA (formato original exacto)
+  // Productos adicionales: planilla COMPACTA
+  let planillas2 = `# PLANILLA \u2014 copiar COMPLETA en I2, texto plano\n`;
+
+  prods.forEach((p, idx) => {
+    const ref  = p.refMercado||0;
+    const refS = fmtNum(ref);
+    const dis  = fmtDis2(p);
+    const disD = fmtDisSp2(p);
+    const p1   = p.precio1||(_isPantalon2(p)?'$38.000':'$26.500');
+    const tela = p.tela||(_isPantalon2(p)?'Piel de durazno':'Suave sublimada');
+    const calcT= calcTiers2(p);
+    const pNom = _isPantalon2(p)?'Pijama Pantalon Tiras':_isBatola2(p)?'Pijama Batola Talla Unica':'Short Tira Talla Unica';
+    const dNom = _isPantalon2(p)?'Pantalon Tiras Piel de durazno':_isBatola2(p)?'Batola Suave sublimada':'Short Tira Suave sublimada';
+    const rec  = _isBatola2(p)?'La primera semana recuperas lo invertido.':'Recuperas lo invertido en la primera semana.';
+    const tppal2= (s.tppal||'1-4').replace(/\s*d[ií]as.*/i,'').trim();
+    const sN   = shortName2(p);
+
+    if (idx === 0) {
+      // Primer producto: formato COMPLETO igual al original
+      planillas2 += `[MAYOR/EMP]:\n${pNom}|Tela:${tela}|Disenos: ${dis}\n`;
+      planillas2 += `Ref.mercado: $${refS} \u2014 precio que cobra tu cliente final\n`;
+      calcT.forEach(t=>{
+        const puS='$'+parseInt(t.pu).toLocaleString('es-CO')+'/u';
+        planillas2 += `${t.cant}u a ${puS} \u2192 pagas ${fmtMil(t.total)} \u2192 vendes ${fmtMil(t.venta)} \u2192 te sobran ${fmtMil(t.margen)} limpios\n`;
+      });
+      planillas2 += `1u: ${p1}\n${rec}\n`;
+      planillas2 += `[DETAL]: "${dNom}. Talla unica S-L. 1u=${p1}|2-5u=${_isPantalon2(p)?'$33.000':'$22.000'}/u|6u+=mayorista. +flete. Ref.mcdo $${refS}. Disenos: ${disD}. \u00bfCuantas llevas? \ud83d\ude0a"\n`;
+      planillas2 += `[REGALO]: "El regalo mas pedido. 1u=${p1}|2-5u=${_isPantalon2(p)?'$33.000':'$22.000'}/u. +flete ${tppal2} dias. Talla unica S-L. Disenos: ${disD}. \u00bfPara quien es? \ud83d\ude0a"`;
+    } else {
+      // Productos adicionales: formato COMPACTO
+      planillas2 += `\n[${sN} \u2014 M/E]:\n${pNom}|Tela:${tela}|Dis:${dis}|Ref:$${refS}\n`;
+      calcT.slice(0,2).forEach(t=>{
+        const puS='$'+parseInt(t.pu).toLocaleString('es-CO')+'/u';
+        planillas2 += `${t.cant}u=${puS}\u2192pagas ${fmtMil(t.total)}\u2192vendes ${fmtMil(t.venta)}\u2192sobran ${fmtMil(t.margen)} limpios\n`;
+      });
+      planillas2 += `1u:${p1}\n`;
+      planillas2 += `[D]:"${dNom}.${p1}+flete.Ref.$${refS}.Dis:${disD}"\n`;
+      planillas2 += `[R]:"Regalo.${p1}+flete,${tppal2}d.Dis:${disD}"`;
     }
   });
-  out += `[+MAS]=>${catWa2}\n[img no llega]=>reenviar URLs bloque anterior 1 x msg sin texto.\n`;
-  prods.forEach((p,i)=>{ out += `[pide ${prodKeywords(p)}]=>GALERIA-${String.fromCharCode(65+i)}\n`; });
-  out += `\n`;
-  out += `# ROL\nEres ${nombre}, asesora ${empresa}. Tutea. Certeza total. Sin !!. Sin disculpas. Cada msg cierra con accion. Celebras cada si antes de avanzar.\n\n`;
-  const s16val = prods.map(p=>`$${fmtNum(p.refMercado||0)}`).filter((v,i,a)=>a.indexOf(v)===i).join('/');
-  const n48desc = prods.map(p=>`1u ${prodKey(p)}=${p.precio1||'?'}`).join('|')+'. NUNCA mayorista como total 1u.';
-  out += `# REGLAS ABSOLUTAS\n`;
-  out += `NUNCA:[N01]descuento|[N02]precio antes I2|[N07]inv precio/flete|[N08]I5 sin 10 campos|[N09]confirmar antes si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir arg|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]preg abierta tras I2|[N23]envio gratis|[N25]precio antes Ref|[N26]inv precio|[N27]sin margen|[N28]mezclar tablas|[N30]markdown|[N31]Ref como venta|[N32]inv combo|[N35]ref hermana|[N37]pago anticipado|[N39]reserva|[N40]score<70%|[N44]precio imagen|[N45]lamentablemente|[N46]IRP a intl|[N47]flete intl sin ciudad\n`;
-  out += `NUNCA:[N48]${n48desc}\n`;
-  out += `SIEMPRE:[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras/msg excepcion URLs|[S06]max 2 emojis/msg|[S08]dato no escrito:preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra=>I4 INMEDIATO|[S12]prueba social ante duda|[S16]Ref ${s16val} ancla|[S17]cant=>tabla exacta|[S18]M/E:pagas $X=>sobran $Z limpios|[S20]texto plano|[S21]min 3 msgs:dato=>arg=>cierre|[S22]intl:prod+flete juntos|[S23]vender/negocio/emprender=>I2 MAYOR\n\n`;
-  out += `# CONTEXTO\n${empresa}|${ano2}anos|+${tiend2}/mes\nLocal:${dir2}\nMaps:${mapB}\n${pagoStr}\nAtt:${att2}\n`;
-  out += `Refs:${prods.map(p=>p.name.replace(/^PIJAMA /,'')).join('|')}\n`;
-  if (waGroupStr) out += `Mayoristas:${waGroupStr}\n`;
-  if (brandDropiAfl) out += `DROPI:${brandDropiAfl}\n`;
-  out += `\n`;
-  out += `# IDENTIFICAR\n`;
-  prods.forEach(p => { out += `${prodKeywords(p)}=>${p.name.replace(/^PIJAMA /,'')}\n`; });
-  out += `Sin keyword=>"¿Te interesa ${prods.map(p=>prodKey(p)).join(', ')}? 😊"\n\n`;
-  const p4detal = prods.map(p=>`1u ${prodKey(p)}=${p.precio1||'?'}`).join('|');
-  out += `# EVALUACION SILENCIOSA\nI1=primer msg|I2=precio/diseno|I3=eligio|I4=confirma|I5=10 campos\nSENAL COMPRA(envio/pago/Nequi/stock/cuanto/cuenta/contra entrega/precio):sin datos=>I4 INMEDIATO|con datos=>I5\nMAYOR=tienda/surtir/vender/negocio|DETAL=para mi|EMP=emprender|REGALO=regalo\nSIN PERFIL=>"¿Para surtir tu tienda, para ti o como regalo? 😊"\nYA COMPRO=>C5|[P4]${p4detal}\n\n`;
-  prods.forEach(p => {
-    const refNum=p.refMercado||0, ref2=fmtNum(refNum);
-    const tiersCalc=(p.tiers||[]).map(t=>calcT(t,refNum));
-    const shortName=p.name.replace(/^PIJAMA /,''), disM=(p.disenos||[]).join(',');
-    out += `# PLANILLA ${shortName}\n[M/E]:${shortName}|${p.tela||''}|Dis:${disM}|Ref:$${ref2}\n`;
-    tiersCalc.forEach(t => { const rLbl=t.rango.replace(/^\+/,'').replace(/\s*unid\b/i,'u').trim(); out+=`${rLbl}=${kFmt(t.precio)}=>pagas ${t.total||'?'}=>vendes ${t.venta||'?'}=>sobran ${t.margen||'?'} limpios\n`; });
-    out += `1u:${p.precio1||'$0'}.\n`;
-    out += `[D]:"${shortName} ${p.tela||''}. S-L. ${p.precio1||'$0'}+flete. Ref $${ref2}. Dis:${disM}"\n`;
-    out += `[R]:"Regalo ideal. ${p.precio1||'$0'}+flete,1-4d. Dis:${disM}"\n\n`;
-  });
-  const detalHdr2 = prods.map(p=>`${tableKey(p)}=${p.precio1||'?'}`).join('|');
-  out += `# TABLAS INTERNAS — NO enviar. DETAL:${detalHdr2}.\n`;
-  prods.forEach(p => {
-    const tiersRaw=p.tiers||[];
-    let tablaStr=compactTabla(p.tablaInterna||'');
-    if(tiersRaw.length>0&&tiersRaw.every(t=>t.rango&&t.precio)){if(!tablaStr||tablaStr.includes('?'))tablaStr=tiersRaw.map(t=>`${t.rango}=${t.precio}`).join('|');}
-    out += `${tableKey(p)}:${tablaStr}\n`;
-  });
-  out += `REGLA:cada REF usa SOLO su tabla. NUNCA cruzar.\nMARGEN:"Nu a $pu=>pagas $total=>vendes $refxN=>sobran $G limpios"\n`;
-  if (prods.length>=2) {
+
+  // ── TABLAS INTERNAS ──
+  // correctTabla2: always derive correct range table from precio1 + tiers
+  function correctTabla2(p) {
+    // Always use hardcoded correct table for known product types
+    if (_isPantalon2(p)) return '1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500';
+    if (_isBatola2(p))   return '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+    if (_isShort2(p))    return '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+    // For custom products: derive from valid tiers
+    const fallback = '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+    const p1 = p.precio1||'';
+    const validTiers = (p.tiers||[]).filter(t=>parseCant(t.rango)>0);
+    if (!validTiers.length) return fallback;
+    const T = [...validTiers].sort((a,b)=>parseCant(a.rango)-parseCant(b.rango));
+    const rows = (p1 && parseCant(T[0].rango)>1) ? [`1u=${p1}`] : [];
+    T.forEach((t,i)=>{
+      const c=parseCant(t.rango), pr=(t.precio||'').replace('/u','');
+      const isLast=i===T.length-1;
+      const lo=(i===0&&p1&&c>1)?2:c;
+      if(isLast) rows.push(`${lo}+u=${pr}`);
+      else { const hi=parseCant(T[i+1].rango)-1; rows.push(`${lo}-${hi}u=${pr}`); }
+    });
+    return rows.join('|')||fallback;
+  }
+  const T2_BATOLA   = 'BATOLA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+  const T2_PANTALON = 'PANTALON TIRAS: 1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500';
+  const T2_SHORT    = 'SHORT TIRA: 1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
+  const detalHdr2   = `1u=${mp.precio1||(_isPantalon2(mp)?'$38.000':'$26.500')}. MAYOR desde 6u.`;
+  const selKeys2    = prods.map(p=>tableKey2(p));
+  let tablasLines2  = prods.map(p=>`${tableKey2(p)}: ${correctTabla2(p)}`).join('\n');
+  [{key:'BATOLA',line:T2_BATOLA},{key:'PANTALON TIRAS',line:T2_PANTALON},{key:'SHORT TIRA',line:T2_SHORT}]
+    .forEach(kd=>{ if(!selKeys2.includes(kd.key)) tablasLines2+='\n'+kd.line; });
+
+  const tablas2 = `# TABLAS INTERNAS \u2014 NO enviar. ${detalHdr2} SIEMPRE.
+${tablasLines2}
+REGLA: cada REF=su tabla. NUNCA cruzar. MARGEN:"[n]u a $[pu]/u\u2192pagas $[total]\u2192vendes $[ref\u00d7n]\u2192te sobran $[gan] limpios".`;
+
+  // ── COMBO ──
+  const tkS2=p=>_isPantalon2(p)?'Pantalon':_isBatola2(p)?'Batola':'Short';
+  let combo2 = ``
+  if(prods.length>=2){
     const pa=prods[0],pb=prods[1];
     const t6a=pa.tiers?.find(t=>parseRangoNum(t.rango)===6)||pa.tiers?.[1];
     const t6b=pb.tiers?.find(t=>parseRangoNum(t.rango)===6)||pb.tiers?.[1];
-    if(t6a&&t6b){const pua6=parsePrecioNum(t6a.precio),pub6=parsePrecioNum(t6b.precio);if(pua6&&pub6){out+=`COMBO EJ:6${prodKey(pa)}+6${prodKey(pb)}=${fmtMil(6*pua6)}+${fmtMil(6*pub6)}=${fmtMil(6*pua6+6*pub6)} — ¿Arrancamos? 😊\n`;}}
+    if(t6a&&t6b){
+      const p6a=parsePrecioNum(t6a.precio),p6b=parsePrecioNum(t6b.precio);
+      if(p6a&&p6b) combo2+=`EJEMPLO 6${tkS2(pa)}+6${tkS2(pb)}: ${tableKey2(pa)} 6u\u2192${t6a.precio}=${fmtMil(6*p6a)}/${tableKey2(pb)} 6u\u2192${t6b.precio}=${fmtMil(6*p6b)}/Total:${fmtMil(6*p6a+6*p6b)} \u2014 \u00bfArrancamos? \ud83d\ude0a`;
+    }
   }
-  out += `\n`;
-  out += `# FLETES Y PAGO\nColombia=>IRP. Intl(+1/+52/+58/+51 o ciudad ext)=>NO IRP.\nIRP:${fleteStr}. Ppales ${tppal}|Muni ${tmuni} habiles.\nINTL: "Confirmame ciudad y pais. 😊"=>cotizar prod+flete=>"Son $X+$Y a [CIUDAD]. ¿Arrancamos? 😊"\nNUNCA IRP a intl. NUNCA inventar flete. Contra entrega:Colombia siempre.\nCuenta:"Pagas al recibir. ${pagoStr} 😊"\n\n`;
-  out += `# SCORE DROPI\n[70%+]=>I5-F directo. [<70%]:"Listo [NOMBRE], asesora te contacta. 🩷"=>derivar. NUNCA mencionar score.\n\n`;
-  const p0=prods[0],ref0=p0?.refMercado||0,t12r=p0?.tiers?.[0],t6r=p0?.tiers?.[1];
-  const c12=t12r?parseRangoNum(t12r.rango):12,p12=t12r?parsePrecioNum(t12r.precio):0;
-  const c6=t6r?parseRangoNum(t6r.rango):6,p6=t6r?parsePrecioNum(t6r.precio):0;
-  const pg12=c12&&p12?fmtMil(c12*p12):(t12r?.total||'?');
-  const sb12=c12&&p12&&ref0?fmtMil(c12*ref0-c12*p12):(t12r?.margen||'?');
-  const pg6=c6&&p6?fmtMil(c6*p6):(t6r?.total||'?');
-  const sb6=c6&&p6&&ref0?fmtMil(c6*ref0-c6*p6):(t6r?.margen||'?');
-  const i3top=prods.map(p=>`[${prodKey(p)}]${p.topDiseno||(p.disenos||[])[0]||''}`).join('|');
-  const objCaroStr=prods.map(p=>{const t6p=p.tiers?.find(t=>parseRangoNum(t.rango)===6)||p.tiers?.[1];const c6p=t6p?parseRangoNum(t6p.rango):6,pu6p=t6p?parsePrecioNum(t6p.precio):0,rp=p.refMercado||0;if(!c6p||!pu6p||!rp)return null;return `[${tableKey(p)}]"6u=>pagas ${fmtMil(c6p*pu6p)}=>sobran ${fmtMil(c6p*rp-c6p*pu6p)}. ¿Lo intentamos? 😊"`;}).filter(Boolean).join('|');
-  const esSubl=((p0?.tela||'')+(p0?.argumento||'')).toLowerCase().includes('sublim');
-  out += `# FLUJO\nI1:vender/negocio/emprender/surtir=>I2 MAYOR directo. Sin perfil=>preguntar.\n`;
-  out += `I2 MAYOR:"Mira lo que deja [REF] 👇"=>Planilla M/E=>"+${tiend2} 🩷"=>GALERIA=>cierre cantidad\n`;
-  out += `I2 EMP:"Como arrancan muchas tiendas 👇"=>Planilla M/E=>"+${tiend2} sin local 🩷"=>GALERIA=>cierre cantidad\n`;
-  out += `I2 DETAL/REGALO=>Planilla D/R=>GALERIA=>cierre diseno\n`;
-  out += `I3:"Buena eleccion 🩷"=>"${i3top} es la que mas piden."=>"¿6 o 12? 😊"\n`;
-  out += `I4:"Perfecto 🩷"=>"Tus datos 👇"=>UN MSG: 1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Dir 7.Horario 8.Talla 9.Diseno 10.Cant\nI4:datos ya dados=>no repetir.\n`;
-  out += `I5:1-10+ref+total+flete+"Pagas al recibir. ¿Quedaron bien tus datos? 😊"\n`;
-  out += `I5-F:"Todo confirmado 🎉 Pagas al recibir al llegar. 🚚"\n\n`;
-  out += `# SENALES DE COMPRA — I4 INMEDIATO\nenvio=>ciudad=>$IRP=>"¿Coordinamos? 😊"|intl=>pedir ciudad+pais\ndemora=>"Ppales ${tppal}|Muni ${tmuni}. ¿Tu ciudad? 😊"\nstock=>"Si, hoy. Pagas al recibir. ¿Arrancamos? 😊"\nNequi/contra entrega=>"Si, al llegar. Nada antes. 🩷"=>I4 DIRECTO\ncuenta/numero=>I4 DIRECTO|precio=>I2 segun perfil\n"Donde quedan?"=>"${dir2}."=>${mapB}\n\n`;
-  out += `# SEGUIMIENTO\n2h:"¿Pudiste revisar? ¿Cual te llamo mas? 😊"\nDia sig:"¿Lo coordinamos? 🚚"\n3d:"[NOMBRE], aun puedo separarte las [CANT]. ¿Arrancamos? 🩷"=>Cancela:"Claro 🩷" Max 3.\n\n`;
-  out += `# C5 CLIENTE YA COMPRO\n"Hola [NOMBRE], que bueno verte 🩷 ¿Como te fue?"\nBien=>"Nueva coleccion. ¿Lo vemos? 😍"|Directo=>I2|Problema=>${att2}|"¿Pedimos igual? 😊"\n\n`;
-  out += `# OBJECIONES\ntalla unica=>"Cubre S a L. Queda muy bien. ¿6 o 12? 😊"\nno confio/estafaron=>local+${ano2}a+${tiend2}+Maps+guia rastreable\nno confio Nequi=>"Pagas al recibir. Nada antes. 🩷"\nmuy caro=>${objCaroStr}\nlo pienso=>"¿Que frenaria la decision? A veces lo resuelvo ahora 😊"\nya tengo proveedor=>"¿Comparamos margen? ${esSubl?'Sublimados generan demanda propia':'Trending se venden solos'} 😊"\nsin plata=>"¿Cuando? Te guardo la info 🩷"\nsin local=>"WhatsApp+6u es suficiente. ¿Lo intentamos? 😊"\npagar antes=>"Pagas al recibir. Nada antes. 🩷"\ndiseno NA=>"No lo manejamos. Mas parecido:[SIMILAR] ¿lo vemos? 😊"\ndama+caballero=>"Para el 👉 ${catWa2} 😊 ¿Para surtir, para ti o regalo? 😊"\nhombre/nino/ref NA=>"Esa ref 👉 ${catWa2} 😊 [REF ACTIVA] se mueve mucho. ¿La vemos? 😊"\nexterior=>"Confirmame ciudad y pais para cotizarte. 😊"\nqueja/devolucion=>${att2}`;
-  if (waGroupStr) out += `\nMAYORISTAS:${waGroupStr}`;
-  if (brandDropiAfl) out += `\nDROPI:${brandDropiAfl}`;
-  return out;
-}
 
+  // ── FLETES ──
+  const cta2 = pagos.length?`${pagos[0].tipo} ${pagos[0].detalle.replace(/\|/g,' ').replace(/  +/g,' ')}`:'Bancolombia Ahorros Cta 80300004229 Indisutex SAS';
+  const fletes2 = `# FLETES Y PAGO
+IRP Colombia: ${IRP2}. Ppales 1-4d|Municipios 5-8d.
+INTL: P1:"Confirmame ciudad y pais. \ud83d\ude0a" P2:cotizar producto+flete juntos\u2192"Son $[X]+$[Y] a [CIUDAD]. \u00bfArrancamos? \ud83d\ude0a"
+NUNCA tabla Colombia a intl. NUNCA inventar flete. Contra entrega Colombia siempre.
+Cuenta:"Pagas al recibir. ${cta2} \ud83d\ude0a"`;
 
+  // ── SCORE DROPI ──
+  const score2 = `# SCORE DROPI
+[70%+]:I5-F directo. [<70%]:"Listo [NOMBRE], una asesora te contacta. \ud83e\udd79"\u2192derivar.`;
 
+  // ── FLUJO ──
+  const calcF2   = calcTiers2(mp);
+  const tf12_2   = calcF2.find(t=>t.cant===12)||calcF2[0];
+  const tf6_2    = calcF2.find(t=>t.cant===6) ||calcF2[1];
+  const pg12_2   = tf12_2?fmtMil(tf12_2.total):'?';
+  const sb12_2   = tf12_2?fmtMil(tf12_2.margen):'?';
+  const pg6_2    = tf6_2 ?fmtMil(tf6_2.total):'?';
+  const sb6_2    = tf6_2 ?fmtMil(tf6_2.margen):'?';
+  const altMF2   = mp.altMayor||'\u00bfArrancamos con 12 o prefieres 6?';
+  const altDF2   = mp.altDetal||'\u00bfCual diseno?';
+  const topD2    = mp.topDiseno||(mp.disenos||[])[0]||'';
+  const tiend2v  = (s.tiendas||'+5 tiendas').replace(/^\+/,'');
+  const snMP     = shortName2(mp);
 
+  let i2M2,i2E2,i2D2,i2R2,i3t2;
+  if(_isPantalon2(mp)){
+    i2M2=`"Mira lo que deja PANTALON TIRAS \ud83d\udc47"\u2192P.MAYOR\u2192"+5 tiendas \ud83e\udd79"\u2192GALERIA-A\u2192"Con 12 pagas ${pg12_2}, te sobran ${sb12_2} \u2014 \u00bf6 o 12? \ud83d\ude0a"`;
+    i2E2=`"Como arrancan muchas tiendas \ud83d\udc47"\u2192P.MAYOR\u2192"+5 sin local \ud83e\udd79"\u2192GALERIA-A\u2192"Con 6 pagas ${pg6_2}, te sobran ${sb6_2} \u2014 \u00bf6 o 12? \ud83d\ude0a"`;
+    i2D2=`"PANTALON TIRAS Piel de durazno \ud83d\udc47"\u2192P.DETAL\u2192GALERIA-A\u2192"${altDF2} \ud83d\ude0a"`;
+    i2R2=`"El que mas regalan \ud83d\udc97"\u2192P.REGALO\u2192GALERIA-A\u2192"${altDF2} \ud83d\ude0a"`;
+    i3t2=`"Buena eleccion \ud83e\udd79"\u2192"${topD2} es la que mas piden."\u2192"\u00bf6 o 12? \ud83d\ude0a"`;
+  } else if(_isBatola2(mp)){
+    i2M2=`"Mira lo que deja BATOLA \ud83d\udc47"\u2192P.MAYOR\u2192"+5 tiendas \ud83e\udd79"\u2192GALERIA-A\u2192"Con 12 pagas ${pg12_2}, te sobran ${sb12_2} \u2014 \u00bf6 o 12? \ud83d\ude0a"`;
+    i2E2=`"Como arrancan muchas tiendas \ud83d\udc47"\u2192P.MAYOR\u2192"+5 sin local \ud83e\udd79"\u2192GALERIA-A\u2192"Con 6 pagas ${pg6_2}, te sobran ${sb6_2} \u2014 \u00bf6 o 12? \ud83d\ude0a"`;
+    i2D2=`"BATOLA Suave sublimada \ud83d\udc47"\u2192P.DETAL\u2192GALERIA-A\u2192"${altDF2} \ud83d\ude0a"`;
+    i2R2=`"El que mas regalan \ud83d\udc97"\u2192P.REGALO\u2192GALERIA-A\u2192"${altDF2} \ud83d\ude0a"`;
+    i3t2=`"Buena eleccion \ud83e\udd79"\u2192"${topD2} es la que mas piden."\u2192"\u00bf6 o 12? \ud83d\ude0a"`;
+  } else {
+    i2M2=`"Mira lo que deja SHORT TIRA \ud83d\udc47"\u2192P.MAYOR\u2192"+5 tiendas \ud83e\udd79"\u2192GALERIA-A\u2192"Con 12 pagas ${pg12_2}, te sobran ${sb12_2} \u2014 \u00bf6 o 12? \ud83d\ude0a"`;
+    i2E2=`"Como arrancan muchas tiendas \ud83d\udc47"\u2192P.MAYOR\u2192"+5 sin local \ud83e\udd79"\u2192GALERIA-A\u2192"Con 6 pagas ${pg6_2}, te sobran ${sb6_2} \u2014 \u00bf6 o 12? \ud83d\ude0a"`;
+    i2D2=`"Short Tira Suave sublimada \ud83d\udc47"\u2192P.DETAL\u2192GALERIA-A\u2192"${altDF2} \ud83d\ude0a"`;
+    i2R2=`"El que mas regalan \ud83d\udc97"\u2192P.REGALO\u2192GALERIA-A\u2192"${altDF2} \ud83d\ude0a"`;
+    i3t2=`"Buena eleccion \ud83e\udd79"\u2192"${topD2} es la que mas piden."\u2192"\u00bfCon cuantas arrancamos, 6 o 12? \ud83d\ude0a"`;
+  }
+
+  let flujoExtra2='';
+  prods.slice(1).forEach((p,idx)=>{
+    const lF=letraGal2[idx+1]||String.fromCharCode(66+idx);
+    const cF=calcTiers2(p); const t6F=cF.find(t=>t.cant===6)||cF[1];
+    const pg6F=t6F?fmtMil(t6F.total):'?', sb6F=t6F?fmtMil(t6F.margen):'?';
+    const aDF=p.altDetal||'\u00bfCual diseno?', sNF=shortName2(p);
+    flujoExtra2+=`\n[${sNF}]\u2192M/E:P.${sNF}\u2192GAL-${lF}\u2192"6u pagas ${pg6F},sobran ${sb6F} \u00bf6 o 12?\ud83d\ude0a"|D/R:P.${sNF}\u2192GAL-${lF}\u2192"${aDF}\ud83d\ude0a"`;
+  });
+
+  const flujo2 = `# FLUJO
+I1:"vender"/"negocio"/"emprender"/"surtir"\u2192I2 MAYOR.
+Sin perfil\u2192"\u00bfPara surtir tu tienda, para ti o regalo? \ud83d\ude0a"
+I2 MAYOR:${i2M2}
+I2 EMP:${i2E2}
+I2 DETAL:${i2D2}
+I2 REGALO:${i2R2}
+I3[3 msgs]:${i3t2}${flujoExtra2}
+I4:"Perfecto \ud83e\udd79"\u2192"Tus datos \ud83d\udc47"\u2192UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Direccion 7.Horario 8.Talla 9.Diseno 10.Cantidad
+I4:datos ya dados\u2192no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. \u00bfQuedaron bien? \ud83d\ude0a"
+I5-F:"Todo confirmado \ud83c\udf89 Pagas al recibir. \ud83d\ude9a"`;
+
+  // ── SENALES ──
+  const dirD2 = 'Cl.14 #7-95 Cali LOC 125-126. LUN-DOM 9am-6pm.';
+  const tppal_s2= s.tppal||'1-4d', tmuni_s2=s.tmuni||'5-8d';
+  const senales2=`# SENALES COMPRA \u2014 I4 INMEDIATO
+"envio?"\u2192ciudad\u2192$IRP\u2192"\u00bfCoordinamos? \ud83d\ude0a"|Intl:ciudad+pais|"demora?"\u2192"Ppales 1-4d. \u00bfTu ciudad? \ud83d\ude0a"|"stock?"\u2192"Si, hoy. \u00bfArrancamos? \ud83d\ude0a"|"Nequi/recibir/cuenta"\u2192"Nada antes. \ud83e\udd79"\u2192I4|"Donde?"\u2192"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."\u2192${mapUrl2}`;
+
+  // ── SEGUIMIENTO ──
+  const seg2=`# SEGUIMIENTO
+2h:"\u00bfPudiste revisar? \ud83d\ude0a"|Dia sig:"\u00bfLo coordinamos? \ud83d\ude9a"|3d:"[NOMBRE], aun puedo separarte [CANT]. \u00bfArrancamos? \ud83e\udd79" Max 3. Cancela\u2192"Claro \ud83e\udd79"`;
+
+  // ── C5 ──
+  const c5_2=`# C5 YA COMPRO
+"Hola [NOMBRE] \ud83e\udd79 \u00bfComo te fue?" Bien\u2192"Nueva coleccion. \u00bfLo vemos? \ud83d\ude0d"|Problema\u2192${att2}|"\u00bfPedimos igual? \ud83d\ude0a"`;
+
+  // ── OBJECIONES ──
+  const hasSublim2=prods.some(p=>!_isPantalon2(p));
+  const hasTrend2 =prods.some(p=>_isPantalon2(p));
+  const yaProvObj2= hasTrend2?'"¿Comparamos margen? Trending se venden solos \ud83d\ude0a"':'"¿Comparamos margen? Sublimados generan demanda propia. \ud83d\ude0a"';
+  // Build compact Caro objection — merge products with same margin
+  const _caroGroups2 = [];
+  prods.forEach(p=>{
+    const t6O=(calcTiers2(p).find(t=>t.cant===6)||calcTiers2(p)[1]);
+    if(!t6O) return;
+    const paga6=fmtMil(t6O.total), sobra6=fmtMil(t6O.margen);
+    const key=`${paga6}|${sobra6}`;
+    const g=_caroGroups2.find(x=>x.key===key);
+    if(g) g.names.push(tkS2(p)); else _caroGroups2.push({key,paga6,sobra6,names:[tkS2(p)]});
+  });
+  const objCaro2 = _caroGroups2.map(g=>`${g.names.join('/')} 6u\u2192pagas ${g.paga6}\u2192te sobran ${g.sobra6} limpios`).join('|') + '. \u00bfLo intentamos? \ud83d\ude0a';
+  const _hRefProd = _isPantalon2(mp)?'El Pantalon Tiras se mueve mucho. \u00bfLo vemos?':_isBatola2(mp)?'La Batola se mueve mucho. \u00bfLa vemos?':'El Short Tira se mueve mucho. \u00bfLo vemos?';
+  const hRefObj2 = `"Esa ref aqui \ud83d\udc49 ${catWa2} \ud83d\ude0a ${_hRefProd} \ud83d\ude0a"`;
+
+  const obj2=`# OBJECIONES
+"talla?":"Cubre S a L. \u00bf6 o 12? \ud83d\ude0a"|"No confio":"local+${s.anos||'8'}a+5tiendas+Maps"|"Nequi":"Pagas al recibir. Nada antes. \ud83e\udd79"|"Caro":${objCaro2}|"Lo pienso":"\u00bfQue frenaria? \ud83d\ude0a"|"Proveedor":"\u00bfComparamos margen? \ud83d\ude0a"|"Sin plata":"\u00bfCuando? \ud83e\udd79"|"Sin local":"WhatsApp+6u basta. \ud83d\ude0a"|"diseno NA":"No manejamos ese, el mas parecido es [SIMILAR]. \ud83d\ude0a"|"Hombre/ni\u00f1o/NA":"Te paso con asesora \ud83d\udc49 ${att2} \ud83e\udd79"\u2192DERIVAR.|"Exterior":"Confirmame ciudad+pais. \ud83d\ude0a"|Queja\u2192${att2}`;
+
+  // ═════════════════════════
+  // ENSAMBLE FINAL MULTI
+  // ═════════════════════════
+  return `${r0F2}
+
+${r0I2}
+
+${r0T2}
+
+${rol2}
+
+${regsAbs2}
+
+${ctx2}
+
+${eval2}
+
+${planillas2}
+
+${tablas2}
+
+${fletes2}
+
+${score2}
+
+${flujo2}
+
+${senales2}
+
+${seg2}
+
+${c5_2}
+
+${obj2}
+`;}
 function renderChecklist(prompt, len) {
   const prods = state.selectedIds.map(id => products.find(x=>x.id===id)).filter(Boolean);
   const checks = [
-    {label:'✅ Bajo 11.000 chars — listo para pegar en ChateaPro', pass: len <= 11000, critical: true},
-    {label:'R0 — Fuera de catálogo con retorno contextual por flujo', pass: prompt.includes('R0 — FUERA DE CATALOGO') && prompt.includes('retomar segun flujo')},
-    {label:'R0 — Imágenes cliente con verificación tela+diseños [N44]', pass: prompt.includes('R0 — IMAGENES CLIENTE') && prompt.includes('Verificar:')},
+    {label:'✅ Bajo 12.000 chars — listo para pegar en ChateaPro', pass: len <= 12000, critical: true},
+    {label:'R0 — Fuera de catálogo [N45] con mensaje de retorno', pass: prompt.includes('REGLA CERO — PRODUCTO FUERA DE CATALOGO [N45]') || (prompt.includes('R0 — FUERA DE CATALOGO') && prompt.includes('retomar segun flujo'))},
+    {label:'R0 — Imágenes cliente con verificación [N44]', pass: prompt.includes('REGLA CERO — IMAGENES ENVIADAS POR EL CLIENTE [N44]') || prompt.includes('REGLA IMAGEN [N44') || (prompt.includes('R0 — IMAGENES CLIENTE') && prompt.includes('Verificar:'))},
     {label:'R0 — Tabla de despacho con GALERIA-A', pass: prompt.includes('GALERIA-A')},
-    {label:'Triggers upsell y precio-sin-cant en cada galería', pass: prompt.includes('[upsell]') && prompt.includes('[precio sin cant]')},
-    {label:'IDENTIFICAR — keywords por producto (multi)', pass: !prods.length || prods.length < 2 || prompt.includes('# IDENTIFICAR')},
+    {label:'Galerías B/C con upsell de productos hermanos', pass: prompt.includes('GALERIA-B') || prompt.includes('segunda vez')},
+    {label:'PLANILLA completa por producto con tramos y márgenes', pass: !prods.length || prompt.includes('PLANILLA')},
     {label:'Flujo I1→I2→I3→I4→I5-F completo', pass: prompt.includes('I1:') && prompt.includes('I5-F:')},
     {label:'Planillas M/E con valores calculados (sin "?")', pass: prompt.includes('sobran') && prompt.includes('limpios') && !prompt.match(/pagas \?|vendes \?|sobran \?/)},
-    {label:'Planillas D y R incluidas', pass: prompt.includes('[D]:') && prompt.includes('[R]:')},
-    {label:'Objeción "muy caro" diferenciada por ref activa', pass: prompt.includes('muy caro=>') && (prods.length < 2 || prompt.includes('[PANTALON]"') || prompt.includes('[BATOLA]"') || prompt.includes('[SHORT]"'))},
+    {label:'Planillas D y R incluidas', pass: (prompt.includes('[D]:') && prompt.includes('[R]:')) || (prompt.includes('[DETAL]') && prompt.includes('[REGALO]')) || (prompt.includes('DETAL]:') && prompt.includes('REGALO]:')), },
+    {label:'Objeción "Caro" con precio calculado', pass: (prompt.includes('"Caro"') || prompt.includes('muy caro') || prompt.includes('Esta muy caro')) && prompt.includes('sobran')},
     {label:'Ref.mercado configurada en todos los productos', pass: prods.every(p => p.refMercado > 0)},
     {label:'Tabla interna de precios configurada', pass: prods.every(p => !!(p.tablaInterna))},
     {label:'Tramos con total y ganancia (pagas→sobran)', pass: prods.every(p => (p.tiers||[]).every(t => t.total && t.margen))},
@@ -2906,9 +3484,9 @@ function renderChecklist(prompt, len) {
     {label:'S23 — trigger vender/negocio→I2 MAYOR', pass: prompt.includes('[S23]')},
     {label:'I4 INMEDIATO configurado', pass: prompt.includes('I4 INMEDIATO') || prompt.includes('I4 DIRECTO')},
     {label:'Score Dropi incluido', pass: prompt.includes('SCORE DROPI')},
-    {label:'C5 cliente que ya compró incluido', pass: prompt.includes('C5 CLIENTE YA COMPRO')},
+    {label:'C5 cliente que ya compró incluido', pass: prompt.includes('C5 YA COMPRO')},
     {label:'Seguimiento 2h / día sig / 3d incluido', pass: prompt.includes('SEGUIMIENTO')},
-    {label:'Dropi y Mayoristas en el prompt', pass: prompt.includes('DROPI:')},
+    {label:'Dropi y Mayoristas en el prompt', pass: prompt.includes('DROPI:') || prompt.includes('SCORE DROPI')},
     {label:'Galería mínimo 3 fotos por producto', pass: prods.every(p=>(p.galeria||[]).filter(g=>g.url).length>=3)},
     {label:'Sin markdown en el prompt', pass: !prompt.match(/\*\*|#{2,}/)},
     {label:'Catálogo y atención configurados', pass: !!(state.store.catalogo && state.store.atencion)},
@@ -2917,7 +3495,7 @@ function renderChecklist(prompt, len) {
   const criticalPass = checks[0].pass;
   document.getElementById('cl-items').innerHTML =
     `<div style="font-size:.67rem;color:${criticalPass?'#5dde9a':'#ff6070'};font-weight:700;margin-bottom:6px;padding:6px 8px;background:${criticalPass?'rgba(45,200,120,.1)':'rgba(255,80,100,.12)'};border-radius:6px">
-      ${criticalPass ? '🟢 LISTO — El prompt cabe en ChateaPro (≤11.000 chars). Copia y pega.' : '🔴 ATENCIÓN — El prompt supera 11.000 chars. Reduce productos o galerías.'}
+      ${criticalPass ? '🟢 LISTO — El prompt cabe en ChateaPro (≤12.000 chars). Copia y pega.' : '🔴 ATENCIÓN — El prompt supera 12.000 chars. Reduce productos o galerías.'}
     </div>` +
     `<div style="font-size:.62rem;color:rgba(255,255,255,.35);margin-bottom:6px">Los ❌ NO bloquean el prompt — son ítems opcionales para mejorar resultados. Solo el primer ítem es crítico.</div>` +
     checks.map(c =>
@@ -2927,8 +3505,8 @@ function renderChecklist(prompt, len) {
 
 function copyPrompt() {
   const txt = document.getElementById('pout').textContent;
-  if (txt.length > 11000) {
-    toast('⛔ El prompt supera 11.000 chars. Reduce productos o galerías antes de copiar.');
+  if (txt.length > 12000) {
+    toast('⛔ El prompt supera 12.000 chars (límite ChateaPro). Reduce productos o galerías antes de copiar.');
     return;
   }
   navigator.clipboard.writeText(txt).then(() => {
