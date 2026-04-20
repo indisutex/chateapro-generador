@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Guía de Inicio · Indisutex — Vende con ChateaPro</title>
+<meta name="description" content="Guía paso a paso para configurar tu asistente IA de ventas con el catálogo Indisutex y ChateaPro. Empieza a vender pijamas sin inventario hoy.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0e0e0e">
+
+<!-- ══ META PIXEL ══ -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '855518717538226');
+fbq('init', '2345441845920493');
+fbq('track', 'PageView');
+</script>
+
+<!-- ══ GOOGLE ANALYTICS 4 ══ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1F5GNYHMML"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1F5GNYHMML');
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hot:#e8587a;--hot2:#c03a5c;--hot3:#a02060;
+  --dark:#0e0810;--dark2:#1a1118;--dark3:#251520;
+  --cream:#fdf8f5;--muted:#9a8490;--bdr:#3a2830;
+  --ok:#2db87e;--gold:#f5c842;--blue:#3b82f6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--cream);min-height:100vh;overflow-x:hidden}
+
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(14,8,16,.7);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:.85rem;color:#fff;letter-spacing:-.01em;text-decoration:none}
+.nav-logo span{color:var(--hot)}
+.nav-dropi{display:flex;align-items:center;gap:8px}
+.nav-dropi a{font-size:.75rem;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s}
+.nav-dropi a:hover{color:#fff}
+.nav-pill{background:var(--hot);color:#fff;padding:6px 16px;border-radius:20px;font-size:.75rem;font-weight:600;text-decoration:none;transition:all .2s;white-space:nowrap}
+.nav-pill:hover{background:var(--hot2);transform:translateY(-1px)}
+
+/* ── HERO ── */
+.hero{padding:120px 24px 60px;position:relative;text-align:center;max-width:760px;margin:0 auto}
+.hero-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(232,88,122,.15) 0%,transparent 70%);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(232,88,122,.12);border:1px solid rgba(232,88,122,.25);border-radius:20px;padding:6px 16px;margin-bottom:28px;font-size:.72rem;font-weight:600;color:var(--hot);letter-spacing:.3px;text-transform:uppercase}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--hot);animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(1.9rem,5vw,3.4rem);line-height:1.05;letter-spacing:-.03em;margin-bottom:16px}
+.hero h1 .line2{color:var(--hot)}
+.hero-sub{font-size:1rem;color:rgba(255,255,255,.55);line-height:1.65;max-width:560px;margin:0 auto 40px}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:56px;flex-wrap:wrap;gap:4px}
+.pb-step{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.3);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:5px 12px;white-space:nowrap;transition:all .3s}
+.pb-step.active{color:var(--hot);background:rgba(232,88,122,.1);border-color:rgba(232,88,122,.3)}
+.pb-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ── STEPS CONTAINER ── */
+.steps{max-width:760px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+
+/* ── STEP CARD ── */
+.step-card{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:20px;padding:28px 28px 24px;margin-bottom:20px;position:relative;overflow:hidden;transition:border-color .2s}
+.step-card:hover{border-color:rgba(232,88,122,.25)}
+.step-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--hot),var(--hot2));opacity:0;transition:opacity .3s}
+.step-card:hover::before{opacity:1}
+
+.step-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px}
+.step-num{width:40px;height:40px;min-width:40px;border-radius:12px;background:linear-gradient(135deg,var(--hot),var(--hot2));display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-weight:900;font-size:.85rem;color:#fff;flex-shrink:0}
+.step-title{font-family:'Unbounded',sans-serif;font-weight:700;font-size:.95rem;color:#fff;line-height:1.3;margin-bottom:4px}
+.step-tag{display:inline-block;font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:10px;background:rgba(45,184,126,.12);color:var(--ok);border:1px solid rgba(45,184,126,.2)}
+.step-tag.tag-blue{background:rgba(59,130,246,.12);color:var(--blue);border-color:rgba(59,130,246,.2)}
+.step-tag.tag-gold{background:rgba(245,200,66,.1);color:var(--gold);border-color:rgba(245,200,66,.2)}
+.step-tag.tag-hot{background:rgba(232,88,122,.12);color:var(--hot);border-color:rgba(232,88,122,.25)}
+
+.step-body{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.7}
+.step-body p{margin-bottom:10px}
+.step-body p:last-child{margin-bottom:0}
+.step-body strong{color:rgba(255,255,255,.85);font-weight:600}
+
+/* ── SUB-STEPS ── */
+.sub-steps{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.sub-step{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.03);border-radius:10px;padding:10px 14px}
+.sub-num{width:22px;height:22px;min-width:22px;border-radius:6px;background:rgba(232,88,122,.15);border:1px solid rgba(232,88,122,.25);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--hot);flex-shrink:0;margin-top:1px}
+.sub-text{font-size:.82rem;color:rgba(255,255,255,.6);line-height:1.55}
+.sub-text strong{color:rgba(255,255,255,.82)}
+.sub-text code{background:rgba(255,255,255,.08);border-radius:4px;padding:1px 5px;font-family:monospace;font-size:.78rem;color:#e2e8f0}
+
+/* ── TIP BOX ── */
+.tip-box{background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:12px 16px;margin-top:14px;font-size:.8rem;color:rgba(255,255,255,.6);line-height:1.55}
+.tip-box strong{color:var(--gold)}
+
+.info-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:12px 16px;margin-top:14px;font-size:.8rem;color:rgba(255,255,255,.6);line-height:1.55}
+.info-box strong{color:var(--blue)}
+
+/* ── CTA LINKS ── */
+.cta-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.cta-link{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 14px;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none;transition:all .2s}
+.cta-link:hover{background:rgba(232,88,122,.1);border-color:rgba(232,88,122,.3);color:#fff}
+.cta-link.primary{background:linear-gradient(135deg,var(--hot),var(--hot2));border-color:transparent;color:#fff;font-weight:600}
+.cta-link.primary:hover{background:linear-gradient(135deg,var(--hot2),var(--hot3));transform:translateY(-1px)}
+.cta-link.ok{background:rgba(45,184,126,.1);border-color:rgba(45,184,126,.25);color:var(--ok)}
+.cta-link.ok:hover{background:rgba(45,184,126,.2);color:#fff}
+
+/* ── DIVIDER ── */
+.step-divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;color:rgba(255,255,255,.15);font-size:.7rem;text-transform:uppercase;letter-spacing:.5px}
+.step-divider::before,.step-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+
+/* ── FINAL CTA ── */
+.final-cta{background:linear-gradient(135deg,rgba(232,88,122,.12),rgba(192,58,92,.08));border:1px solid rgba(232,88,122,.25);border-radius:20px;padding:36px 28px;text-align:center;margin:40px 0}
+.final-cta h2{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(1.3rem,4vw,2rem);color:#fff;margin-bottom:10px;line-height:1.15}
+.final-cta h2 span{color:var(--hot)}
+.final-cta p{font-size:.88rem;color:rgba(255,255,255,.5);margin-bottom:22px;line-height:1.6}
+.final-cta-btns{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.btn-main{background:linear-gradient(135deg,var(--hot),var(--hot2));color:#fff;padding:13px 26px;border-radius:12px;font-family:'Unbounded',sans-serif;font-weight:700;font-size:.78rem;text-decoration:none;transition:all .2s;letter-spacing:.2px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,88,122,.35)}
+.btn-sec{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:13px 22px;border-radius:12px;font-size:.78rem;font-weight:600;text-decoration:none;transition:all .2s}
+.btn-sec:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ── FOOTER ── */
+footer{background:var(--dark);border-top:1px solid var(--bdr);padding:40px 24px;text-align:center}
+.footer-logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:1rem;color:#fff;margin-bottom:8px}
+.footer-logo span{color:var(--hot)}
+.footer-sub{font-size:.73rem;color:rgba(255,255,255,.25);line-height:1.6}
+.footer-links{display:flex;justify-content:center;gap:16px;margin-top:12px;flex-wrap:wrap}
+.footer-links a{font-size:.7rem;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:rgba(255,255,255,.7)}
+
+@media(max-width:600px){
+  .step-card{padding:20px 18px}
+  .cta-links{flex-direction:column}
+  .final-cta-btns{flex-direction:column;align-items:center}
+  .progress-bar{gap:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="index.html" class="nav-logo">INDIS<span>U</span>TEX</a>
+  <div class="nav-dropi">
+    <a href="https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true" target="_blank">Ver en Dropi →</a>
+    <span style="color:rgba(255,255,255,.15);font-size:.7rem">|</span>
+    <a href="onboarding.html" style="color:rgba(255,255,255,.75)">📖 Guía</a>
+    <a href="generador.html" class="nav-pill">Abrir Generador →</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div style="position:relative;overflow:hidden">
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Guía de inicio · 5 pasos</div>
+    <h1>
+      <span class="line1">Tu IA de ventas</span>
+      <span class="line2">lista en 5 minutos.</span>
+    </h1>
+    <p class="hero-sub">Sigue esta guía una sola vez y tendrás tu asistente de ventas configurado con el catálogo Indisutex, listo para atender clientes 24/7 en WhatsApp.</p>
+  </div>
+</div>
+
+<!-- ══ STEPS ══ -->
+<div class="steps">
+
+  <!-- Paso 1 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Regístrate gratis en Dropi</div>
+        <span class="step-tag ok">Gratis · 2 min</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <p>Dropi es la plataforma que conecta tu tienda con el inventario de Indisutex. Tú vendes, ellos despachan. <strong>Sin inventario, sin bodega.</strong></p>
+      <div class="sub-steps">
+        <div class="sub-step">
+          <div class="sub-num">1</div>
+          <div class="sub-text">Haz clic en el botón de abajo y crea tu cuenta en Dropi usando el enlace de afiliado de Indisutex.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">2</div>
+          <div class="sub-text">Completa tu perfil: nombre de tienda, dirección y método de pago para recibir tus comisiones.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">3</div>
+          <div class="sub-text">Una vez dentro, ve a <strong>Catálogo → Indisutex</strong> y agrega a favoritos los productos que vas a vender.</div>
+        </div>
+      </div>
+      <div class="cta-links">
+        <a href="https://app.dropi.co/auth/register?afl=807272" target="_blank" class="cta-link primary">✅ Crear cuenta en Dropi →</a>
+        <a href="https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true" target="_blank" class="cta-link ok">🛍 Ver catálogo Indisutex</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 2 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Crea tu asistente en ChateaPro</div>
+        <span class="step-tag tag-blue">IA · 3 min</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <p>ChateaPro es el chatbot de WhatsApp que atenderá a tus clientes automáticamente. Necesitas una cuenta activa para continuar.</p>
+      <div class="sub-steps">
+        <div class="sub-step">
+          <div class="sub-num">1</div>
+          <div class="sub-text">Entra a <strong>chateapro.app</strong> y crea tu cuenta (o inicia sesión si ya tienes una).</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">2</div>
+          <div class="sub-text">Ve a <strong>Asistentes → Crear nuevo asistente</strong>. Ponle un nombre como <code>Laura — Pijamas</code> o el nombre que uses para tu vendedora IA.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">3</div>
+          <div class="sub-text">Conecta tu número de WhatsApp Business escaneando el QR que aparece en la configuración del asistente.</div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Tip:</strong> Usa un número de WhatsApp dedicado exclusivamente para ventas. Evita mezclar tu número personal con el del bot — la experiencia del cliente mejora mucho con un número limpio.
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 3 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Genera tu prompt con el Generador</div>
+        <span class="step-tag tag-hot">Clave · 5 min</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <p>El Generador crea el texto exacto que debes pegar en ChateaPro para que la IA conozca tu tienda, tus productos y tu forma de vender.</p>
+      <div class="sub-steps">
+        <div class="sub-step">
+          <div class="sub-num">1</div>
+          <div class="sub-text">Abre el <strong>Generador de Prompts</strong> con el botón de arriba. Ingresa tu correo para acceder.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">2</div>
+          <div class="sub-text">Completa los datos de tu tienda: nombre, ciudad, métodos de pago, fletes, redes sociales y marcas que manejas.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">3</div>
+          <div class="sub-text">Selecciona los productos del catálogo Indisutex que vas a vender. <strong>El primer producto que elijas es el que tu IA presentará de entrada</strong> a cada cliente.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">4</div>
+          <div class="sub-text">Sube las fotos del producto directamente desde ChateaPro (sección multimedia), copia los links <code>media.chateapro.app/temp/...</code> y pégalos en el generador.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">5</div>
+          <div class="sub-text">Cuando el checklist muestre ✅ <strong>"Bajo 11.000 chars"</strong>, haz clic en <strong>"Copiar prompt"</strong>.</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <strong>ℹ️ Límite de ChateaPro:</strong> El campo de prompt acepta hasta 12.000 caracteres. El generador produce hasta 11.000, dejando 1.000 libres para que agregues instrucciones extra directamente en ChateaPro.
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 4 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Pega el prompt en tu asistente</div>
+        <span class="step-tag ok">Activación · 1 min</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <p>Con el prompt copiado en tu portapapeles, regresa a ChateaPro para activar tu IA.</p>
+      <div class="sub-steps">
+        <div class="sub-step">
+          <div class="sub-num">1</div>
+          <div class="sub-text">En ChateaPro, ve a tu asistente → pestaña <strong>"Prompt del producto"</strong>.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">2</div>
+          <div class="sub-text">Borra el texto anterior (si existe) y pega el prompt que copiaste del generador.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">3</div>
+          <div class="sub-text">Configura también el <strong>Mensaje de bienvenida</strong>: algo como <em>"¡Hola! Soy Laura 🌸 ¿Te llamó la atención nuestra pijama?"</em> — máximo 1.000 caracteres, sin mencionar precio todavía.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">4</div>
+          <div class="sub-text">Activa la <strong>Pregunta de entrada</strong>: <em>"¿La buscas para surtir tu tienda, para ti o como regalo? 😊"</em> — esto perfila al cliente antes de que el bot responda con precio.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">5</div>
+          <div class="sub-text">Haz clic en <strong>"Guardar asistente"</strong>. ¡Tu IA ya está activa!</div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Multimedia inicial:</strong> Sube entre 4 y 8 imágenes del producto en ChateaPro (fotos reales, planas y en uso). Las URLs quedan en <code>media.chateapro.app/temp/…</code> — son las que copias en el generador. Estas fotos deben ser <strong>diferentes</strong> a las de la galería del producto.
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 5 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">Prueba tu IA y empieza a vender</div>
+        <span class="step-tag tag-gold">¡Listo! 🚀</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <p>Antes de compartir tu número con clientes, haz una prueba rápida para asegurarte que todo funciona correctamente.</p>
+      <div class="sub-steps">
+        <div class="sub-step">
+          <div class="sub-num">1</div>
+          <div class="sub-text">Desde otro número de WhatsApp, escribe a tu número bot. Verifica que la bienvenida llegue correctamente.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">2</div>
+          <div class="sub-text">Prueba preguntas típicas: <em>"¿Cuánto vale?", "¿Tienen en talla XL?", "¿Hacen envíos a Bogotá?"</em> — la IA debe responder con la info de tu prompt.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">3</div>
+          <div class="sub-text">Si algo no cuadra, regresa al generador, ajusta los datos y vuelve a copiar y pegar el prompt.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">4</div>
+          <div class="sub-text">¡Comparte tu enlace de WhatsApp en tu catálogo de Dropi y empieza a recibir clientes! 🎉</div>
+        </div>
+      </div>
+      <div class="cta-links">
+        <a href="https://wa.me/c/573235753226" target="_blank" class="cta-link">📋 Ver catálogo WhatsApp</a>
+        <a href="https://www.instagram.com/saramanthaboutique/" target="_blank" class="cta-link">📸 Instagram</a>
+        <a href="https://www.tiktok.com/@saramantha63" target="_blank" class="cta-link">🎵 TikTok</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección exportar/importar config -->
+  <div class="step-divider">Tip extra — Ahorra tiempo</div>
+
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num" style="background:linear-gradient(135deg,var(--ok),#1d8f60)">💾</div>
+      <div>
+        <div class="step-title">Exporta e importa tu configuración</div>
+        <span class="step-tag ok">Multi-marca · Pro</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <p>Si vendes varias marcas o trabajas con diferentes vendedoras, puedes guardar y reutilizar tus configuraciones en segundos.</p>
+      <div class="sub-steps">
+        <div class="sub-step">
+          <div class="sub-num">1</div>
+          <div class="sub-text">Llena el formulario con tus datos y haz clic en <strong>"Exportar configuración"</strong>. Se descarga un archivo <code>.json</code> como <code>config_indisutex_2026-04-15.json</code>.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">2</div>
+          <div class="sub-text">Renómbralo si trabajas con varias marcas: <code>config_saramantha_laura.json</code>. Los archivos no se sobreescriben entre sí.</div>
+        </div>
+        <div class="sub-step">
+          <div class="sub-num">3</div>
+          <div class="sub-text">Para cargarla, abre el generador, clic en <strong>"Importar configuración"</strong> y selecciona el <code>.json</code>. Solo ajusta lo diferente para esa marca y genera el nuevo prompt.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final CTA -->
+  <div class="final-cta">
+    <h2>¿Todo listo?<br><span>Abre el Generador y empieza.</span></h2>
+    <p>Tu asistente IA puede estar configurado en los próximos 5 minutos. Sin inventario, sin estrés.</p>
+    <div class="final-cta-btns">
+      <a href="generador.html" class="btn-main">🚀 Abrir Generador →</a>
+      <a href="https://app.dropi.co/auth/register?afl=807272" target="_blank" class="btn-sec">✅ Registrarse en Dropi</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-logo">INDIS<span>U</span>TEX</div>
+  <div class="footer-sub">Generador de Prompts IA · Cali, Colombia · Hecho con ❤️ por el equipo Indisutex<br>Proyecto Digital</div>
+  <div class="footer-links">
+    <a href="https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true" target="_blank">🛍 Catálogo Dropi</a>
+    <a href="https://app.dropi.co/auth/register?afl=807272" target="_blank">✅ Registrarse en Dropi</a>
+    <a href="https://wa.me/c/573235753226" target="_blank">📋 Catálogo WhatsApp</a>
+    <a href="https://www.instagram.com/saramanthaboutique/" target="_blank">📸 Instagram</a>
+    <a href="https://www.tiktok.com/@saramantha63" target="_blank">🎵 TikTok</a>
+  </div>
+</footer>
+
+</body>
+</html>
