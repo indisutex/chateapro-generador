@@ -280,7 +280,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);bo
     <div class="hlinks" id="h-links-dynamic">
       <a href="onboarding.html" class="hl hl-attn" target="_blank" title="Guía paso a paso para vender catálogo Dropi">📖 Guía de inicio</a>
     </div>
-    <div class="hcnt" id="hcnt">0 / 12.000</div>
+    <div class="hcnt" id="hcnt">0 / 11.500</div>
   </div>
 </header>
 
@@ -334,7 +334,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);bo
         <input id="s-tiendas" placeholder="+5 tiendas" oninput="autoSave()">
       </div>
       <div class="fg"><label>Dirección local</label>
-        <input id="s-dir" placeholder="Cl.14 #7-95 Centro Cali..." oninput="autoSave()">
+        <input id="s-dir" placeholder="CC Shangai LOC 125 | CC El Caleño LOC 410..." oninput="autoSave()">
       </div>
     </div>
     <div class="g2">
@@ -474,6 +474,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);bo
   <div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:4px">
     <button class="btn bp" onclick="saveAll()">💾 Guardar configuración</button>
     <button class="btn bg" onclick="showTab('tab-catalog')">Ir al Catálogo →</button>
+    <button class="btn bg" style="border-color:#f59e0b;color:#b45309;font-size:.72rem" onclick="resetToDefaults()">🔄 Resetear catálogo</button>
   </div>
 
   <div class="nav-bar">
@@ -530,13 +531,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);bo
 <div class="sec pad" id="tab-select">
   <div class="cbar-wrap">
     <div class="cbar-bg"><div class="cbar-fg" id="bar-sel" style="width:0%"></div></div>
-    <div class="cbar-lbl" id="bar-sel-lbl">Estimado: 0 / 12.000 chars</div>
+    <div class="cbar-lbl" id="bar-sel-lbl">Estimado: 0 / 11.500 chars</div>
   </div>
   <div class="al ainfo" style="margin-bottom:10px">
-    <strong>📌 Selecciona hasta 3 productos.</strong> El prompt los manejará todos, identificando qué busca cada cliente. Haz clic en una tarjeta para marcarla ✓.
+    <strong>📌 Selecciona los productos que quieres incluir en el prompt.</strong> Sin límite fijo — el generador los incluye todos. Haz clic en una tarjeta para marcarla ✓. El primer producto es el <strong>principal</strong>; los siguientes aparecen como opciones adicionales que la IA ofrece según el interés del cliente.
   </div>
   <div class="al awarn" style="margin-bottom:10px;font-size:.71rem">
-    📏 <strong>Límite ChateaPro — 12.000 chars máximo.</strong> El generador produce hasta <strong>12.000 chars</strong>, dejando 1.000 de margen para que puedas agregar comportamiento extra, más fotos u otras instrucciones directamente en ChateaPro antes de guardar. Si el checklist muestra ✅ "Bajo 12.000 chars" → <strong>puedes pegarlo sin problemas</strong>.
+    📏 <strong>Límite ChateaPro — 11.500 chars máximo.</strong> La barra de arriba te muestra el peso en tiempo real. Con <strong>1–2 productos</strong> cabes cómodo; con <strong>3–4</strong> vigila la barra; con <strong>5 o más</strong> es probable que superes el límite — en ese caso reduce galerías o productos hasta que el checklist muestre ✅ <strong>"Bajo 11.500 chars"</strong>.
   </div>
   <div class="al apurple" style="margin-bottom:10px">
     💡 <strong>Tip pro — Comportamiento de compra del mayorista:</strong> Elige referencias <em>diferentes</em> — Batola, Pantalón Tiras y Short. El mayorista no quiere arriesgar su capital en un solo diseño y busca variedad para no quedarse stoqueado. Al ver varias referencias con sus márgenes, siente que puede construir un portafolio y disminuye su percepción de riesgo. El bot está configurado para mostrarle el margen de ganancia de cada producto a cada perfil de cliente, potenciando exactamente ese comportamiento de compra.
@@ -595,7 +596,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);bo
     <strong>📋 Cómo pegarlo en ChateaPro:</strong> Ve a tu asistente → "Prompt del producto" → pega el texto completo → Guardar asistente.
   </div>
   <div class="al awarn" style="margin-top:8px;font-size:.71rem">
-    📏 <strong>Nota sobre el límite de 12.000 chars de ChateaPro:</strong> El generador tiene un tope de <strong>12.000 chars</strong>. Si el checklist de abajo muestra ✅ en "Bajo 12.000 caracteres" significa que el prompt <strong>sí puede copiarse y descargarse</strong> en ChateaPro. Los 1.000 chars restantes (hasta 12.000) quedan libres para que añadas instrucciones extra, más fotos o afines el comportamiento de la IA directamente en ChateaPro. Los ❌ en el checklist <strong>no bloquean el prompt</strong> — solo señalan campos opcionales que podrías completar para mejorar resultados.
+    📏 <strong>Nota sobre el límite de 11.500 chars de ChateaPro:</strong> El generador tiene un tope de <strong>11.500 chars</strong>. Si el checklist de abajo muestra ✅ en "Bajo 11.500 caracteres" significa que el prompt <strong>sí puede copiarse y descargarse</strong> en ChateaPro. Los ❌ en el checklist <strong>no bloquean el prompt</strong> — solo señalan campos opcionales que podrías completar para mejorar resultados.
   </div>
   <!-- DROPI AFFILIATE CALLOUT IN PROMPT TAB -->
   <div class="al ainfo" style="margin-top:10px;border:1.5px solid #93c5fd;background:linear-gradient(135deg,#eff6ff,#f0f9ff)">
@@ -739,17 +740,17 @@ const DEFAULT_BRANDS = [
    maps:'https://maps.app.goo.gl/wsrgxhU6B7xYZ61M7',
    dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true',
    dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
-   atencionUrl:'', dir:'Cl.14 #7-95 Centro Cali | CC Shangai LOC 125-126 | LUN-DOM 9am-6pm',
-   telefono:'', instagram:'https://www.instagram.com/saramanthaboutique/', facebook:'', tiktok:'https://www.tiktok.com/@saramantha63'},
+   atencionUrl:'', dir:'CC Shangai LOC 125 | CC El Caleño LOC 410 | LUN-DOM 9am-6pm',
+   telefono:'', instagram:'https://www.instagram.com/saramanthaboutique/', facebook:'https://www.facebook.com/saramanthaoficial/', tiktok:'https://www.tiktok.com/@saramantha63'},
   {id:'majestic',   name:'Sublimados Majestic', nombreIA:'Valentina', empresaIA:'Indisutex SAS',
-   waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
-   atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''},
+   waUrl:'', catWa:'https://wa.me/c/573228277608', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'Centro Cra 8 #16-11 LOC 4 | LUN-DOM 9am-6pm', telefono:'', instagram:'https://www.instagram.com/sublimadosmajestic', facebook:'', tiktok:'https://www.tiktok.com/@majesticsublimadoscali'},
   {id:'lovely',     name:'Lovely',   nombreIA:'Sofia', empresaIA:'Indisutex SAS',
-   waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
-   atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''},
+   waUrl:'', catWa:'https://wa.me/c/573142168781', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'', telefono:'', instagram:'https://www.instagram.com/pijamas.lovelycolombia', facebook:'https://www.facebook.com/pijamas.lovelycolombia/', tiktok:'https://www.tiktok.com/@pijamas.lovelycolombia'},
   {id:'sueno',      name:'Sueño de Reina', nombreIA:'Sara', empresaIA:'Indisutex SAS',
-   waUrl:'', catWa:'', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
-   atencionUrl:'', dir:'', telefono:'', instagram:'', facebook:'', tiktok:''},
+   waUrl:'', catWa:'https://wa.me/c/573222475957', maps:'', dropiUrl:'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true', dropiAfl:'https://app.dropi.co/auth/register?afl=807272',
+   atencionUrl:'', dir:'CC Shangai LOC B3 | LUN-DOM 9am-6pm', telefono:'', instagram:'https://www.instagram.com/suenodereina', facebook:'', tiktok:''},
 ];
 
 const DEFAULT_STATE = {
@@ -758,7 +759,7 @@ const DEFAULT_STATE = {
     empresa: 'Indisutex SAS',
     anos: '8',
     tiendas: '+5 tiendas',
-    dir: 'Cl.14 #7-95 Centro Cali | CC Shangai LOC 125-126 | LUN-DOM 9am-6pm',
+    dir: 'CC Shangai LOC 125 | CC El Caleño LOC 410 | LUN-DOM 9am-6pm',
     maps: 'https://maps.app.goo.gl/wsrgxhU6B7xYZ61M7',
     catalogo: 'https://wa.me/c/573235753226',
     ecomm: 'https://www.saramanthapijamas.com/',
@@ -807,7 +808,7 @@ const DEFAULT_PRODUCTS = [
       {label:'Foto 2',url:'https://media.chateapro.app/temp/202603/274227/1774125673whatsapp_image_2026-03-21_at_3.35.07_pm_1_42a042fb-5518-489c-963a-372ed3c13325.jpeg'},
       {label:'Foto 3',url:'https://media.chateapro.app/temp/202603/274227/1774125673whatsapp_image_2026-03-21_at_3.35.07_pm_8cb255d0-5709-483b-8e94-5c7d185deb7f.jpeg'}
     ],
-    dropiId: '', dropiUrl: '', dropiImg: '', catWa: '', recursosUrl: ''
+    dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573235753226', recursosUrl: ''
   },
   {
     id: 'pantalon_tiras',
@@ -832,7 +833,7 @@ const DEFAULT_PRODUCTS = [
       {label:'Foto 2',url:'https://media.chateapro.app/temp/202603/274227/1774129249whatsapp_image_2026-03-21_at_4.32.52_pm_1_8e87c2b1-2188-4bcf-af30-995d1c893701.jpeg'},
       {label:'Foto 3',url:'https://media.chateapro.app/temp/202603/274227/1774129249whatsapp_image_2026-03-21_at_4.32.51_pm_41058197-4032-42cc-9a56-819cc155b480.jpeg'}
     ],
-    dropiId: '', dropiUrl: '', dropiImg: '', catWa: '', recursosUrl: ''
+    dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573235753226', recursosUrl: ''
   },
   {
     id: 'short_tira',
@@ -857,7 +858,183 @@ const DEFAULT_PRODUCTS = [
       {label:'Foto 2',url:'https://media.chateapro.app/temp/202603/274227/1774112738st8987_babb9c16-a406-4930-8aba-c58c41924594.jpg'},
       {label:'Foto 3',url:'https://media.chateapro.app/temp/202603/274227/1774112738st8694_ba1562ea-04a5-4ec1-915a-b8ede00f0450.jpg'}
     ],
-    dropiId: '', dropiUrl: '', dropiImg: '', catWa: '', recursosUrl: ''
+    dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573235753226', recursosUrl: ''
+  },
+
+  // ══════════════════════════════════════
+  // PACKS — por marca
+  // Diseños incluyen: personajes + keywords de prenda + intención de compra
+  // ══════════════════════════════════════
+
+  // ── SARAMANTHA ──────────────────────
+  {
+    id: 'pack_surtido_saramantha',
+    brand: 'saramantha',
+    name: 'PACK 5 PRENDAS SURTIDO — Saramantha',
+    tela: 'Suave sublimada',
+    // Personajes trending + keywords de prendas que incluye el pack
+    // El cliente pregunta: "el surtido", "batola", "short", "pantalon", "camisera", "levantadora"
+    disenos: [
+      'Stitch','HelloKitty','Aguacate','Capibara','Labubu','Mafalda','Pig','Osito',
+      'batola','short','pantalon','camisera','levantadora','surtido','variado','combinado','mixto'
+    ],
+    argumento: '5 prendas en 1 pack | Batola+Short Tira+Pantalon+Camisera+Levantadora | cada una diferente | Talla unica | 0 stock varado | Alta rotacion',
+    refMercado: 195000,
+    precio1: '$121.500',
+    tiers: [
+      {rango:'3u',precio:'$115.000/u',total:'$345mil',venta:'$2.925mil',margen:'$2.580mil'},
+      {rango:'2u',precio:'$117.500/u',total:'$235mil',venta:'$1.950mil',margen:'$1.715mil'},
+      {rango:'1u',precio:'$121.500/u',total:'$121.5mil',venta:'$975mil',margen:'$853.5mil'}
+    ],
+    tablaInterna: '1p=$121.500|2p=$117.500|3p+=$115.000',
+    altMayor: '¿Arrancamos con 3 packs o prefieres 2?',
+    altDetal: '¿Stitch o prefieres HelloKitty?',
+    topDiseno: 'Stitch',
+    galeria: [],
+    isPack: true, dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573235753226', recursosUrl: ''
+  },
+
+  // ── LOVELY ──────────────────────────
+  {
+    id: 'pack_completo_lovely',
+    brand: 'lovely',
+    name: 'PACK 5 PRENDAS COMPLETO — Lovely',
+    tela: 'Suave sublimada',
+    // Incluye oversize → keyword clave para clientes que buscan esa silueta
+    // También "batola plus" para clientes que piden talla un poco mas grande
+    disenos: [
+      'Stitch','Mafalda','Capibara','HelloKitty','Osito','Labubu','Pig',
+      'batola','pantalon','short','oversize','camisa oversize','batola plus','surtido','variado','mixto'
+    ],
+    argumento: '5 prendas en 1 pack | Batola+Pantalon+Short+Camisa Oversize+Batola Plus | cada una diferente | Talla unica | Alta rotacion',
+    refMercado: 195000,
+    precio1: '$121.500',
+    tiers: [
+      {rango:'3u',precio:'$115.000/u',total:'$345mil',venta:'$2.925mil',margen:'$2.580mil'},
+      {rango:'2u',precio:'$117.500/u',total:'$235mil',venta:'$1.950mil',margen:'$1.715mil'},
+      {rango:'1u',precio:'$121.500/u',total:'$121.5mil',venta:'$975mil',margen:'$853.5mil'}
+    ],
+    tablaInterna: '1p=$121.500|2p=$117.500|3p+=$115.000',
+    altMayor: '¿Arrancamos con 3 packs o prefieres 2?',
+    altDetal: '¿Stitch o prefieres Mafalda?',
+    topDiseno: 'Stitch',
+    galeria: [],
+    isPack: true, dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573142168781', recursosUrl: ''
+  },
+
+  // ── SUBLIMADOS MAJESTIC — adulto ─────
+  {
+    id: 'pack_oversize_majestic',
+    brand: 'majestic',
+    name: 'PACK 5 PRENDAS OVERSIZE — Majestic',
+    tela: 'Suave sublimada',
+    // "pantalon" y "short" son keywords directas que el cliente escribe
+    // "oversize" y "suelto" capturan quienes buscan esa silueta holgada
+    disenos: [
+      'Stitch','Capibara','Aguacate','Labubu','Pig','HelloKitty','Mafalda',
+      'pantalon','short','oversize','suelto','holgado','camisa oversize','batola plus','surtido','mixto'
+    ],
+    argumento: '5 prendas en 1 pack | Pantalon+Short+Camisa Oversize+Batola Plus | cada una diferente | Talla unica | Alta rotacion',
+    refMercado: 195000,
+    precio1: '$121.500',
+    tiers: [
+      {rango:'3u',precio:'$115.000/u',total:'$345mil',venta:'$2.925mil',margen:'$2.580mil'},
+      {rango:'2u',precio:'$117.500/u',total:'$235mil',venta:'$1.950mil',margen:'$1.715mil'},
+      {rango:'1u',precio:'$121.500/u',total:'$121.5mil',venta:'$975mil',margen:'$853.5mil'}
+    ],
+    tablaInterna: '1p=$121.500|2p=$117.500|3p+=$115.000',
+    altMayor: '¿Arrancamos con 3 packs o prefieres 2?',
+    altDetal: '¿Stitch o prefieres Capibara?',
+    topDiseno: 'Stitch',
+    galeria: [],
+    isPack: true, dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573228277608', recursosUrl: ''
+  },
+
+  // ── SUBLIMADOS MAJESTIC — infantil ───
+  {
+    id: 'pack_infantil_majestic',
+    brand: 'majestic',
+    name: 'PACK 5 PRENDAS INFANTIL — Majestic',
+    tela: 'Suave sublimada',
+    // Este es el único pack infantil — las keywords son lo más importante aquí
+    // El cliente escribe: "para niño", "para niña", "infantil", "de niños", "kids"
+    // También personajes infantiles por excelencia
+    disenos: [
+      'Stitch','Princesas','Carros','Unicornio','Peppa','Mickey','Minnie','Bluey','Paw Patrol','Spiderman',
+      'niño','niña','niños','niñas','infantil','kids','pequeño','pequeña','hijo','hija',
+      'pantalon niño','batola niña','pijama niño','pijama niña','para niño','para niña'
+    ],
+    argumento: '5 prendas en 1 pack | Pantalon Niño+Batola Niña | referencia exclusiva para kids | Tallas XS-L niños | Alta demanda | 0 stock varado',
+    refMercado: 195000,
+    precio1: '$121.500',
+    tiers: [
+      {rango:'3u',precio:'$115.000/u',total:'$345mil',venta:'$2.925mil',margen:'$2.580mil'},
+      {rango:'2u',precio:'$117.500/u',total:'$235mil',venta:'$1.950mil',margen:'$1.715mil'},
+      {rango:'1u',precio:'$121.500/u',total:'$121.5mil',venta:'$975mil',margen:'$853.5mil'}
+    ],
+    tablaInterna: '1p=$121.500|2p=$117.500|3p+=$115.000',
+    altMayor: '¿Arrancamos con 3 packs o prefieres 2?',
+    altDetal: '¿Stitch o prefieres Princesas?',
+    topDiseno: 'Stitch',
+    galeria: [],
+    isPack: true, dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573228277608', recursosUrl: ''
+  },
+
+  // ── SUEÑO DE REINA — plus ────────────
+  {
+    id: 'pack_plus_sueno',
+    brand: 'sueno',
+    name: 'PACK 5 PRENDAS PLUS — Sueño de Reina',
+    tela: 'Suave sublimada',
+    // "plus" es LA keyword diferenciadora — clientes que no encuentran talla en otros packs
+    // Incluir todas las variantes que escribe el cliente: "talla grande", "XL", "gordi", "2XL"
+    disenos: [
+      'Stitch','Capibara','HelloKitty','Osito','Mafalda','Labubu','Aguacate',
+      'plus','talla grande','talla extra','XL','XXL','2XL','3XL','gordi','gordita',
+      'pantalon plus','short plus','batola plus','tira plus','camisera','oversize','grande'
+    ],
+    argumento: '5 prendas en 1 pack | Pantalon+Short Tira Plus+Camisera Oversize+Batola Plus | tallas L-3XL | exclusivo tallas grandes | Alta demanda',
+    refMercado: 195000,
+    precio1: '$121.500',
+    tiers: [
+      {rango:'3u',precio:'$115.000/u',total:'$345mil',venta:'$2.925mil',margen:'$2.580mil'},
+      {rango:'2u',precio:'$117.500/u',total:'$235mil',venta:'$1.950mil',margen:'$1.715mil'},
+      {rango:'1u',precio:'$121.500/u',total:'$121.5mil',venta:'$975mil',margen:'$853.5mil'}
+    ],
+    tablaInterna: '1p=$121.500|2p=$117.500|3p+=$115.000',
+    altMayor: '¿Arrancamos con 3 packs o prefieres 2?',
+    altDetal: '¿Stitch o prefieres Capibara?',
+    topDiseno: 'Stitch',
+    galeria: [],
+    isPack: true, dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573222475957', recursosUrl: ''
+  },
+
+  // ── SUEÑO DE REINA — mixto ───────────
+  {
+    id: 'pack_mixto_sueno',
+    brand: 'sueno',
+    name: 'PACK 5 PRENDAS MIXTO — Sueño de Reina',
+    tela: 'Suave sublimada',
+    // Batola+Short+Pantalon+Top — el "top" es keyword diferenciadora vs otros packs
+    // "conjunto" y "set" capturan clientes que buscan coordinar prendas
+    disenos: [
+      'Stitch','HelloKitty','Capibara','Aguacate','Labubu','Mafalda','Pig',
+      'batola','short','pantalon','top','conjunto','set','completo','surtido','variado','mixto'
+    ],
+    argumento: '5 prendas en 1 pack | Batola+Short+Pantalon+Top | cada una diferente | Talla unica S-L | Alta rotacion | 0 stock varado',
+    refMercado: 195000,
+    precio1: '$121.500',
+    tiers: [
+      {rango:'3u',precio:'$115.000/u',total:'$345mil',venta:'$2.925mil',margen:'$2.580mil'},
+      {rango:'2u',precio:'$117.500/u',total:'$235mil',venta:'$1.950mil',margen:'$1.715mil'},
+      {rango:'1u',precio:'$121.500/u',total:'$121.5mil',venta:'$975mil',margen:'$853.5mil'}
+    ],
+    tablaInterna: '1p=$121.500|2p=$117.500|3p+=$115.000',
+    altMayor: '¿Arrancamos con 3 packs o prefieres 2?',
+    altDetal: '¿Stitch o prefieres HelloKitty?',
+    topDiseno: 'Stitch',
+    galeria: [],
+    isPack: true, dropiId: '', dropiUrl: '', dropiImg: '', catWa: 'https://wa.me/c/573222475957', recursosUrl: ''
   }
 ];
 
@@ -971,16 +1148,28 @@ function init() {
       } else {
       state.store = { ...JSON.parse(JSON.stringify(DEFAULT_STATE.store)), ...d.store };
       // Migrate brands to include new fields
+      // DEFAULT dirs y nombreIA por marca (usados cuando el campo guardado está vacío)
+      const BRAND_DEFAULTS = {
+        'saramantha': { dir: 'CC Shangai LOC 125 | CC El Caleño LOC 410 | LUN-DOM 9am-6pm', nombreIA: 'Laura' },
+        'majestic':   { dir: 'Centro Cra 8 #16-11 LOC 4 | LUN-DOM 9am-6pm',               nombreIA: 'Valentina' },
+        'lovely':     { dir: '',                                                             nombreIA: 'Sofia' },
+        'sueno':      { dir: 'CC Shangai LOC B3 | LUN-DOM 9am-6pm',                        nombreIA: 'Sara' },
+      };
       if (state.store.brands) {
-        state.store.brands = state.store.brands.map(b => ({
-          dir: '', telefono: '', instagram: '', facebook: '', tiktok: '',
-          catWa: '', maps: '',
-          dropiUrl: 'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true',
-          dropiAfl: 'https://app.dropi.co/auth/register?afl=807272',
-          nombreIA: b.name === 'Saramantha' ? 'Laura' : 'Laura',
-          empresaIA: 'Indisutex SAS',
-          ...b
-        }));
+        state.store.brands = state.store.brands.map(b => {
+          const bd = BRAND_DEFAULTS[b.id] || {};
+          return {
+            dir: '', telefono: '', instagram: '', facebook: '', tiktok: '',
+            catWa: '', maps: '',
+            dropiUrl: 'https://app.dropi.co/dashboard/provider/807272/greisy?isFavorite=true',
+            dropiAfl: 'https://app.dropi.co/auth/register?afl=807272',
+            empresaIA: 'Indisutex SAS',
+            ...b,
+            // Si el campo guardado está vacío, usar el default correcto por marca
+            dir:      (b.dir && b.dir.trim())      ? b.dir      : (bd.dir      || ''),
+            nombreIA: (b.nombreIA && b.nombreIA.trim()) ? b.nombreIA : (bd.nombreIA || 'Laura'),
+          };
+        });
       }
       if (!state.store.brands || state.store.brands.length === 0) {
         state.store.brands = JSON.parse(JSON.stringify(DEFAULT_BRANDS));
@@ -1013,6 +1202,7 @@ function init() {
   updateHeaderLinks();
   updateCharBar();
   populateBrandSelect();
+  renderBrandSocialPanel();
   // Show user email in header
   const _uemail = LS.get('indisutex_user_email') || '';
   const _uEl = document.getElementById('h-user-email');
@@ -1164,7 +1354,7 @@ function renderBrandsConfig() {
             <div class="hint">Si se configura, aparece en el menú superior.</div>
           </div>
           <div class="fg"><label>Dirección física (de esta marca)</label>
-            <input value="${esc(b.dir||'')}" placeholder="Cl.14 #7-95 Centro Cali..." oninput="state.store.brands[${i}].dir=this.value;autoSave()">
+            <input value="${esc(b.dir||'')}" placeholder="CC Shangai LOC 125 | CC El Caleño LOC 410..." oninput="state.store.brands[${i}].dir=this.value;autoSave()">
           </div>
         </div>
         <div class="g2" style="margin-bottom:8px">
@@ -1403,12 +1593,12 @@ function prodCardHTML(p, selMode) {
 
   // Selection order badge
   const selPos = selMode ? state.selectedIds.indexOf(p.id) : -1;
-  const posLabels = ['Principal','2ª opción','3ª opción'];
-  const posBg     = ['#fef3c7','#dbeafe','#f3e8ff'];
-  const posBorder = ['#f59e0b','#93c5fd','#d8b4fe'];
-  const posColors = ['#92400e','#1e40af','#6b21a8'];
-  const posBtnBg  = ['#f59e0b','#1d4ed8','#7e22ce'];
-  const posEmoji  = ['🥇','🥈','🥉'];
+  const posLabels = ['Principal','2ª opción','3ª opción','4ª opción','5ª opción','6ª opción'];
+  const posBg     = ['#fef3c7','#dbeafe','#f3e8ff','#d1fae5','#fff7ed','#fce7f3'];
+  const posBorder = ['#f59e0b','#93c5fd','#d8b4fe','#6ee7b7','#fed7aa','#fbcfe8'];
+  const posColors = ['#92400e','#1e40af','#6b21a8','#065f46','#c2410c','#be185d'];
+  const posBtnBg  = ['#f59e0b','#1d4ed8','#7e22ce','#059669','#ea580c','#db2777'];
+  const posEmoji  = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
 
   // Dropi earnings badge — use new format: pagas X → te sobran Y limpios
   const firstTier = (p.tiers||[])[0];
@@ -1436,7 +1626,11 @@ function prodCardHTML(p, selMode) {
   </div>` : '';
   const recursosBtn = p.recursosUrl && !selMode
     ? `<a href="${esc(p.recursosUrl)}" target="_blank" onclick="event.stopPropagation()" style="display:block;text-align:center;background:#7e22ce;color:#fff;padding:5px 0;border-radius:6px;font-size:.62rem;font-weight:700;margin-top:3px;text-decoration:none;transition:all .2s" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">🎨 Creativos / Pauta →</a>` : '';
-  const editBtn = !selMode ? `<button onclick="event.stopPropagation();openEditProductModal('${p.id}')" style="background:var(--rl);border:1.5px solid var(--rose);color:var(--rd);padding:4px 10px;border-radius:6px;font-size:.62rem;font-weight:700;cursor:pointer;margin-top:6px;width:100%">✏️ Editar</button>` : '';
+  const editBtn = !selMode ? `
+    <div style="display:grid;grid-template-columns:1fr auto;gap:4px;margin-top:6px">
+      <button onclick="event.stopPropagation();openEditProductModal('${p.id}')" style="background:var(--rl);border:1.5px solid var(--rose);color:var(--rd);padding:4px 10px;border-radius:6px;font-size:.62rem;font-weight:700;cursor:pointer">✏️ Editar</button>
+      <button onclick="event.stopPropagation();duplicateProduct('${p.id}')" title="Duplicar producto" style="background:#f0fdf4;border:1.5px solid #86efac;color:#166534;padding:4px 9px;border-radius:6px;font-size:.72rem;font-weight:700;cursor:pointer" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">⧉</button>
+    </div>` : '';
   const favBtn = !selMode ? `<div class="pc-fav ${isFav?'active':''}" onclick="toggleFavorite('${p.id}',event)" title="${isFav?'Quitar de favoritos':'Agregar a favoritos'}" style="${isFav?'background:#f5c842;color:#fff':''}">⭐</div>` : '';
 
   const selBadge = selMode && selPos >= 0 ? `
@@ -1527,7 +1721,6 @@ function toggleSel(id) {
   if (idx !== -1) {
     state.selectedIds.splice(idx, 1);
   } else {
-    if (state.selectedIds.length >= 3) { toast('Máximo 3 productos por prompt'); return; }
     state.selectedIds.push(id);
   }
   renderSelGrid();
@@ -1540,8 +1733,8 @@ function toggleSel(id) {
 function renderSelConfigs() {
   const prods = state.selectedIds.map(id => products.find(x => x.id === id)).filter(Boolean);
   if (prods.length === 0) { document.getElementById('sel-configs').innerHTML = ''; return; }
-  const roleLabels = ['🥇 Principal — ChateaPro + IA de entrada','🥈 Segunda opción — IA muestra al pedir más diseños','🥉 Tercera opción — Cierre del portafolio'];
-  const roleColors = ['#92400e','#1e40af','#581c87'];
+  const roleLabels = ['🥇 Principal — ChateaPro + IA de entrada','🥈 Segunda opción — IA muestra al pedir más diseños','🥉 Tercera opción — Cierre del portafolio','4️⃣ Cuarta opción','5️⃣ Quinta opción','6️⃣ Sexta opción'];
+  const roleColors = ['#92400e','#1e40af','#581c87','#065f46','#c2410c','#be185d'];
   document.getElementById('sel-configs').innerHTML = prods.map((p, idx) => `
     <div class="cfg-panel active">
       <div class="cfg-head" onclick="toggleCfg('scfg-${p.id}','scfgtog-${p.id}')">
@@ -1853,6 +2046,18 @@ function buildPlanillaRegalo(p) {
 let mTiers = [], mGal = [], mDisenos = [];
 const MIN_TIERS = 3;
 
+function duplicateProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const clone = JSON.parse(JSON.stringify(p));
+  clone.id = 'prod_' + Date.now();
+  clone.name = clone.name + ' (copia)';
+  products.push(clone);
+  saveAll();
+  renderCatalog();
+  toast('✅ Producto duplicado — edítalo para ajustar nombre y datos.');
+}
+
 function openNewProductModal() {
   sv('modal-edit-id','');
   document.getElementById('modal-title').textContent = 'Nuevo producto';
@@ -1876,7 +2081,10 @@ function openEditProductModal(id) {
   sv('m-top', p.topDiseno||''); sv('m-refmcdo', p.refMercado||''); sv('m-p1', p.precio1||'');
   sv('m-altmayor', p.altMayor||''); sv('m-altdetal', p.altDetal||'');
   sv('m-dropi-id', p.dropiId||''); sv('m-dropi-url', p.dropiUrl||'');
-  sv('m-dropi-img', p.dropiImg||''); sv('m-catwa', p.catWa||'');
+  // Auto-heredar catWa de la marca si el producto no tiene uno propio
+  const prodBrandData = (state.store.brands||[]).find(b => b.id === p.brand);
+  const inheritedCatWa = p.catWa || (prodBrandData && prodBrandData.catWa) || '';
+  sv('m-dropi-img', p.dropiImg||''); sv('m-catwa', inheritedCatWa);
   sv('m-recursos-url', p.recursosUrl||'');
   if (p.dropiImg) previewDropiImg(p.dropiImg);
   mTiers = JSON.parse(JSON.stringify(p.tiers||[{rango:'12u',precio:'',total:'',venta:'',margen:''},{rango:'6u',precio:'',total:'',venta:'',margen:''},{rango:'3u',precio:'',total:'',venta:'',margen:''}]));
@@ -1971,6 +2179,17 @@ function updateMargenSummary() {
 }
 function onRefChange() {
   recalcAllTiers();
+  updateMargenSummary();
+}
+function onP1Change(val) {
+  // Normalize raw numbers to $XX.XXX format when user types
+  if (val && /^\d+$/.test(val.trim())) {
+    const el = document.getElementById('m-p1');
+    if (el) {
+      const formatted = '$' + parseInt(val).toLocaleString('es-CO');
+      el.value = formatted;
+    }
+  }
   updateMargenSummary();
 }
 function onTierInputCalc(i, field, val) {
@@ -2141,7 +2360,7 @@ function saveProduct() {
     tiers: JSON.parse(JSON.stringify(finalTiers)),
     tablaInterna: (()=>{
       // For known Saramantha products, always use hardcoded correct table
-      const nm=(gv('m-nombre')||'').toUpperCase();
+      const nm=(gv('m-name')||'').toUpperCase();
       if(nm.includes('PANTALON')) return '1u=$38.000|2-5u=$33.000|6-11u=$29.500|12+u=$26.500';
       if(nm.includes('BATOLA'))   return '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
       if(nm.includes('SHORT'))    return '1u=$26.500|2-5u=$22.000|6-11u=$18.500|12+u=$16.500';
@@ -2194,15 +2413,15 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLight
 // ════════════════════════════════════════
 function updateCharBar() {
   const len = buildPrompt().length;
-  const pct = Math.min(100, (len/12000)*100);
+  const pct = Math.min(100, (len/11500)*100);
   const bar = document.getElementById('bar-sel');
   const lbl = document.getElementById('bar-sel-lbl');
   const hcnt = document.getElementById('hcnt');
-  const over = len > 12000;
-  const warn = len > 10500 && len <= 12000;
+  const over = len > 11500;
+  const warn = len > 10000 && len <= 11500;
   if (bar) { bar.style.width = pct+'%'; bar.className = 'cbar-fg'+(over?' over':warn?' warn':''); }
-  if (lbl) lbl.textContent = `${len.toLocaleString()} / 12.000 chars ${over?'⚠️ SUPERA LÍMITE':warn?'⚠️ Cerca del límite':'✅ OK para ChateaPro'}`;
-  if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 12.000`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
+  if (lbl) lbl.textContent = `${len.toLocaleString()} / 11.500 chars ${over?'⚠️ SUPERA LÍMITE':warn?'⚠️ Cerca del límite':'✅ OK para ChateaPro'}`;
+  if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 11.500`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
 }
 
 // ════════════════════════════════════════
@@ -2216,7 +2435,7 @@ function exportConfig() {
     selectedIds: state.selectedIds,
     absRules: absRules,
     exportedAt: new Date().toISOString(),
-    version: 'v6'
+    version: 'v7'
   };
   const json = JSON.stringify(data, null, 2);
   const blob = new Blob([json], {type: 'application/json'});
@@ -2309,12 +2528,12 @@ function generatePrompt() {
   document.getElementById('pout').textContent = prompt;
   const len = prompt.length;
   const pill = document.getElementById('cpill');
-  const over = len > 12000;
-  const warn = len > 10500 && len <= 12000;
+  const over = len > 11500;
+  const warn = len > 10000 && len <= 11500;
   pill.textContent = `${len.toLocaleString()} chars`;
   pill.className = 'cpill'+(over?' over':warn?' warn':' ok');
   const hcnt = document.getElementById('hcnt');
-  if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 12.000`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
+  if (hcnt) { hcnt.textContent = `${len.toLocaleString()} / 11.500`; hcnt.className = 'hcnt'+(over?' over':warn?' warn':''); }
   renderChecklist(prompt, len);
 }
 
@@ -2378,7 +2597,7 @@ function buildPrompt() {
   const anos        = s.anos    || '8';
   const tiendas_raw = s.tiendas || '+5 tiendas';
   const tiendas     = tiendas_raw.replace(/^\+/, '');
-  const dir         = s.dir     || 'Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm';
+  const dir         = s.dir     || 'CC Shangai LOC 125|CC El Caleño LOC 410|LUN-DOM 9am-6pm';
   const maps        = s.maps    || 'https://maps.app.goo.gl/wsrgxhU6B7xYZ61M7';
   const catalogo    = s.catalogo|| 'https://wa.me/c/573235753226';
   const atencion    = s.atencion|| 'https://wa.me/573222475957';
@@ -2410,7 +2629,8 @@ function buildPrompt() {
   // Detectores de tipo de producto
   const isPantalon = p => p.name.toUpperCase().includes('PANTALON');
   const isBatola   = p => p.name.toUpperCase().includes('BATOLA');
-  const isShort    = p => !isPantalon(p) && !isBatola(p);
+  const isPack     = p => p.name.toUpperCase().includes('PACK') || p.name.toUpperCase().includes('COMBO');
+  const isShort    = p => !isPantalon(p) && !isBatola(p) && !isPack(p);
 
   // Formatear diseños de BATOLA: quitar espacio antes del paréntesis
   // "Stitch (morada)" → "Stitch(morada)"
@@ -2424,6 +2644,190 @@ function buildPrompt() {
     if (isBatola(p))   return URL_BATOLA;
     return URL_SHORT;
   };
+
+  // ══════════════════════════════════════════
+  // MODO PACK — rama para combos de 5 prendas
+  // Estrategia: cantidad → diseños → datos (nunca al revés)
+  // Contra entrega en objeciones, no en apertura
+  // ══════════════════════════════════════════
+  if (prods.length >= 1 && prods.every(p => isPack(p))) {
+    const pk = prods[0];
+    const catWaP = brandCatWa;
+    const ecommP = brandEcomm || catWaP;
+    const mapUrlP = brandMaps;
+    const attP   = atencion;
+    const refP   = pk.refMercado || 0;
+    const disP_full = (pk.disenos||[]).join(', ');
+    const disP   = disP_full.length > 180 ? disP_full.slice(0, 177) + '...' : disP_full;
+    const telaP  = pk.tela || 'Suave sublimada';
+    const galP   = (pk.galeria||[]).filter(g=>g.url).map(g=>g.url);
+    // Fallback inteligente: elige URLs segun prendas del pack
+    const packDisenosLow = (pk.disenos||[]).map(d=>d.toLowerCase());
+    const packFallback = packDisenosLow.some(d=>d.includes('pantalon')) ? URL_PANTALON
+                       : packDisenosLow.some(d=>d.includes('batola'))   ? URL_BATOLA
+                       : URL_SHORT;
+    const galA   = galP.length >= 3 ? galP : packFallback;
+
+    // Keywords de prendas del pack para seccion PRENDA INCLUIDA
+    const prendasKeywords = ['batola','pantalon','short','camisera','levantadora','top','oversize','plus','tira'];
+    const prendasEnPack = prendasKeywords.filter(kw => packDisenosLow.some(d => d.includes(kw)));
+    const prendasDesc = pk.argumento
+      ? (pk.argumento.split('|').find(s => s.includes('+')) || prendasEnPack.join('+')).trim()
+      : prendasEnPack.join('+');
+    const esInfantil = packDisenosLow.some(d => ['nino','nina','infantil','kids'].includes(d));
+    const esPlus = packDisenosLow.some(d => ['plus','talla grande','xl','xxl'].includes(d));
+
+    // Calcular tramos para packs (1 pack, 2 packs, 3 packs)
+    const calcPackTiers = (p) => {
+      const ref = p.refMercado || 0;
+      return (p.tiers||[]).map(t => {
+        const c = parseRangoNum(t.rango);
+        const pu = parsePrecioNum(t.precio);
+        if (!c || !pu) return null;
+        const total = c * pu;
+        const venta = c * ref;
+        const margen = venta - total;
+        return { rango: t.rango, cant: c, pu, total, venta, margen };
+      }).filter(Boolean);
+    };
+    const tiersP = calcPackTiers(pk);
+    const t1P = tiersP.find(t=>t.cant===1) || tiersP[0];
+    const t2P = tiersP.find(t=>t.cant===2) || tiersP[1];
+    const t3P = tiersP.find(t=>t.cant===3) || tiersP[2];
+
+    const paga1P  = t1P ? fmtMil(t1P.total)  : fmtMil(parsePrecioNum(pk.precio1)||121500);
+    const sobra1P = t1P ? fmtMil(t1P.margen) : '?';
+    const paga2P  = t2P ? fmtMil(t2P.total)  : '?';
+    const sobra2P = t2P ? fmtMil(t2P.margen) : '?';
+    const paga3P  = t3P ? fmtMil(t3P.total)  : '?';
+    const sobra3P = t3P ? fmtMil(t3P.margen) : '?';
+
+    const packNombre = pk.name || 'PACK 5 PRENDAS';
+    const topDis = (pk.disenos||[])[0] || 'Stitch';
+    const altCant = pk.altMayor || '¿Con 1 pack o prefieres 2?';
+    const altDis  = pk.altDetal || `¿${(pk.disenos||[])[0]||'Stitch'} o prefieres ${(pk.disenos||[])[1]||'Capibara'}?`;
+
+    // Planilla pack
+    let planPackTiers = '';
+    tiersP.forEach(t => {
+      const pu_s = '$' + parseInt(t.pu).toLocaleString('es-CO');
+      planPackTiers += `${t.cant} pack${t.cant>1?'s':''} (${t.cant*5} prendas) a ${pu_s}/pack → pagas ${fmtMil(t.total)} → vendes ${fmtMil(t.venta)} → te sobran ${fmtMil(t.margen)} limpios\n`;
+    });
+    if (!planPackTiers) planPackTiers = `1 pack (5 prendas) → pagas ${paga1P} → vendes ${fmtMil(refP)} → te sobran ${sobra1P} limpios\n`;
+
+    const planPack = `# PLANILLA — copiar COMPLETA en I2, texto plano
+[MAYOR/EMP]:
+${packNombre}|Tela:${telaP}|5 prendas por pack|Diseños: ${disP}
+Ref.mercado: $${fmtNum(refP)} — precio que cobra tu cliente por prenda
+${planPackTiers}Paga contra entrega. Recuperas en la primera semana.
+[DETAL]: "${packNombre}. 5 prendas combinadas. 1 pack=${paga1P}. +flete. Diseños: ${disP}. ¿Cuantos packs llevas? 😊"
+[REGALO]: "El pack mas regalado. 5 prendas ${telaP}. 1 pack=${paga1P}. +flete 1-4 dias. Diseños: ${disP}. ¿Para quien es? 😊"`;
+
+    // ── Planilla comprimida ──────────────────────────────────────────
+    let planPackTiersC = '';
+    tiersP.forEach(t => {
+      planPackTiersC += `${t.cant}p(${t.cant*5}u) $${parseInt(t.pu).toLocaleString('es-CO')}/p→pagas ${fmtMil(t.total)}→vendes ${fmtMil(t.venta)}→sobran ${fmtMil(t.margen)} limpios\n`;
+    });
+    if (!planPackTiersC) planPackTiersC = `1p(5u)→pagas ${paga1P}→vendes ${fmtMil(refP)}→sobran ${sobra1P} limpios\n`;
+
+    const precioXPrenda = refP ? `$${fmtNum(Math.round(refP/5))}` : '?';
+
+    return `# R0 FUERA [N45]
+NO es ${packNombre}→"Te paso con asesora 💗 👉 ${attP} — toca icono tienda arriba 😊". NO listar. DERIVAR.
+[N51]Talla plus/XL/XXL→misma respuesta→DERIVAR. NUNCA ofrecer talla actual.
+
+# R0 IMAGEN [N44]
+ASESOR:${attP}|CATALOGO WA:${catWaP}
+Imagen → ¿Ya envio galeria?
+NO→galeria segun perfil→cerrar.
+SI→[A]Diseno propio→"Buena eleccion 🩷"→I3B→I4. [B]TABLA visible→COTIZAR:1p=${paga1P} tabla interna. [C]Fuera→DERIVAR asesor.
+No resuelta→DERIVAR. NUNCA reenviar galeria enviada.
+
+# R0 DESPACHO — activar ANTES de todo
+"catalogo"/"ver todo"/"que tienen"→MSG1+MSG2+MSG3(URL sola)+MSG4+"Aqui ves todo 👉 ${ecommP} 😊"
+TRIGGERS:ver|foto|imagen|diseno|estilos|modelos|coleccion|muestra|otro|mas|cual|hay|tienen|dale|quiero ver|mandame|muestrame|colores|personajes|variedad|opciones|pantalon|batola|short|niño|niña|nino|nina|plus|oversize|levantadora|camisera|top|tira|infantil|kids
+REGLA:URL primero. 4 msgs siempre. NUNCA <3 fotos.
+[GALERIA-A]:
+MSG1→${galA[0]}
+MSG2→${galA[1]}
+MSG3→${galA[2]}
+MSG4→[M/E]"${altCant} 😊"|[D/R]"${altDis} 😊"
+Insiste MAS→DERIVAR asesor. Imagen vacía→reenviar 3 URLs sin texto.
+
+# ROL
+Eres ${nombre}, asesora ${empresa}. Tutea. Certeza total. Sin !!. Sin disculpas. Cada msg cierra con accion. Celebra cada si.
+
+# NUNCA
+[N01]"descuento"|[N02]precio antes I2|[N07]inventar precios/fletes|[N09]confirmado antes del si|[N12]revelar bot|[N13]urgencia falsa|[N16]repetir argumento|[N17]"con gusto"|[N18]competidores|[N19]fechas exactas|[N20]pregunta abierta tras I2|[N23]"envio gratis"|[N30]markdown|[N37]pago anticipado|[N39]reserva|[N40]confirmar score<70%|[N45]"lamentablemente"|[N48]precio pack como precio prenda|[N50]emojis negativos|[N52]disenos ANTES de cantidad
+
+# SIEMPRE
+[S01]perfil+ya compro?|[S02]adaptar tono|[S03]cerrar accion|[S04]certeza total|[S05]max 20 palabras(excepcion URLs)|[S06]max 2 emojis|[S08]dato faltante→preguntar|[S09]celebrar micro-acuerdo|[S10]senal compra→I4 INMEDIATO|[S12]prueba social ante duda|[S17]cantidad→tabla exacta|[S18]M/E:"pagas→sobran limpios"|[S20]texto plano|[S21]min 3 msgs:dato→arg→cierre|[S23]"vender/negocio/emprender"→I2 MAYOR|[S24]cantidad ANTES de disenos
+
+# CONTEXTO
+${empresa}|${anos}a|+${tiendas} revendedores|CC Shangai LOC 125|CC El Caleño LOC 410 Cali|LUN-DOM 9-6
+Maps:${mapUrlP}|Bancolombia Ahorros Cta 80300004229 ${empresa}|Atencion:${attP}
+Producto:${packNombre}|${telaP}|5 prendas/pack|Contraentrega Colombia
+Disenos:${disP}
+
+# EVAL SILENCIOSA
+[P1]I1=1er msg|I2=precio+galeria|I3=cant|I3B=disenos|I4=datos|I5=9 campos
+SENAL COMPRA(envio/pago/stock/cuanto/cuenta/contraentrega):sin datos→I4 INMEDIATO|con datos→I5
+[P2]MAYOR=surtir/tienda|DETAL=para mi|EMP=emprender|REGALO=regalo|SIN DEFINIR→"¿Surtir, para ti o regalo? 😊"
+[P3]YA COMPRO→C5|NO→I1→I5
+[P4]1p=${paga1P}. NUNCA dar precio prenda como precio pack.
+[JP](1)SENAL COMPRA→tabla directa(2)R0 IMAGEN→si hay imagen(3)R0 FUERA(4)FLUJO. NUNCA disenos antes de cantidad.
+
+# PLANILLA — enviar COMPLETA en I2
+[M/E]:
+${packNombre}|${telaP}|5 prendas/pack|Ref.mcdo:$${fmtNum(refP)}/prenda
+${planPackTiersC}Paga al recibir. Recuperas en la primera semana.
+[D]:"${packNombre} ${telaP}. 1p=${paga1P}+flete. Disenos:${disP}. ¿Cuantos packs? 😊"
+[R]:"El pack mas regalado. 1p=${paga1P}+flete 1-4d. Disenos:${disP}. ¿Para quien? 😊"
+
+# TABLA INTERNA — NO enviar
+${packNombre}:1p=${paga1P}|2p=${paga2P}|3p=${paga3P}
+MARGEN:"Xp→pagas $[tot]→vendes $[ref×5×X]→sobran $[gan] limpios"
+Prenda=${paga1P}÷5. Ref.mcdo=${precioXPrenda}/prenda. NUNCA cruzar con tablas sueltas.
+
+# FLETES Y PAGO
+IRP:1-3u=$22k|4-6=$24k|7+=$27k. Ppales 1-4d|Municipios 5-8d.
+INTL:"Confirmame ciudad y pais 😊"→cotizar pack+flete juntos.
+Contra entrega siempre. NUNCA pago anticipado.
+
+# SCORE DROPI
+70%+→I5-F. <70%→"Una asesora te contacta 💗"→DERIVAR ${attP}.
+
+# PRENDA INCLUIDA
+Cuando cliente menciona prenda o segmento del pack, confirmar inclusion y mostrar galeria.
+TRIGGERS:${prendasEnPack.join('|')}${esInfantil?'|nino|nina|infantil|kids|hijo|hija':''}${esPlus?'|plus|talla grande|XL|XXL|grande|gordi':''}
+RESPUESTA:"Si 🩷 el ${packNombre} incluye ${prendasDesc}. Mira 👇"→GALERIA-A→[M/E]"${altCant} 😊"|[D/R]"${altDis} 😊"
+REGLA:NUNCA decir "no tenemos [prenda] suelto" — siempre redirigir al pack.
+
+# FLUJO
+I1:"vender/negocio/emprender"→I2 M. Sin perfil→"¿Surtir, para ti o regalo? 😊"
+I2 M:"Mira lo que deja ${packNombre} 👇"→Plan M→"+${tiendas} lo revenden 🩷"→GALERIA-A→"Con 2p pagas ${paga2P}, sobran ${sobra2P} — ¿1 o 2? 😊"
+I2 E:"Como arrancan muchas 👇"→Plan M→"Sin local, desde casa 🩷"→GALERIA-A→"¿1p o 2? 😊"
+I2 D:"${packNombre} ${telaP} 👇"→Plan D→GALERIA-A→"${altDis} 😊"
+I2 R:"El mas regalado 💗"→Plan R→GALERIA-A→"${altDis} 😊"
+I3[3 msgs]:"Buena eleccion 🩷"→"Con 1p arrancan la mayoria."→"¿1p o 2? 😊"
+I3B[solo tras confirmar cantidad]:"Perfecto 🩷"→"Escoge tus 5 disenos 👇"→"${altDis} 😊"
+I4:"Listo 🩷"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto 5.Ciudad 6.Direccion 7.Horario 8.Disenos 9.Cantidad packs
+I5:1-9+pack+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"
+
+# SENALES COMPRA→I4 INMEDIATO
+"envio"→ciudad→IRP→"¿Coordinamos? 😊"|"demora"→"1-4d ppales. ¿Ciudad? 😊"|"stock"→"Si hoy. ¿Arrancamos? 😊"|"Nequi/cuenta"→"Al recibir. 🩷"→I4|"Donde"→"CC Shangai LOC 125|CC El Caleño LOC 410"→${mapUrlP}
+"precio Xp/cuanto Xp"→tabla directa SIN derivar.
+
+# SEGUIMIENTO
+2h:"¿Pudiste revisar? 😊"|Dia sig:"¿Lo coordinamos? 🚚"|3d:"[NOMBRE] aun puedo separarte [CANT]p. ¿Arrancamos? 🩷" Max 3. Cancela→"Claro 🩷"
+
+# C5 YA COMPRO
+"Hola [NOMBRE] 🩷 ¿Como te fue?" Bien→"Nueva coleccion. ¿Lo vemos? 😍"|Problema→${attP}|"¿Igual o cambias disenos? 😊"
+
+# OBJECIONES
+"Caro":"1p(${paga1P})→prenda ${precioXPrenda}→vendes ${fmtMil(refP)}→sobran ${sobra1P}. Al recibir. 😊"|"No confio":"Nada antes. Local+8a+Maps. 🩷"|"Nequi":"Al recibir en tu puerta. 🩷"|"Sin plata":"¿Cuando? 🩷"|"Sin local":"WhatsApp+1p basta. 😊"|"Lo pienso":"¿Que frenaria? 😊"|"NA":"Te paso con asesora 💗 👉 ${attP}"→DERIVAR|"Exterior":"Ciudad+pais. 😊"|Queja→${attP}
+`;
+  }
 
   // ══════════════════════════════════════════
   // MODO MONO-PRODUCTO — replica exacta de los originales
@@ -2719,7 +3123,7 @@ MSG4→"Short Tira. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mi
 
       ctxBlock = `# CONTEXTO
 Empresa: ${empresa}|${anos} anos|+5 tiendas/mes
-Local: Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm
+Local: CC Shangai LOC 125|CC El Caleño LOC 410|LUN-DOM 9am-6pm
 Maps: ${mapUrl}
 Bancolombia: Ahorros|Cta:80300004229|Titular:Indisutex SAS
 Atencion: ${att}
@@ -2777,7 +3181,7 @@ I4:"Perfecto 🩷"→"Tus datos 👇"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto
 I4:datos ya dados→no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"`;
 
       senalesBlock = `# SENALES COMPRA — I4 INMEDIATO
-"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."→${mapUrl}
+"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"${dir}"→${mapUrl}
 "precio Xu"/"cuanto las X"/"a cuanto X"→TABLAS INTERNAS→tabla directa SIN derivar. NUNCA confundir precio-por-cantidad con REGLA IMAGEN.`;
 
       objecionesBlock = `# OBJECIONES
@@ -2842,7 +3246,7 @@ MSG4→"Short Tira. Ref.mcdo $39.000 — con 12: pagas $198mil, te sobran $270mi
 
       ctxBlock = `# CONTEXTO
 Empresa: ${empresa}|${anos} anos|+5 tiendas/mes
-Local: Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm
+Local: CC Shangai LOC 125|CC El Caleño LOC 410|LUN-DOM 9am-6pm
 Maps: ${mapUrl}
 Bancolombia: Ahorros|Cta:80300004229|Titular:Indisutex SAS
 Att: ${att}
@@ -2900,7 +3304,7 @@ I4:"Perfecto 🩷"→"Tus datos 👇"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto
 I4:datos ya dados→no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"`;
 
       senalesBlock = `# SENALES COMPRA — I4 INMEDIATO
-"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."→${mapUrl}
+"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"${dir}"→${mapUrl}
 "precio Xu"/"cuanto las X"/"a cuanto X"→TABLAS INTERNAS→tabla directa SIN derivar. NUNCA confundir precio-por-cantidad con REGLA IMAGEN.`;
 
       objecionesBlock = `# OBJECIONES
@@ -2965,7 +3369,7 @@ MSG4→"Pantalon Tiras. Ref.mcdo $45.000 — con 12: pagas $318mil, te sobran $2
 
       ctxBlock = `# CONTEXTO
 Empresa: ${empresa}|${anos} anos|+5 tiendas/mes
-Local: Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm
+Local: CC Shangai LOC 125|CC El Caleño LOC 410|LUN-DOM 9am-6pm
 Maps: ${mapUrl}
 Bancolombia: Ahorros|Cta:80300004229|Titular:Indisutex SAS
 Atencion: ${att}
@@ -3023,7 +3427,7 @@ I4:"Perfecto 🩷"→"Tus datos 👇"→UN MSG:1.Nombre 2.Apellido 3.Tel 4.Depto
 I4:datos ya dados→no repetir. I5:1-10+producto+total+flete+"Pagas al recibir. ¿Quedaron bien? 😊" I5-F:"Todo confirmado 🎉 Pagas al recibir. 🚚"`;
 
       senalesBlock = `# SENALES COMPRA — I4 INMEDIATO
-"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."→${mapUrl}
+"envio?"→ciudad→$IRP→"¿Coordinamos? 😊"|Intl:ciudad+pais|"demora?"→"Ppales 1-4d. ¿Tu ciudad? 😊"|"stock?"→"Si, hoy. ¿Arrancamos? 😊"|"Nequi/recibir/cuenta"→"Nada antes. 🩷"→I4|"Donde?"→"${dir}"→${mapUrl}
 "precio Xu"/"cuanto las X"/"a cuanto X"→TABLAS INTERNAS→tabla directa SIN derivar. NUNCA confundir precio-por-cantidad con REGLA IMAGEN.`;
 
       objecionesBlock = `# OBJECIONES
@@ -3088,7 +3492,8 @@ ${cxBlock}
 
   const _isPantalon2 = p => p.name.toUpperCase().includes('PANTALON');
   const _isBatola2   = p => p.name.toUpperCase().includes('BATOLA');
-  const _isShort2    = p => !_isPantalon2(p) && !_isBatola2(p);
+  const _isPack2     = p => p.name.toUpperCase().includes('PACK') || p.name.toUpperCase().includes('COMBO');
+  const _isShort2    = p => !_isPantalon2(p) && !_isBatola2(p) && !_isPack2(p);
 
   const prodKey2  = p => _isPantalon2(p)?'PANTALON':_isBatola2(p)?'BATOLA':'SHORT';
   const tableKey2 = p => _isPantalon2(p)?'PANTALON TIRAS':_isBatola2(p)?'BATOLA':'SHORT TIRA';
@@ -3200,29 +3605,31 @@ No resuelta\u2192${att2}. NUNCA reenviar galeria ya enviada.`;
     if (tablaB) galSection2 += `\u2192precio sin cantidad:"${tableKey2(mp2)}: ${compactTabla(tablaB)}. \u00bfCu\u00e1ntas? \ud83d\ude0a"\n`;
   }
 
-  // Si hay 3er producto, GALERIA-C minima (solo URLs + MSG4), sin tabla extra
-  if (prods.length >= 3) {
-    const mp3   = prods[2];
-    const galC2 = getGal2(mp3);
-    const refC  = mp3.refMercado||0;
-    const t12C  = (mp3.tiers||[]).find(t=>parseRangoNum(t.rango)===12)||mp3.tiers?.[0];
-    const c12C  = t12C?parseRangoNum(t12C.rango):12;
-    const pu12C = t12C?parsePrecioNum(t12C.precio):0;
-    const pg12C = c12C&&pu12C?fmtMil(c12C*pu12C):(t12C?.total||'?');
-    const sb12C = c12C&&pu12C&&refC?fmtMil(c12C*refC-c12C*pu12C):(t12C?.margen||'?');
-    const snC   = shortName2(mp3);
+  // Galerías adicionales (3er producto en adelante) — dinámicas para N productos
+  prods.slice(2).forEach((pN, nIdx) => {
+    const galLetters = ['C','D','E','F','G','H'];
+    const galLetter  = galLetters[nIdx] || String.fromCharCode(67 + nIdx);
+    const galOrdinal = ['tercera','cuarta','quinta','sexta','séptima','octava'][nIdx] || `${nIdx+3}a`;
+    const galN  = getGal2(pN);
+    const refN  = pN.refMercado||0;
+    const t12N  = (pN.tiers||[]).find(t=>parseRangoNum(t.rango)===12)||pN.tiers?.[0];
+    const c12N  = t12N?parseRangoNum(t12N.rango):12;
+    const pu12N = t12N?parsePrecioNum(t12N.precio):0;
+    const pg12N = c12N&&pu12N?fmtMil(c12N*pu12N):(t12N?.total||'?');
+    const sb12N = c12N&&pu12N&&refN?fmtMil(c12N*refN-c12N*pu12N):(t12N?.margen||'?');
+    const snN   = shortName2(pN);
     const pSoloA= soloRef2(mp);
-    galSection2 += `[GALERIA-C \u2014 tercera vez]:\n`;
-    galSection2 += `MSG1\u2192${galC2[0]}\nMSG2\u2192${galC2[1]}\nMSG3\u2192${galC2[2]}\n`;
-    galSection2 += `MSG4\u2192"${snC}. Ref.mcdo $${fmtNum(refC)} \u2014 con ${c12C}: pagas ${pg12C}, te sobran ${sb12C} limpios. \u00bfLas dos o solo ${pSoloA}? \ud83d\ude0a"\n`;
-    const tablaC = correctTabla2(mp3);
-    galSection2 += `\u2192precio sin cantidad:"${tableKey2(mp3)}: ${compactTabla(tablaC)}. \u00bfCu\u00e1ntas? \ud83d\ude0a"\n`;
-  }
+    galSection2 += `[GALERIA-${galLetter} — ${galOrdinal} vez]:\n`;
+    galSection2 += `MSG1→${galN[0]}\nMSG2→${galN[1]}\nMSG3→${galN[2]}\n`;
+    galSection2 += `MSG4→"${snN}. Ref.mcdo $${fmtNum(refN)} — con ${c12N}: pagas ${pg12N}, te sobran ${sb12N} limpios. ¿Las dos o solo ${pSoloA}? 😊"\n`;
+    const tablaN = correctTabla2(pN);
+    if (tablaN) galSection2 += `→precio sin cantidad:"${tableKey2(pN)}: ${compactTabla(tablaN)}. ¿Cuántas? 😊"\n`;
+  });
 
   galSection2 += `[insiste en ver MAS]\u2192"Te paso con una asesora \ud83d\udc97 \ud83d\udc49 ${att2}"\u2192DERIVAR a ASESOR HUMANO.\n`;
   galSection2 += `[no llego/imagen vacia]\u2192reenviar las 3 URLs del bloque anterior, una por mensaje, sin texto.\n`;
   // Indicadores pide X → GALERIA
-  const letraGal2 = ['A','B','C','D'];
+  const letraGal2 = ['A','B','C','D','E','F','G','H'];
   prods.forEach((p,i)=>{
     const letra=letraGal2[i]||String.fromCharCode(65+i);
     if(_isPantalon2(p))      galSection2+=`[pide PANTALON TIRAS/largas/largo]\u2192GALERIA-${letra}`;
@@ -3272,7 +3679,7 @@ ${siempStr2}`;
 
   const ctx2 = `# CONTEXTO
 Empresa: ${empresa}|${s.anos||'8'} anos|+5 tiendas/mes
-Local: ${(s.dir||'Cl.14 #7-95 Centro Cali|CC Shangai LOC 125-126|LUN-DOM 9am-6pm').replace(/ \| /g,'|').replace(/  +/g,' ')}
+Local: ${(s.dir||'CC Shangai LOC 125|CC El Caleño LOC 410|LUN-DOM 9am-6pm').replace(/ \| /g,'|').replace(/  +/g,' ')}
 Maps: ${mapUrl2}
 ${cuentaPago2}
 ${attLbl2}: ${att2}
@@ -3466,10 +3873,10 @@ I4:datos ya dados\u2192no repetir. I5:1-10+producto+total+flete+"Pagas al recibi
 I5-F:"Todo confirmado \ud83c\udf89 Pagas al recibir. \ud83d\ude9a"`;
 
   // ── SENALES ──
-  const dirD2 = 'Cl.14 #7-95 Cali LOC 125-126. LUN-DOM 9am-6pm.';
+  const dirD2 = (s.dir || 'CC Shangai LOC 125|CC El Caleño LOC 410|LUN-DOM 9am-6pm').replace(/ \| /g,'|').replace(/  +/g,' ');
   const tppal_s2= s.tppal||'1-4d', tmuni_s2=s.tmuni||'5-8d';
   const senales2=`# SENALES COMPRA \u2014 I4 INMEDIATO
-"envio?"\u2192ciudad\u2192$IRP\u2192"\u00bfCoordinamos? \ud83d\ude0a"|Intl:ciudad+pais|"demora?"\u2192"Ppales 1-4d. \u00bfTu ciudad? \ud83d\ude0a"|"stock?"\u2192"Si, hoy. \u00bfArrancamos? \ud83d\ude0a"|"Nequi/recibir/cuenta"\u2192"Nada antes. \ud83e\udd79"\u2192I4|"Donde?"\u2192"Cl.14#7-95 LOC 125-126. LUN-DOM 9-6."\u2192${mapUrl2}\n"precio de Xu"/"cuanto las X"/"a cuanto X"\u2192TABLAS INTERNAS\u2192tabla directa SIN derivar. NUNCA confundir precio-por-cantidad con REGLA IMAGEN.`;
+"envio?"\u2192ciudad\u2192$IRP\u2192"\u00bfCoordinamos? \ud83d\ude0a"|Intl:ciudad+pais|"demora?"\u2192"Ppales 1-4d. \u00bfTu ciudad? \ud83d\ude0a"|"stock?"\u2192"Si, hoy. \u00bfArrancamos? \ud83d\ude0a"|"Nequi/recibir/cuenta"\u2192"Nada antes. \ud83e\udd79"\u2192I4|"Donde?"\u2192"${dirD2}"\u2192${mapUrl2}\n"precio de Xu"/"cuanto las X"/"a cuanto X"\u2192TABLAS INTERNAS\u2192tabla directa SIN derivar. NUNCA confundir precio-por-cantidad con REGLA IMAGEN.`;
 
   // ── SEGUIMIENTO ──
   const seg2=`# SEGUIMIENTO
@@ -3538,7 +3945,7 @@ ${obj2}
 function renderChecklist(prompt, len) {
   const prods = state.selectedIds.map(id => products.find(x=>x.id===id)).filter(Boolean);
   const checks = [
-    {label:'✅ Bajo 12.000 chars — listo para pegar en ChateaPro', pass: len <= 12000, critical: true},
+    {label:'✅ Bajo 11.500 chars — listo para pegar en ChateaPro', pass: len <= 11500, critical: true},
     {label:'R0 — Fuera de catálogo [N45] con mensaje de retorno', pass: prompt.includes('REGLA CERO — PRODUCTO FUERA DE CATALOGO [N45]') || (prompt.includes('R0 — FUERA DE CATALOGO') && prompt.includes('retomar segun flujo'))},
     {label:'R0 — Imágenes cliente con verificación [N44]', pass: prompt.includes('REGLA CERO — IMAGENES ENVIADAS POR EL CLIENTE [N44]') || prompt.includes('REGLA IMAGEN [N44') || (prompt.includes('R0 — IMAGENES CLIENTE') && prompt.includes('Verificar:'))},
     {label:'R0 — Tabla de despacho con GALERIA-A', pass: prompt.includes('GALERIA-A')},
@@ -3567,7 +3974,7 @@ function renderChecklist(prompt, len) {
   const criticalPass = checks[0].pass;
   document.getElementById('cl-items').innerHTML =
     `<div style="font-size:.67rem;color:${criticalPass?'#5dde9a':'#ff6070'};font-weight:700;margin-bottom:6px;padding:6px 8px;background:${criticalPass?'rgba(45,200,120,.1)':'rgba(255,80,100,.12)'};border-radius:6px">
-      ${criticalPass ? '🟢 LISTO — El prompt cabe en ChateaPro (≤12.000 chars). Puedes copiar y descargar.' : '🔴 ATENCIÓN — El prompt supera 12.000 chars. Reduce productos o galerías.'}
+      ${criticalPass ? '🟢 LISTO — El prompt cabe en ChateaPro (≤11.500 chars). Puedes copiar y descargar.' : '🔴 ATENCIÓN — El prompt supera 11.500 chars. Reduce productos o galerías.'}
     </div>` +
     `<div style="font-size:.62rem;color:rgba(255,255,255,.35);margin-bottom:6px">Los ❌ NO bloquean el prompt — son ítems opcionales para mejorar resultados. Solo el primer ítem es crítico.</div>` +
     checks.map(c =>
@@ -3577,8 +3984,8 @@ function renderChecklist(prompt, len) {
 
 function copyPrompt() {
   const txt = document.getElementById('pout').textContent;
-  if (txt.length > 12000) {
-    toast('⛔ El prompt supera 12.000 chars (límite). Reduce productos o galerías antes de copiar.');
+  if (txt.length > 11500) {
+    toast('⛔ El prompt supera 11.500 chars (límite). Reduce productos o galerías antes de copiar.');
     return;
   }
   navigator.clipboard.writeText(txt).then(() => {
@@ -3598,8 +4005,8 @@ function copyPrompt() {
 
 function downloadPrompt() {
   const txt = document.getElementById('pout').textContent;
-  if (txt.length > 12000) {
-    toast('⛔ El prompt supera 12.000 chars (límite). Reduce productos o galerías.');
+  if (txt.length > 11500) {
+    toast('⛔ El prompt supera 11.500 chars (límite). Reduce productos o galerías.');
     return;
   }
   const storeName = (document.getElementById('inp-nombre')||{}).value || 'prompt';
@@ -3619,6 +4026,13 @@ function downloadPrompt() {
 // ════════════════════════════════════════
 // SAVE / LOAD
 // ════════════════════════════════════════
+function resetToDefaults() {
+  if (!confirm('¿Resetear el catálogo a los valores por defecto?\n\nEsto borrará los datos guardados en este navegador y recargará con los datos actuales del código.\n\nTu configuración de Mi Tienda también se reiniciará.')) return;
+  LS.del(STORE_KEY);
+  toast('🔄 Reseteando...');
+  setTimeout(() => location.reload(), 600);
+}
+
 function saveAll() {
   readStoreFields();
   LS.set(STORE_KEY, JSON.stringify({
